@@ -971,7 +971,6 @@ function App() {
   const [selectedFreelancerId, setSelectedFreelancerId] = useState(1)
   const [authMode, setAuthMode] = useState('login')
   const [showAuthModal, setShowAuthModal] = useState(false)
-  const [showMenu, setShowMenu] = useState(false)
   const [user, setUser] = useState(null)
   const [authForm, setAuthForm] = useState({
     name: 'Alex Chen',
@@ -998,13 +997,11 @@ function App() {
   const handleOpenJob = (jobId) => {
     setSelectedJobId(jobId)
     setActivePage('job-detail')
-    setShowMenu(false)
   }
 
   const handleOpenFreelancer = (freelancerId) => {
     setSelectedFreelancerId(freelancerId)
     setActivePage('freelancers')
-    setShowMenu(false)
   }
 
   const handleAuthChange = (event) => {
@@ -1076,7 +1073,7 @@ function App() {
   return (
     <div className="app-shell">
       <div className="app-frame">
-        <header className="topbar compact-topbar">
+        <header className="topbar feature-topbar">
           <div className="brand-lockup">
             <div className="brand-mark">GL</div>
             <div>
@@ -1085,9 +1082,25 @@ function App() {
             </div>
           </div>
 
-          <div className="topbar-actions">
+          <nav className="feature-nav" aria-label="Primary">
+            {navItems.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                className={`feature-link ${activePage === item.id ? 'active' : ''}`}
+                onClick={() => setActivePage(item.id)}
+                title={item.label}
+                aria-label={item.label}
+              >
+                <span className="nav-icon">{item.icon}</span>
+                <span className="feature-label">{item.label}</span>
+              </button>
+            ))}
+          </nav>
+
+          <div className="utility-rail">
             {user ? (
-              <div className="user-chip">
+              <div className="user-chip compact-user-chip">
                 <div className="user-dot" />
                 <div>
                   <strong>{user.name}</strong>
@@ -1095,10 +1108,10 @@ function App() {
                 </div>
               </div>
             ) : (
-              <div className="auth-actions compact-auth">
+              <div className="auth-actions subtle-auth">
                 <button
                   type="button"
-                  className="ghost-button"
+                  className="ghost-button mini-action"
                   onClick={() => {
                     setAuthMode('login')
                     setShowAuthModal(true)
@@ -1108,6 +1121,7 @@ function App() {
                 </button>
                 <button
                   type="button"
+                  className="ghost-button mini-action"
                   onClick={() => {
                     setAuthMode('register')
                     setShowAuthModal(true)
@@ -1117,38 +1131,8 @@ function App() {
                 </button>
               </div>
             )}
-
-            <button
-              type="button"
-              className={`menu-toggle ${showMenu ? 'active' : ''}`}
-              onClick={() => setShowMenu((current) => !current)}
-              aria-label="Toggle menu"
-            >
-              <span />
-              <span />
-              <span />
-            </button>
           </div>
         </header>
-
-        {showMenu ? (
-          <nav className="hamburger-panel" aria-label="Primary">
-            {navItems.map((item) => (
-              <button
-                key={item.id}
-                type="button"
-                className={`hamburger-link ${activePage === item.id ? 'active' : ''}`}
-                onClick={() => {
-                  setActivePage(item.id)
-                  setShowMenu(false)
-                }}
-              >
-                <span className="nav-icon">{item.icon}</span>
-                <span>{item.label}</span>
-              </button>
-            ))}
-          </nav>
-        ) : null}
 
         <main className="page-stack">{pageContent}</main>
       </div>

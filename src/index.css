@@ -101,8 +101,9 @@ img {
   box-shadow: 0 18px 44px rgba(0, 0, 0, 0.24);
 }
 
-.compact-topbar {
-  padding-block: 14px;
+.feature-topbar {
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 .brand-lockup {
@@ -134,9 +135,7 @@ img {
   color: #09101d;
 }
 
-.topbar-actions,
 .auth-actions,
-.compact-auth,
 .hero-actions,
 .hero-stats,
 .profile-stats,
@@ -146,80 +145,61 @@ img {
 .detail-row,
 .matched-profile,
 .freelancer-card-top,
-.message-meta {
+.message-meta,
+.feature-nav,
+.utility-rail {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
 }
 
-.topbar-actions {
-  margin-left: auto;
+.feature-nav {
+  flex: 1 1 560px;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
-.compact-auth button {
-  padding: 0.72rem 0.95rem;
-}
-
-.menu-toggle {
-  width: 48px;
-  height: 48px;
-  padding: 0;
-  display: grid;
-  place-items: center;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.06);
-  box-shadow: none;
-}
-
-.menu-toggle span {
-  display: block;
-  width: 18px;
-  height: 2px;
-  border-radius: 999px;
-  background: #f3f6ff;
-  margin: 2px 0;
-  transition: transform 0.18s ease, opacity 0.18s ease;
-}
-
-.menu-toggle.active span:nth-child(1) {
-  transform: translateY(6px) rotate(45deg);
-}
-
-.menu-toggle.active span:nth-child(2) {
-  opacity: 0;
-}
-
-.menu-toggle.active span:nth-child(3) {
-  transform: translateY(-6px) rotate(-45deg);
-}
-
-.hamburger-panel {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-  padding: 14px;
-  margin-bottom: 20px;
-  border-radius: 22px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(10, 12, 24, 0.82);
-  backdrop-filter: blur(18px);
-}
-
-.hamburger-link {
+.feature-link {
+  min-width: 82px;
+  padding: 0.62rem 0.72rem;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 10px;
-  padding: 0.8rem 0.95rem;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.05);
-  color: #d7def8;
+  gap: 8px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.04);
+  color: #cfd6f6;
   box-shadow: none;
 }
 
-.hamburger-link.active {
-  background: rgba(142, 125, 255, 0.22);
+.feature-link.active {
+  background: rgba(142, 125, 255, 0.2);
   color: #fff;
+}
+
+.feature-label {
+  font-size: 0.78rem;
+  line-height: 1.1;
+}
+
+.utility-rail {
+  margin-left: auto;
+  justify-content: flex-end;
+}
+
+.subtle-auth {
+  gap: 8px;
+}
+
+.mini-action {
+  padding: 0.6rem 0.82rem;
+  border-radius: 14px;
+  font-size: 0.86rem;
+}
+
+.compact-user-chip {
+  padding: 0.55rem 0.75rem;
 }
 
 .nav-icon {
@@ -737,8 +717,7 @@ img {
   .freelancer-layout,
   .metric-grid,
   .plan-grid,
-  .talent-strip,
-  .hamburger-panel {
+  .talent-strip {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -756,17 +735,24 @@ img {
   }
 
   .topbar,
-  .topbar-actions,
   .auth-actions,
-  .compact-auth,
   .hero-actions,
   .hero-stats,
   .profile-stats,
   .matched-profile,
   .freelancer-card-top,
-  .panel-heading {
+  .panel-heading,
+  .utility-rail {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .feature-nav {
+    justify-content: flex-start;
+  }
+
+  .feature-link {
+    min-width: 72px;
   }
 
   .metric-grid,
@@ -778,8 +764,7 @@ img {
   .portfolio-grid,
   .talent-strip,
   .freelancer-grid,
-  .auth-grid,
-  .hamburger-panel {
+  .auth-grid {
     grid-template-columns: 1fr;
   }
 
