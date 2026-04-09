@@ -33,6 +33,9 @@ const jobs = [
     category: 'Design',
     client: 'Orbitly',
     brief: 'Need a cleaner hero, pricing block refresh, and mobile-first polish for investor traffic.',
+    scope: ['Hero redesign', 'Pricing section cleanup', 'Mobile responsiveness pass'],
+    deliverables: ['Figma file', 'Responsive landing page mockups', 'Design notes for developer handoff'],
+    stack: ['Figma', 'SaaS', 'Conversion design'],
   },
   {
     id: 2,
@@ -44,6 +47,9 @@ const jobs = [
     category: 'Ads',
     client: 'Veloura',
     brief: 'Meta-ready static creatives for a weekend promotion with soft luxury visual language.',
+    scope: ['3 static concepts', '1 revised final direction', 'Export pack for Meta ads'],
+    deliverables: ['1080x1350 exports', 'Editable source file', 'CTA copy suggestions'],
+    stack: ['Meta ads', 'Photoshop', 'Beauty brand creative'],
   },
   {
     id: 3,
@@ -55,6 +61,9 @@ const jobs = [
     category: 'Branding',
     client: 'BlockWave',
     brief: 'Create a flexible visual system with logo, colors, and social post templates.',
+    scope: ['Logo direction', 'Color and typography system', 'Social starter pack'],
+    deliverables: ['Primary logo', 'Brand guide', '6 social post templates'],
+    stack: ['Brand identity', 'Startup branding', 'Web3'],
   },
   {
     id: 4,
@@ -66,6 +75,9 @@ const jobs = [
     category: 'Presentation',
     client: 'Northlane AI',
     brief: 'Tighten typography, improve chart readability, and bring slides into one cohesive system.',
+    scope: ['12-slide cleanup', 'Chart readability refresh', 'Visual consistency pass'],
+    deliverables: ['Updated deck', 'Master slide system', 'Investor-ready export'],
+    stack: ['Pitch decks', 'PowerPoint', 'Fundraising'],
   },
   {
     id: 5,
@@ -77,6 +89,9 @@ const jobs = [
     category: 'Video',
     client: 'Calma',
     brief: 'Turn raw mobile footage into five punchy paid social edits with hooks and subtitles.',
+    scope: ['5 short-form edits', 'Subtitle styling', 'Hook testing variations'],
+    deliverables: ['5 vertical exports', 'Caption suggestions', 'Thumbnail frames'],
+    stack: ['Premiere Pro', 'UGC editing', 'Paid social'],
   },
   {
     id: 6,
@@ -88,6 +103,9 @@ const jobs = [
     category: 'Design',
     client: 'Nori Home',
     brief: 'Create a cleaner premium hero section with stronger conversion focus and clearer CTA hierarchy.',
+    scope: ['Hero section redesign', 'CTA improvement', 'Premium ecom mood direction'],
+    deliverables: ['Desktop + mobile concept', 'Source file', 'Visual notes'],
+    stack: ['Shopify', 'Ecommerce', 'Homepage design'],
   },
 ]
 
@@ -274,6 +292,7 @@ const pages = [
   ['home', 'Overview'],
   ['jobs', 'Jobs'],
   ['freelancers', 'Freelancers'],
+  ['job-detail', 'Job Detail'],
   ['post-job', 'Post a Job'],
   ['membership', 'Membership'],
   ['referrals', 'Referral Center'],
@@ -307,8 +326,8 @@ function HomePage({ onOpenPage }) {
               <button type="button" onClick={() => onOpenPage('jobs')}>
                 Explore jobs
               </button>
-              <button type="button" className="ghost-button" onClick={() => onOpenPage('freelancers')}>
-                View freelancer flow
+              <button type="button" className="ghost-button" onClick={() => onOpenPage('job-detail')}>
+                Open job detail
               </button>
             </div>
             <div className="hero-stats">
@@ -422,7 +441,7 @@ function HomePage({ onOpenPage }) {
   )
 }
 
-function JobsPage() {
+function JobsPage({ onOpenPage, onSelectJob, selectedJobId }) {
   const [activeCategory, setActiveCategory] = useState('All')
   const categories = useMemo(() => ['All', ...new Set(jobs.map((job) => job.category))], [])
   const visibleJobs = useMemo(() => {
@@ -451,7 +470,7 @@ function JobsPage() {
       </div>
       <div className="job-grid">
         {visibleJobs.map((job) => (
-          <article key={job.id} className="job-card detail-card">
+          <article key={job.id} className={job.id === selectedJobId ? 'job-card detail-card selected-card' : 'job-card detail-card'}>
             <span>{job.type}</span>
             <h3>{job.title}</h3>
             <p>{job.brief}</p>
@@ -462,6 +481,18 @@ function JobsPage() {
             <div className="job-meta">
               <strong>{job.budget}</strong>
               <small>{job.eta}</small>
+            </div>
+            <div className="card-actions">
+              <button
+                type="button"
+                className="inline-button"
+                onClick={() => {
+                  onSelectJob(job.id)
+                  onOpenPage('job-detail')
+                }}
+              >
+                View details
+              </button>
             </div>
           </article>
         ))}
@@ -502,6 +533,103 @@ function FreelancersPage() {
           </article>
         ))}
       </div>
+    </section>
+  )
+}
+
+function JobDetailPage({ selectedJob, onOpenPage }) {
+  const [proposalSent, setProposalSent] = useState(false)
+
+  return (
+    <section className="content-card split-layout">
+      <div>
+        <SectionTitle
+          eyebrow="Job detail"
+          title={selectedJob.title}
+          text={selectedJob.brief}
+        />
+
+        <div className="detail-summary-grid">
+          <article className="feature-card">
+            <span>{selectedJob.type}</span>
+            <h3>{selectedJob.budget}</h3>
+            <p>{selectedJob.client}</p>
+          </article>
+          <article className="feature-card">
+            <span>Experience</span>
+            <h3>{selectedJob.level}</h3>
+            <p>{selectedJob.eta}</p>
+          </article>
+          <article className="feature-card">
+            <span>Category</span>
+            <h3>{selectedJob.category}</h3>
+            <p>{selectedJob.stack.join(' · ')}</p>
+          </article>
+        </div>
+
+        <div className="detail-panels">
+          <article className="feature-card">
+            <h3>Scope</h3>
+            <ul>
+              {selectedJob.scope.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </article>
+          <article className="feature-card">
+            <h3>Deliverables</h3>
+            <ul>
+              {selectedJob.deliverables.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </article>
+        </div>
+      </div>
+
+      <aside className="side-panel apply-panel">
+        <span className="side-label">Apply flow</span>
+        <h3>Send a proposal in under 2 minutes</h3>
+
+        <div className="form-row">
+          <label>Your pitch</label>
+          <div className="fake-input large-input">
+            I can redesign this landing page with a stronger conversion hierarchy, cleaner pricing section,
+            and mobile-first polish. I&apos;d deliver the first pass within 24 hours.
+          </div>
+        </div>
+
+        <div className="form-row two-up">
+          <div>
+            <label>Timeline</label>
+            <div className="fake-input">24 hours</div>
+          </div>
+          <div>
+            <label>Bid amount</label>
+            <div className="fake-input">{selectedJob.budget}</div>
+          </div>
+        </div>
+
+        <div className="form-row">
+          <label>Portfolio highlight</label>
+          <div className="fake-input">SaaS landing page redesign, +22% trial CTA clicks</div>
+        </div>
+
+        <div className="hero-actions">
+          <button type="button" onClick={() => setProposalSent(true)}>
+            Submit proposal
+          </button>
+          <button type="button" className="ghost-button" onClick={() => onOpenPage('jobs')}>
+            Back to jobs
+          </button>
+        </div>
+
+        {proposalSent && (
+          <div className="success-box">
+            Proposal sent. Client response estimate: within 18 minutes.
+          </div>
+        )}
+      </aside>
     </section>
   )
 }
@@ -663,6 +791,8 @@ function ReferralsPage() {
 
 function App() {
   const [activePage, setActivePage] = useState('home')
+  const [selectedJobId, setSelectedJobId] = useState(1)
+  const selectedJob = jobs.find((job) => job.id === selectedJobId) || jobs[0]
 
   return (
     <div className="page-shell">
@@ -689,8 +819,11 @@ function App() {
       </nav>
 
       {activePage === 'home' && <HomePage onOpenPage={setActivePage} />}
-      {activePage === 'jobs' && <JobsPage />}
+      {activePage === 'jobs' && (
+        <JobsPage onOpenPage={setActivePage} onSelectJob={setSelectedJobId} selectedJobId={selectedJobId} />
+      )}
       {activePage === 'freelancers' && <FreelancersPage />}
+      {activePage === 'job-detail' && <JobDetailPage selectedJob={selectedJob} onOpenPage={setActivePage} />}
       {activePage === 'post-job' && <PostJobPage />}
       {activePage === 'membership' && <MembershipPage />}
       {activePage === 'referrals' && <ReferralsPage />}
