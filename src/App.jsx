@@ -216,6 +216,60 @@ const clientSteps = [
   'Job gets accepted, tracked, and rewarded with XP and loyalty points',
 ]
 
+const testimonials = [
+  {
+    quote: 'GigLift feels like Upwork if it actually understood speed and startup urgency.',
+    name: 'Sophie Tran',
+    title: 'Founder, Orbitly',
+  },
+  {
+    quote: 'The leveling and rush system makes the marketplace feel alive instead of empty.',
+    name: 'Jayden Cole',
+    title: 'Creative Lead, Veloura',
+  },
+  {
+    quote: 'This is the first freelance concept that feels like a product, not a directory.',
+    name: 'Nina Park',
+    title: 'Angel Investor',
+  },
+]
+
+const pricingPlans = [
+  {
+    name: 'Starter',
+    price: '$0',
+    note: 'For new freelancers entering the system',
+    features: ['Basic profile', 'Rush Board access', 'Referral rewards'],
+  },
+  {
+    name: 'Pro',
+    price: '$29/mo',
+    note: 'For active freelancers who want priority visibility',
+    features: ['Priority matching', 'Lower fees', 'Advanced analytics'],
+  },
+  {
+    name: 'Studio',
+    price: '$99/mo',
+    note: 'For small teams and top-tier operators',
+    features: ['Team workspace', 'Client vault', 'Premium lead access'],
+  },
+]
+
+const onboardingSteps = [
+  {
+    title: 'Create your profile',
+    text: 'Set category, level, city, and portfolio direction in under 3 minutes.',
+  },
+  {
+    title: 'Unlock your first jobs',
+    text: 'Start with fast-turn work and build your level through delivery quality and speed.',
+  },
+  {
+    title: 'Grow through referrals',
+    text: 'Invite clients and freelancers to build points, badges, boosts, and ranking momentum.',
+  },
+]
+
 const pages = [
   ['home', 'Overview'],
   ['jobs', 'Jobs'],
@@ -328,6 +382,41 @@ function HomePage({ onOpenPage }) {
             ))}
           </ul>
         </aside>
+      </section>
+
+      <section className="content-card">
+        <SectionTitle
+          eyebrow="Onboarding"
+          title="A lighter first-run experience for new freelancers"
+          text="This makes the product easier to imagine as a real onboarding system rather than just a static showcase."
+        />
+        <div className="three-grid">
+          {onboardingSteps.map((step) => (
+            <article key={step.title} className="feature-card">
+              <h3>{step.title}</h3>
+              <p>{step.text}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="content-card">
+        <SectionTitle
+          eyebrow="Social proof"
+          title="Add founder and investor reactions to make it pitch-ready"
+          text="These mocked testimonials help the prototype feel closer to a launch deck or investor-facing product walkthrough."
+        />
+        <div className="three-grid">
+          {testimonials.map((item) => (
+            <article key={item.name} className="feature-card quote-card">
+              <p>“{item.quote}”</p>
+              <div>
+                <strong>{item.name}</strong>
+                <small>{item.title}</small>
+              </div>
+            </article>
+          ))}
+        </div>
       </section>
     </>
   )
@@ -470,42 +559,66 @@ function PostJobPage() {
 
 function MembershipPage() {
   return (
-    <section className="content-card split-layout">
-      <div>
+    <>
+      <section className="content-card split-layout">
+        <div>
+          <SectionTitle
+            eyebrow="Membership"
+            title="Free to start, unlocked by proof of work"
+            text="New freelancers enter as Level 1 and unlock better jobs, lower fees, and better distribution as they complete work and maintain quality."
+          />
+          <div className="levels-list">
+            {freelancerLevels.map((level) => (
+              <article key={level.name} className="level-card">
+                <span>{level.xp}</span>
+                <h3>{level.name}</h3>
+                <p>{level.focus}</p>
+                <ul>
+                  {level.perks.map((perk) => (
+                    <li key={perk}>{perk}</li>
+                  ))}
+                </ul>
+              </article>
+            ))}
+          </div>
+        </div>
+        <aside className="side-panel">
+          <span className="side-label">Freelancer dashboard</span>
+          <h3>Progress that encourages action</h3>
+          <div className="stats-grid single-column-grid">
+            {dashboardStats.map((stat) => (
+              <article key={stat.label} className="stat-card">
+                <span>{stat.label}</span>
+                <strong>{stat.value}</strong>
+                <small>{stat.note}</small>
+              </article>
+            ))}
+          </div>
+        </aside>
+      </section>
+
+      <section className="content-card">
         <SectionTitle
-          eyebrow="Membership"
-          title="Free to start, unlocked by proof of work"
-          text="New freelancers enter as Level 1 and unlock better jobs, lower fees, and better distribution as they complete work and maintain quality."
+          eyebrow="Plans"
+          title="Optional pricing layers for future monetization"
+          text="This gives the product a clearer business model if you want to pitch it as more than just a marketplace."
         />
-        <div className="levels-list">
-          {freelancerLevels.map((level) => (
-            <article key={level.name} className="level-card">
-              <span>{level.xp}</span>
-              <h3>{level.name}</h3>
-              <p>{level.focus}</p>
+        <div className="three-grid">
+          {pricingPlans.map((plan) => (
+            <article key={plan.name} className="feature-card pricing-card">
+              <span>{plan.name}</span>
+              <h3>{plan.price}</h3>
+              <p>{plan.note}</p>
               <ul>
-                {level.perks.map((perk) => (
-                  <li key={perk}>{perk}</li>
+                {plan.features.map((feature) => (
+                  <li key={feature}>{feature}</li>
                 ))}
               </ul>
             </article>
           ))}
         </div>
-      </div>
-      <aside className="side-panel">
-        <span className="side-label">Freelancer dashboard</span>
-        <h3>Progress that encourages action</h3>
-        <div className="stats-grid single-column-grid">
-          {dashboardStats.map((stat) => (
-            <article key={stat.label} className="stat-card">
-              <span>{stat.label}</span>
-              <strong>{stat.value}</strong>
-              <small>{stat.note}</small>
-            </article>
-          ))}
-        </div>
-      </aside>
-    </section>
+      </section>
+    </>
   )
 }
 
