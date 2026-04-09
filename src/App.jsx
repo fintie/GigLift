@@ -297,7 +297,7 @@ function HomePage({ onOpenPage }) {
           <div className="hero-copy">
             <span className="pill">Design-first freelance marketplace</span>
             <h1>
-              The outsourcing platform that blends Uber speed, Upwork trust, and Temu-style growth.
+              The outsourcing platform that blends Uber speed, Upwork trust, and gamified growth loops.
             </h1>
             <p>
               GigLift is built for freelancers who want to pull jobs fast, level up through completed work,
@@ -628,7 +628,7 @@ function ReferralsPage() {
       <div>
         <SectionTitle
           eyebrow="Referral center"
-          title="Temu-inspired referrals, tuned for freelancers and clients"
+          title="Referral rewards designed for freelancers and clients"
           text="Users climb faster by inviting new clients and freelancers, earning points when referrals sign up, verify, land jobs, or spend on the platform."
         />
         <div className="growth-grid">
