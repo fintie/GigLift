@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import './index.css'
 
 const navItems = [
@@ -163,11 +163,6 @@ const freelancers = [
         summary: 'Produced test-ready creative variations for Meta and TikTok campaigns.',
       },
     ],
-    chat: [
-      { from: 'client', text: 'Hi Mia, I need a premium landing page refresh for an AI bookkeeping startup.', time: '21:58' },
-      { from: 'freelancer', text: 'Sounds like a fit. Do you already have wireframes or should I rethink the section hierarchy too?', time: '22:01' },
-      { from: 'client', text: 'Please rethink the hierarchy too. Stronger conversion focus would help.', time: '22:03' },
-    ],
   },
   {
     id: 2,
@@ -206,10 +201,6 @@ const freelancers = [
         summary: 'Built an interactive profile flow with stateful filtering and mock API integration.',
       },
     ],
-    chat: [
-      { from: 'client', text: 'Hey Noah, would you be open to a homepage redesign later this week?', time: '20:44' },
-      { from: 'freelancer', text: 'Yes, I can start tomorrow afternoon. If you send brand notes, I can scope it quickly.', time: '20:52' },
-    ],
   },
   {
     id: 3,
@@ -241,10 +232,6 @@ const freelancers = [
         image: 'https://images.unsplash.com/photo-1492619375914-88005aa9e8fb?auto=format&fit=crop&w=900&q=80',
         summary: 'Blended raw creator footage into launch-day edits optimized for conversion.',
       },
-    ],
-    chat: [
-      { from: 'client', text: 'Need 5 quick UGC edits for wellness ads. Tight turnaround.', time: '21:10' },
-      { from: 'freelancer', text: 'I can do that. If you send the raw clips tonight, I can return first cuts tomorrow morning.', time: '21:14' },
     ],
   },
   {
@@ -278,10 +265,6 @@ const freelancers = [
         summary: 'Built modular campaign creative for paid social and landing page alignment.',
       },
     ],
-    chat: [
-      { from: 'client', text: 'We need ad creative with stronger CTR angles for a skincare launch.', time: '19:32' },
-      { from: 'freelancer', text: 'Happy to help. I am booked now, but I can start a first direction tomorrow morning.', time: '19:41' },
-    ],
   },
   {
     id: 5,
@@ -313,10 +296,6 @@ const freelancers = [
         image: 'https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=900&q=80',
         summary: 'Turned founder notes into clean educational carousel templates.',
       },
-    ],
-    chat: [
-      { from: 'client', text: 'Can you help with 6 launch graphics for a startup waitlist push?', time: '22:00' },
-      { from: 'freelancer', text: 'Yes, I can turn the first concepts around tonight if the copy is ready.', time: '22:02' },
     ],
   },
   {
@@ -350,12 +329,19 @@ const freelancers = [
         summary: 'Built simulated dispatch, status badges, and talent filtering for a hiring platform.',
       },
     ],
-    chat: [
-      { from: 'client', text: 'Looking for a seed deck cleanup before investor intros next week.', time: '18:11' },
-      { from: 'freelancer', text: 'That works well for me. Send the current deck and I can suggest a stronger story arc.', time: '18:16' },
-    ],
   },
 ]
+
+const defaultMessages = {
+  1: [
+    { id: 1, author: 'Orbitly', text: 'We need a premium landing page refresh for an AI bookkeeping startup.', time: '21:58' },
+  ],
+  2: [{ id: 1, author: 'Northlane AI', text: 'Would you be open to a homepage redesign later this week?', time: '20:44' }],
+  3: [{ id: 1, author: 'Calma', text: 'Need 5 quick UGC edits for wellness ads. Tight turnaround.', time: '21:10' }],
+  4: [{ id: 1, author: 'Veloura', text: 'We need ad creative with stronger CTR angles for a skincare launch.', time: '19:32' }],
+  5: [{ id: 1, author: 'Launchly', text: 'Can you help with 6 launch graphics for a startup waitlist push?', time: '22:00' }],
+  6: [{ id: 1, author: 'Fundboard', text: 'Looking for a seed deck cleanup before investor intros next week.', time: '18:11' }],
+}
 
 const quests = [
   'Complete 1 rush job today for +40 XP',
@@ -653,7 +639,7 @@ function JobsPage({ onOpenJob }) {
             </div>
             <h3>{job.title}</h3>
             <p>{job.brief}</p>
-            <div className="tag-row">
+            <div className="tag-row compact">
               <span>{job.level}</span>
               <span>{job.eta}</span>
               <span>{job.category}</span>
@@ -668,14 +654,21 @@ function JobsPage({ onOpenJob }) {
   )
 }
 
-function FreelancersPage({ selectedFreelancer, onSelectFreelancer }) {
+function FreelancersPage({
+  selectedFreelancer,
+  onSelectFreelancer,
+  messages,
+  newMessage,
+  onMessageChange,
+  onMessageSubmit,
+}) {
   return (
     <section className="content-card freelancer-layout">
       <div>
         <SectionTitle
           eyebrow="Talent roster"
-          title="Select a freelancer to preview profile, chat, and work samples"
-          text="The detail view now has real-photo avatars and portfolio sections for designers and developers."
+          title="Select a freelancer to preview profile, portfolio, and leave a real message"
+          text="The old fake chat preview is gone. This version uses a real front-end留言区 so visitors can actually type and submit inquiries."
         />
         <div className="freelancer-grid">
           {freelancers.map((freelancer) => (
@@ -693,7 +686,7 @@ function FreelancersPage({ selectedFreelancer, onSelectFreelancer }) {
                   <span>{freelancer.city}</span>
                 </div>
               </div>
-              <div className="tag-row compact">
+              <div className="tag-row compact wrap">
                 <span>{freelancer.level}</span>
                 <span>{freelancer.score} ★</span>
                 <span>{freelancer.badge}</span>
@@ -735,17 +728,36 @@ function FreelancersPage({ selectedFreelancer, onSelectFreelancer }) {
           ))}
         </div>
 
-        <div className="chat-preview">
-          <div className="panel-heading">
-            <h4>Conversation preview</h4>
+        <div className="message-board">
+          <div className="panel-heading align-start">
+            <div>
+              <h4>Leave a message</h4>
+              <p className="muted-text">This is now an actual留言板 UI, ready to connect to backend later.</p>
+            </div>
             <span>{selectedFreelancer.responseTime}</span>
           </div>
-          {selectedFreelancer.chat.map((message) => (
-            <div key={`${message.time}-${message.text}`} className={`chat-bubble ${message.from}`}>
-              <p>{message.text}</p>
-              <span>{message.time}</span>
-            </div>
-          ))}
+
+          <form className="message-form" onSubmit={onMessageSubmit}>
+            <textarea
+              value={newMessage}
+              onChange={onMessageChange}
+              placeholder={`Write a message to ${selectedFreelancer.name} about your project...`}
+              rows={4}
+            />
+            <button type="submit">Send inquiry</button>
+          </form>
+
+          <div className="message-list">
+            {messages.map((message) => (
+              <article key={message.id} className="message-item">
+                <div className="message-meta">
+                  <strong>{message.author}</strong>
+                  <span>{message.time}</span>
+                </div>
+                <p>{message.text}</p>
+              </article>
+            ))}
+          </div>
         </div>
 
         <div className="portfolio-section">
@@ -959,6 +971,7 @@ function App() {
   const [selectedFreelancerId, setSelectedFreelancerId] = useState(1)
   const [authMode, setAuthMode] = useState('login')
   const [showAuthModal, setShowAuthModal] = useState(false)
+  const [showMenu, setShowMenu] = useState(false)
   const [user, setUser] = useState(null)
   const [authForm, setAuthForm] = useState({
     name: 'Alex Chen',
@@ -966,6 +979,8 @@ function App() {
     password: 'demo1234',
     accountType: 'Client',
   })
+  const [messageBoard, setMessageBoard] = useState(defaultMessages)
+  const [newMessage, setNewMessage] = useState('')
 
   const selectedJob = useMemo(() => jobs.find((job) => job.id === selectedJobId) ?? jobs[0], [selectedJobId])
   const selectedFreelancer = useMemo(
@@ -974,15 +989,22 @@ function App() {
   )
 
   const featuredFreelancers = freelancers.slice(0, 4)
+  const messages = messageBoard[selectedFreelancerId] ?? []
+
+  useEffect(() => {
+    setNewMessage('')
+  }, [selectedFreelancerId])
 
   const handleOpenJob = (jobId) => {
     setSelectedJobId(jobId)
     setActivePage('job-detail')
+    setShowMenu(false)
   }
 
   const handleOpenFreelancer = (freelancerId) => {
     setSelectedFreelancerId(freelancerId)
     setActivePage('freelancers')
+    setShowMenu(false)
   }
 
   const handleAuthChange = (event) => {
@@ -999,6 +1021,31 @@ function App() {
     setShowAuthModal(false)
   }
 
+  const handleMessageSubmit = (event) => {
+    event.preventDefault()
+
+    if (!newMessage.trim()) {
+      return
+    }
+
+    const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+
+    setMessageBoard((current) => ({
+      ...current,
+      [selectedFreelancerId]: [
+        ...(current[selectedFreelancerId] ?? []),
+        {
+          id: Date.now(),
+          author: user?.name || 'Guest client',
+          text: newMessage.trim(),
+          time: timestamp,
+        },
+      ],
+    }))
+
+    setNewMessage('')
+  }
+
   let pageContent = null
 
   if (activePage === 'home') {
@@ -1006,7 +1053,16 @@ function App() {
   } else if (activePage === 'jobs') {
     pageContent = <JobsPage onOpenJob={handleOpenJob} />
   } else if (activePage === 'freelancers') {
-    pageContent = <FreelancersPage selectedFreelancer={selectedFreelancer} onSelectFreelancer={setSelectedFreelancerId} />
+    pageContent = (
+      <FreelancersPage
+        selectedFreelancer={selectedFreelancer}
+        onSelectFreelancer={setSelectedFreelancerId}
+        messages={messages}
+        newMessage={newMessage}
+        onMessageChange={(event) => setNewMessage(event.target.value)}
+        onMessageSubmit={handleMessageSubmit}
+      />
+    )
   } else if (activePage === 'job-detail') {
     pageContent = <JobDetailPage job={selectedJob} selectedFreelancer={selectedFreelancer} onOpenFreelancers={() => setActivePage('freelancers')} />
   } else if (activePage === 'membership') {
@@ -1020,7 +1076,7 @@ function App() {
   return (
     <div className="app-shell">
       <div className="app-frame">
-        <header className="topbar">
+        <header className="topbar compact-topbar">
           <div className="brand-lockup">
             <div className="brand-mark">GL</div>
             <div>
@@ -1029,22 +1085,7 @@ function App() {
             </div>
           </div>
 
-          <nav className="icon-nav" aria-label="Primary">
-            {navItems.map((item) => (
-              <button
-                key={item.id}
-                type="button"
-                className={`icon-nav-item ${activePage === item.id ? 'active' : ''}`}
-                onClick={() => setActivePage(item.id)}
-                title={item.label}
-              >
-                <span className="nav-icon">{item.icon}</span>
-                <span>{item.label}</span>
-              </button>
-            ))}
-          </nav>
-
-          <div className="auth-actions">
+          <div className="topbar-actions">
             {user ? (
               <div className="user-chip">
                 <div className="user-dot" />
@@ -1054,7 +1095,7 @@ function App() {
                 </div>
               </div>
             ) : (
-              <>
+              <div className="auth-actions compact-auth">
                 <button
                   type="button"
                   className="ghost-button"
@@ -1074,10 +1115,40 @@ function App() {
                 >
                   Sign up
                 </button>
-              </>
+              </div>
             )}
+
+            <button
+              type="button"
+              className={`menu-toggle ${showMenu ? 'active' : ''}`}
+              onClick={() => setShowMenu((current) => !current)}
+              aria-label="Toggle menu"
+            >
+              <span />
+              <span />
+              <span />
+            </button>
           </div>
         </header>
+
+        {showMenu ? (
+          <nav className="hamburger-panel" aria-label="Primary">
+            {navItems.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                className={`hamburger-link ${activePage === item.id ? 'active' : ''}`}
+                onClick={() => {
+                  setActivePage(item.id)
+                  setShowMenu(false)
+                }}
+              >
+                <span className="nav-icon">{item.icon}</span>
+                <span>{item.label}</span>
+              </button>
+            ))}
+          </nav>
+        ) : null}
 
         <main className="page-stack">{pageContent}</main>
       </div>
