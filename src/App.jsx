@@ -1,6 +1,16 @@
 import { useMemo, useState } from 'react'
 import './index.css'
 
+const navItems = [
+  { id: 'home', label: 'Overview', icon: '⌂' },
+  { id: 'jobs', label: 'Jobs', icon: '⚡' },
+  { id: 'freelancers', label: 'Talent', icon: '◉' },
+  { id: 'job-detail', label: 'Spotlight', icon: '▣' },
+  { id: 'post-job', label: 'Post', icon: '✎' },
+  { id: 'membership', label: 'Plans', icon: '◆' },
+  { id: 'referrals', label: 'Rewards', icon: '✦' },
+]
+
 const freelancerLevels = [
   {
     name: 'Level 1 Explorer',
@@ -127,11 +137,32 @@ const freelancers = [
     city: 'Sydney',
     earnings: '$8.4k',
     headline: 'Fast identity systems for startup launches and product refreshes.',
-    avatar: 'MC',
-    accent: 'violet',
+    avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=420&q=80',
+    discipline: 'Designer',
     responseTime: 'Replies in 2 min',
     availability: 'Available now',
     status: 'online',
+    skills: ['Brand systems', 'Figma', 'Landing pages'],
+    portfolio: [
+      {
+        title: 'Orbitly brand refresh',
+        type: 'Design system',
+        image: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=80',
+        summary: 'Refined SaaS visual identity, homepage hero, and onboarding assets for investor demos.',
+      },
+      {
+        title: 'Northlane investor deck',
+        type: 'Presentation design',
+        image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=900&q=80',
+        summary: 'Rebuilt a 14-slide fundraising narrative with clearer data storytelling and premium layout.',
+      },
+      {
+        title: 'Veloura ad creative pack',
+        type: 'Paid social',
+        image: 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=900&q=80',
+        summary: 'Produced test-ready creative variations for Meta and TikTok campaigns.',
+      },
+    ],
     chat: [
       { from: 'client', text: 'Hi Mia, I need a premium landing page refresh for an AI bookkeeping startup.', time: '21:58' },
       { from: 'freelancer', text: 'Sounds like a fit. Do you already have wireframes or should I rethink the section hierarchy too?', time: '22:01' },
@@ -141,7 +172,7 @@ const freelancers = [
   {
     id: 2,
     name: 'Noah Lee',
-    role: 'Landing Page Builder',
+    role: 'Frontend Developer',
     score: '4.8',
     jobs: 31,
     badge: 'Top Closer',
@@ -149,11 +180,32 @@ const freelancers = [
     city: 'Melbourne',
     earnings: '$5.9k',
     headline: 'Converts messy startup messaging into clean, high-performing web flows.',
-    avatar: 'NL',
-    accent: 'cyan',
+    avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=420&q=80',
+    discipline: 'Developer',
     responseTime: 'Replies in 6 min',
     availability: 'In a project, free tomorrow',
     status: 'away',
+    skills: ['React', 'Vite', 'Animation'],
+    portfolio: [
+      {
+        title: 'SaaS landing page build',
+        type: 'React + motion',
+        image: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=900&q=80',
+        summary: 'Implemented a conversion-focused homepage with modular sections and polished interactions.',
+      },
+      {
+        title: 'Client dashboard UI',
+        type: 'Product frontend',
+        image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=900&q=80',
+        summary: 'Shipped dashboard tables, usage charts, and auth states for a B2B product.',
+      },
+      {
+        title: 'Freelancer profile app',
+        type: 'Prototype engineering',
+        image: 'https://images.unsplash.com/photo-1516321165247-4aa89a48be28?auto=format&fit=crop&w=900&q=80',
+        summary: 'Built an interactive profile flow with stateful filtering and mock API integration.',
+      },
+    ],
     chat: [
       { from: 'client', text: 'Hey Noah, would you be open to a homepage redesign later this week?', time: '20:44' },
       { from: 'freelancer', text: 'Yes, I can start tomorrow afternoon. If you send brand notes, I can scope it quickly.', time: '20:52' },
@@ -170,11 +222,26 @@ const freelancers = [
     city: 'Brisbane',
     earnings: '$4.7k',
     headline: 'Short-form edits built for paid social and founder-led brands.',
-    avatar: 'AB',
-    accent: 'pink',
+    avatarUrl: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=420&q=80',
+    discipline: 'Designer',
     responseTime: 'Replies in 4 min',
     availability: 'Available for rush work',
     status: 'online',
+    skills: ['Short-form video', 'Hooks', 'Paid social'],
+    portfolio: [
+      {
+        title: 'Calma ad edit pack',
+        type: 'UGC editing',
+        image: 'https://images.unsplash.com/photo-1516321497487-e288fb19713f?auto=format&fit=crop&w=900&q=80',
+        summary: 'Created five mobile-first ad cuts with hook variations and subtitle systems.',
+      },
+      {
+        title: 'Creator launch montage',
+        type: 'Social campaign',
+        image: 'https://images.unsplash.com/photo-1492619375914-88005aa9e8fb?auto=format&fit=crop&w=900&q=80',
+        summary: 'Blended raw creator footage into launch-day edits optimized for conversion.',
+      },
+    ],
     chat: [
       { from: 'client', text: 'Need 5 quick UGC edits for wellness ads. Tight turnaround.', time: '21:10' },
       { from: 'freelancer', text: 'I can do that. If you send the raw clips tonight, I can return first cuts tomorrow morning.', time: '21:14' },
@@ -191,11 +258,26 @@ const freelancers = [
     city: 'Perth',
     earnings: '$11.3k',
     headline: 'High-volume ad systems for brands that test weekly and scale aggressively.',
-    avatar: 'LW',
-    accent: 'gold',
+    avatarUrl: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=420&q=80',
+    discipline: 'Designer',
     responseTime: 'Replies in 9 min',
     availability: 'Booked this afternoon',
     status: 'busy',
+    skills: ['Ads', 'Performance creative', 'Testing systems'],
+    portfolio: [
+      {
+        title: 'Skincare launch ads',
+        type: 'Creative testing set',
+        image: 'https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=900&q=80',
+        summary: 'Scaled an ad library for weekly testing across acquisition funnels.',
+      },
+      {
+        title: 'DTC seasonal campaign',
+        type: 'Creative direction',
+        image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=900&q=80',
+        summary: 'Built modular campaign creative for paid social and landing page alignment.',
+      },
+    ],
     chat: [
       { from: 'client', text: 'We need ad creative with stronger CTR angles for a skincare launch.', time: '19:32' },
       { from: 'freelancer', text: 'Happy to help. I am booked now, but I can start a first direction tomorrow morning.', time: '19:41' },
@@ -212,11 +294,26 @@ const freelancers = [
     city: 'Adelaide',
     earnings: '$2.6k',
     headline: 'Social packs, carousels, and launch visuals with tight turnaround.',
-    avatar: 'ZP',
-    accent: 'green',
+    avatarUrl: 'https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?auto=format&fit=crop&w=420&q=80',
+    discipline: 'Designer',
     responseTime: 'Replies in 3 min',
     availability: 'Available now',
     status: 'online',
+    skills: ['Launch graphics', 'Carousels', 'Brand visuals'],
+    portfolio: [
+      {
+        title: 'Startup waitlist launch',
+        type: 'Social package',
+        image: 'https://images.unsplash.com/photo-1558655146-9f40138edfeb?auto=format&fit=crop&w=900&q=80',
+        summary: 'Delivered launch visuals, story variants, and countdown assets in one rush pack.',
+      },
+      {
+        title: 'Carousel series',
+        type: 'Content design',
+        image: 'https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=900&q=80',
+        summary: 'Turned founder notes into clean educational carousel templates.',
+      },
+    ],
     chat: [
       { from: 'client', text: 'Can you help with 6 launch graphics for a startup waitlist push?', time: '22:00' },
       { from: 'freelancer', text: 'Yes, I can turn the first concepts around tonight if the copy is ready.', time: '22:02' },
@@ -225,7 +322,7 @@ const freelancers = [
   {
     id: 6,
     name: 'Kai Morgan',
-    role: 'Pitch Deck Designer',
+    role: 'Product Developer',
     score: '4.8',
     jobs: 27,
     badge: 'Client Favorite',
@@ -233,11 +330,26 @@ const freelancers = [
     city: 'Auckland',
     earnings: '$6.2k',
     headline: 'Investor-ready decks that make strategy and traction easier to understand.',
-    avatar: 'KM',
-    accent: 'blue',
+    avatarUrl: 'https://images.unsplash.com/photo-1504593811423-6dd665756598?auto=format&fit=crop&w=420&q=80',
+    discipline: 'Developer',
     responseTime: 'Replies in 5 min',
     availability: 'Available this evening',
     status: 'online',
+    skills: ['Product engineering', 'APIs', 'Dashboard UI'],
+    portfolio: [
+      {
+        title: 'Founder analytics dashboard',
+        type: 'Full-stack prototype',
+        image: 'https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&w=900&q=80',
+        summary: 'Connected backend metrics to a clean web UI for weekly investor updates.',
+      },
+      {
+        title: 'Marketplace dispatch logic',
+        type: 'Frontend systems',
+        image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80',
+        summary: 'Built simulated dispatch, status badges, and talent filtering for a hiring platform.',
+      },
+    ],
     chat: [
       { from: 'client', text: 'Looking for a seed deck cleanup before investor intros next week.', time: '18:11' },
       { from: 'freelancer', text: 'That works well for me. Send the current deck and I can suggest a stronger story arc.', time: '18:16' },
@@ -363,16 +475,6 @@ const onboardingSteps = [
   },
 ]
 
-const pages = [
-  ['home', 'Overview'],
-  ['jobs', 'Jobs'],
-  ['freelancers', 'Freelancers'],
-  ['job-detail', 'Job Detail'],
-  ['post-job', 'Post a Job'],
-  ['membership', 'Membership'],
-  ['referrals', 'Referral Center'],
-]
-
 function SectionTitle({ eyebrow, title, text }) {
   return (
     <div className="section-title">
@@ -383,16 +485,14 @@ function SectionTitle({ eyebrow, title, text }) {
   )
 }
 
-function HomePage({ onOpenPage }) {
+function HomePage({ onOpenPage, onOpenFreelancer, featuredFreelancers }) {
   return (
     <>
       <header className="hero-card">
         <div className="hero-grid">
           <div className="hero-copy">
             <span className="pill">Design-first freelance marketplace</span>
-            <h1>
-              The outsourcing platform that blends Uber speed, Upwork trust, and gamified growth loops.
-            </h1>
+            <h1>The outsourcing platform that blends Uber speed, Upwork trust, and gamified growth loops.</h1>
             <p>
               GigLift is built for freelancers who want to pull jobs fast, level up through completed work,
               and grow through referrals, streaks, badges, and leaderboard momentum.
@@ -401,8 +501,8 @@ function HomePage({ onOpenPage }) {
               <button type="button" onClick={() => onOpenPage('jobs')}>
                 Explore jobs
               </button>
-              <button type="button" className="ghost-button" onClick={() => onOpenPage('job-detail')}>
-                Open job detail
+              <button type="button" className="ghost-button" onClick={() => onOpenPage('freelancers')}>
+                View talent
               </button>
             </div>
             <div className="hero-stats">
@@ -480,99 +580,87 @@ function HomePage({ onOpenPage }) {
 
       <section className="content-card">
         <SectionTitle
-          eyebrow="Onboarding"
-          title="A lighter first-run experience for new freelancers"
-          text="This makes the product easier to imagine as a real onboarding system rather than just a static showcase."
+          eyebrow="Featured talent"
+          title="Real-face profiles feel more premium and trustworthy"
+          text="A sharper freelancer layer makes the prototype feel closer to a marketplace users would actually browse."
         />
-        <div className="three-grid">
-          {onboardingSteps.map((step) => (
-            <article key={step.title} className="feature-card">
-              <h3>{step.title}</h3>
-              <p>{step.text}</p>
-            </article>
+        <div className="talent-strip">
+          {featuredFreelancers.map((freelancer) => (
+            <button key={freelancer.id} type="button" className="talent-card" onClick={() => onOpenFreelancer(freelancer.id)}>
+              <img src={freelancer.avatarUrl} alt={freelancer.name} className="talent-avatar" />
+              <div>
+                <strong>{freelancer.name}</strong>
+                <p>{freelancer.role}</p>
+                <span>{freelancer.discipline} • {freelancer.city}</span>
+              </div>
+            </button>
           ))}
         </div>
       </section>
 
-      <section className="content-card">
-        <SectionTitle
-          eyebrow="Social proof"
-          title="Add founder and investor reactions to make it pitch-ready"
-          text="These mocked testimonials help the prototype feel closer to a launch deck or investor-facing product walkthrough."
-        />
-        <div className="three-grid">
-          {testimonials.map((item) => (
-            <article key={item.name} className="feature-card quote-card">
-              <p>“{item.quote}”</p>
-              <div>
-                <strong>{item.name}</strong>
-                <small>{item.title}</small>
+      <section className="metric-grid">
+        {liveMetrics.map((metric) => (
+          <article key={metric.label} className="metric-card">
+            <span>{metric.label}</span>
+            <strong>{metric.value}</strong>
+            <p>{metric.note}</p>
+          </article>
+        ))}
+      </section>
+
+      <section className="content-card two-column-grid">
+        <div>
+          <SectionTitle eyebrow="Live timeline" title="Marketplace activity" text="Signals that make the product feel alive." />
+          <div className="feed-list">
+            {liveTimeline.map((item) => (
+              <div key={`${item.time}-${item.event}`} className="feed-item">
+                <strong>{item.time}</strong>
+                <div>
+                  <p>{item.event}</p>
+                  <span>{item.tag}</span>
+                </div>
               </div>
-            </article>
-          ))}
+            ))}
+          </div>
+        </div>
+        <div>
+          <SectionTitle eyebrow="Momentum" title="What keeps users returning" text="XP, referrals, and ranking make the funnel sticky." />
+          <ul className="bullet-list">
+            {activityFeed.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
         </div>
       </section>
     </>
   )
 }
 
-function JobsPage({ onOpenPage, onSelectJob, selectedJobId }) {
-  const [activeCategory, setActiveCategory] = useState('All')
-  const categories = useMemo(() => ['All', ...new Set(jobs.map((job) => job.category))], [])
-  const visibleJobs = useMemo(() => {
-    if (activeCategory === 'All') return jobs
-    return jobs.filter((job) => job.category === activeCategory)
-  }, [activeCategory])
-
+function JobsPage({ onOpenJob }) {
   return (
     <section className="content-card">
       <SectionTitle
-        eyebrow="Marketplace"
-        title="Fast job flows for modern freelancers"
-        text="Mix instant dispatch, open rush board jobs, and curated contests so clients can hire in the way that fits the task."
+        eyebrow="Open gigs"
+        title="Rush jobs, contests, and instant match opportunities"
+        text="Prototype job cards that sell urgency and clear freelancer fit."
       />
-      <div className="filter-row">
-        {categories.map((category) => (
-          <button
-            key={category}
-            type="button"
-            className={category === activeCategory ? 'filter-chip active-chip' : 'filter-chip'}
-            onClick={() => setActiveCategory(category)}
-          >
-            {category}
-          </button>
-        ))}
-      </div>
       <div className="job-grid">
-        {visibleJobs.map((job) => (
-          <article key={job.id} className={job.id === selectedJobId ? 'job-card detail-card selected-card' : 'job-card detail-card'}>
-            <span>{job.type}</span>
+        {jobs.map((job) => (
+          <article key={job.id} className="job-card">
+            <div className="job-topline">
+              <span>{job.type}</span>
+              <strong>{job.budget}</strong>
+            </div>
             <h3>{job.title}</h3>
             <p>{job.brief}</p>
-            <div className="meta-row">
-              <small>{job.client}</small>
-              <small>{job.level}</small>
+            <div className="tag-row">
+              <span>{job.level}</span>
+              <span>{job.eta}</span>
+              <span>{job.category}</span>
             </div>
-            <div className="job-meta">
-              <strong>{job.budget}</strong>
-              <small>{job.eta}</small>
-            </div>
-            <div className="meta-row">
-              <small>{job.status}</small>
-              <small>{job.category}</small>
-            </div>
-            <div className="card-actions">
-              <button
-                type="button"
-                className="inline-button"
-                onClick={() => {
-                  onSelectJob(job.id)
-                  onOpenPage('job-detail')
-                }}
-              >
-                View details
-              </button>
-            </div>
+            <button type="button" onClick={() => onOpenJob(job.id)}>
+              View brief
+            </button>
           </article>
         ))}
       </div>
@@ -580,236 +668,158 @@ function JobsPage({ onOpenPage, onSelectJob, selectedJobId }) {
   )
 }
 
-function FreelancersPage({ selectedFreelancerId, onSelectFreelancer }) {
-  const selectedFreelancer = freelancers.find((item) => item.id === selectedFreelancerId) || freelancers[0]
-  const [messageSent, setMessageSent] = useState(false)
-
+function FreelancersPage({ selectedFreelancer, onSelectFreelancer }) {
   return (
-    <section className="content-card split-layout chat-layout">
+    <section className="content-card freelancer-layout">
       <div>
         <SectionTitle
-          eyebrow="Mock talent"
-          title="Freelancer profiles with a chat-style contact flow"
-          text="This now feels more like a real hiring interface, with a selectable talent list and a conversation thread instead of a generic contact box."
+          eyebrow="Talent roster"
+          title="Select a freelancer to preview profile, chat, and work samples"
+          text="The detail view now has real-photo avatars and portfolio sections for designers and developers."
         />
-        <div className="freelancer-grid chat-freelancer-grid">
+        <div className="freelancer-grid">
           {freelancers.map((freelancer) => (
-            <article
+            <button
               key={freelancer.id}
-              className={freelancer.id === selectedFreelancerId ? 'freelancer-card selected-card chat-card' : 'freelancer-card chat-card'}
-              onClick={() => {
-                onSelectFreelancer(freelancer.id)
-                setMessageSent(false)
-              }}
+              type="button"
+              className={`freelancer-card ${selectedFreelancer.id === freelancer.id ? 'active' : ''}`}
+              onClick={() => onSelectFreelancer(freelancer.id)}
             >
-              <div className="chat-card-top">
-                <div className={`avatar photo-avatar avatar-${freelancer.accent}`}>{freelancer.avatar}</div>
+              <div className="freelancer-card-top">
+                <img src={freelancer.avatarUrl} alt={freelancer.name} className="freelancer-avatar" />
                 <div>
-                  <h3>{freelancer.name}</h3>
+                  <strong>{freelancer.name}</strong>
                   <p>{freelancer.role}</p>
+                  <span>{freelancer.city}</span>
                 </div>
               </div>
-              <p>{freelancer.headline}</p>
-              <div className="meta-row">
-                <small>{freelancer.availability}</small>
-                <small className={`status-pill status-${freelancer.status}`}>{freelancer.status}</small>
+              <div className="tag-row compact">
+                <span>{freelancer.level}</span>
+                <span>{freelancer.score} ★</span>
+                <span>{freelancer.badge}</span>
               </div>
-              <div className="meta-row">
-                <small>{freelancer.responseTime}</small>
-                <small>{freelancer.city}</small>
-              </div>
-            </article>
+            </button>
           ))}
         </div>
       </div>
 
-      <aside className="side-panel chat-panel">
-        <span className="side-label">Conversation</span>
-        <div className="contact-header">
-          <div className={`avatar photo-avatar large-avatar avatar-${selectedFreelancer.accent}`}>{selectedFreelancer.avatar}</div>
+      <aside className="profile-panel">
+        <div className="profile-header">
+          <img src={selectedFreelancer.avatarUrl} alt={selectedFreelancer.name} className="profile-avatar" />
+          <div>
+            <span className="pill small">{selectedFreelancer.discipline}</span>
+            <h3>{selectedFreelancer.name}</h3>
+            <p>{selectedFreelancer.role} • {selectedFreelancer.city}</p>
+            <strong>{selectedFreelancer.headline}</strong>
+          </div>
+        </div>
+
+        <div className="profile-stats">
+          <div>
+            <span>Jobs</span>
+            <strong>{selectedFreelancer.jobs}</strong>
+          </div>
+          <div>
+            <span>Rating</span>
+            <strong>{selectedFreelancer.score}</strong>
+          </div>
+          <div>
+            <span>Earnings</span>
+            <strong>{selectedFreelancer.earnings}</strong>
+          </div>
+        </div>
+
+        <div className="tag-row wrap">
+          {selectedFreelancer.skills.map((skill) => (
+            <span key={skill}>{skill}</span>
+          ))}
+        </div>
+
+        <div className="chat-preview">
+          <div className="panel-heading">
+            <h4>Conversation preview</h4>
+            <span>{selectedFreelancer.responseTime}</span>
+          </div>
+          {selectedFreelancer.chat.map((message) => (
+            <div key={`${message.time}-${message.text}`} className={`chat-bubble ${message.from}`}>
+              <p>{message.text}</p>
+              <span>{message.time}</span>
+            </div>
+          ))}
+        </div>
+
+        <div className="portfolio-section">
+          <div className="panel-heading">
+            <h4>{selectedFreelancer.discipline === 'Developer' ? 'Built projects' : 'Featured work'}</h4>
+            <span>{selectedFreelancer.portfolio.length} samples</span>
+          </div>
+          <div className="portfolio-grid">
+            {selectedFreelancer.portfolio.map((item) => (
+              <article key={item.title} className="portfolio-card">
+                <img src={item.image} alt={item.title} />
+                <div>
+                  <strong>{item.title}</strong>
+                  <span>{item.type}</span>
+                  <p>{item.summary}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </aside>
+    </section>
+  )
+}
+
+function JobDetailPage({ job, selectedFreelancer, onOpenFreelancers }) {
+  return (
+    <section className="content-card two-column-grid">
+      <div>
+        <SectionTitle eyebrow={job.type} title={job.title} text={job.brief} />
+        <div className="detail-card">
+          <div className="detail-row"><span>Budget</span><strong>{job.budget}</strong></div>
+          <div className="detail-row"><span>Client</span><strong>{job.client}</strong></div>
+          <div className="detail-row"><span>Eligibility</span><strong>{job.level}</strong></div>
+          <div className="detail-row"><span>Status</span><strong>{job.status}</strong></div>
+        </div>
+
+        <div className="detail-block">
+          <h3>Scope</h3>
+          <ul className="bullet-list">
+            {job.scope.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="detail-block">
+          <h3>Deliverables</h3>
+          <ul className="bullet-list">
+            {job.deliverables.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      <aside className="side-panel soft-panel">
+        <span className="side-label">Matched freelancer</span>
+        <div className="matched-profile">
+          <img src={selectedFreelancer.avatarUrl} alt={selectedFreelancer.name} className="freelancer-avatar large" />
           <div>
             <h3>{selectedFreelancer.name}</h3>
             <p>{selectedFreelancer.role}</p>
-            <small>{selectedFreelancer.responseTime} • {selectedFreelancer.availability}</small>
+            <span>{selectedFreelancer.responseTime}</span>
           </div>
         </div>
-
-        <div className="chat-thread">
-          {selectedFreelancer.chat.map((item, index) => (
-            <div key={`${selectedFreelancer.id}-${index}-${item.time}`} className={item.from === 'client' ? 'chat-bubble client-bubble' : 'chat-bubble freelancer-bubble'}>
-              <p>{item.text}</p>
-              <small>{item.time}</small>
-            </div>
+        <div className="tag-row wrap">
+          {job.stack.map((item) => (
+            <span key={item}>{item}</span>
           ))}
-          {messageSent && (
-            <div className="chat-bubble client-bubble pending-bubble">
-              <p>Hi {selectedFreelancer.name.split(' ')[0]}, I&apos;d like to move forward on a startup design brief. Can you take this on this week?</p>
-              <small>Just now</small>
-            </div>
-          )}
         </div>
-
-        <div className="chat-composer">
-          <div className="fake-input large-input">
-            Hi {selectedFreelancer.name.split(' ')[0]}, I&apos;d like to move forward on a startup design brief. Can you take this on this week?
-          </div>
-          <div className="hero-actions">
-            <button type="button" onClick={() => setMessageSent(true)}>
-              Send message
-            </button>
-            <button type="button" className="ghost-button">
-              Attach brief
-            </button>
-          </div>
-        </div>
-      </aside>
-    </section>
-  )
-}
-
-function JobDetailPage({ selectedJob, onOpenPage }) {
-  const [proposalSent, setProposalSent] = useState(false)
-
-  return (
-    <section className="content-card split-layout">
-      <div>
-        <SectionTitle
-          eyebrow="Job detail"
-          title={selectedJob.title}
-          text={selectedJob.brief}
-        />
-
-        <div className="detail-summary-grid">
-          <article className="feature-card">
-            <span>{selectedJob.type}</span>
-            <h3>{selectedJob.budget}</h3>
-            <p>{selectedJob.client}</p>
-          </article>
-          <article className="feature-card">
-            <span>Experience</span>
-            <h3>{selectedJob.level}</h3>
-            <p>{selectedJob.eta}</p>
-          </article>
-          <article className="feature-card">
-            <span>Category</span>
-            <h3>{selectedJob.category}</h3>
-            <p>{selectedJob.stack.join(' · ')}</p>
-          </article>
-        </div>
-
-        <div className="detail-panels">
-          <article className="feature-card">
-            <h3>Scope</h3>
-            <ul>
-              {selectedJob.scope.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </article>
-          <article className="feature-card">
-            <h3>Deliverables</h3>
-            <ul>
-              {selectedJob.deliverables.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </article>
-        </div>
-      </div>
-
-      <aside className="side-panel apply-panel">
-        <span className="side-label">Apply flow</span>
-        <h3>Send a proposal in under 2 minutes</h3>
-
-        <div className="form-row">
-          <label>Your pitch</label>
-          <div className="fake-input large-input">
-            I can redesign this landing page with a stronger conversion hierarchy, cleaner pricing section,
-            and mobile-first polish. I&apos;d deliver the first pass within 24 hours.
-          </div>
-        </div>
-
-        <div className="form-row two-up">
-          <div>
-            <label>Timeline</label>
-            <div className="fake-input">24 hours</div>
-          </div>
-          <div>
-            <label>Bid amount</label>
-            <div className="fake-input">{selectedJob.budget}</div>
-          </div>
-        </div>
-
-        <div className="form-row">
-          <label>Portfolio highlight</label>
-          <div className="fake-input">SaaS landing page redesign, +22% trial CTA clicks</div>
-        </div>
-
-        <div className="hero-actions">
-          <button type="button" onClick={() => setProposalSent(true)}>
-            Submit proposal
-          </button>
-          <button type="button" className="ghost-button" onClick={() => onOpenPage('jobs')}>
-            Back to jobs
-          </button>
-        </div>
-
-        {proposalSent && (
-          <div className="success-box">
-            Proposal sent. Client response estimate: within 18 minutes.
-          </div>
-        )}
-      </aside>
-    </section>
-  )
-}
-
-function PostJobPage() {
-  return (
-    <section className="content-card split-layout">
-      <div>
-        <SectionTitle
-          eyebrow="Post a job"
-          title="A simple client flow instead of a giant form"
-          text="This page shows how clients could choose job mode, set a budget, and get matched fast without the platform feeling heavy."
-        />
-        <div className="form-card">
-          <div className="form-row">
-            <label>Job title</label>
-            <div className="fake-input">Design 5 static ads for a mobile fintech app</div>
-          </div>
-          <div className="form-row two-up">
-            <div>
-              <label>Job mode</label>
-              <div className="fake-input">Rush Board</div>
-            </div>
-            <div>
-              <label>Budget</label>
-              <div className="fake-input">$150 - $250</div>
-            </div>
-          </div>
-          <div className="form-row">
-            <label>Creative brief</label>
-            <div className="fake-input large-input">
-              Need performance-focused ad creatives with a clean premium feel and fast turnaround.
-            </div>
-          </div>
-          <div className="hero-actions">
-            <button type="button">Publish job</button>
-            <button type="button" className="ghost-button">
-              Save draft
-            </button>
-          </div>
-        </div>
-      </div>
-      <aside className="side-panel">
-        <span className="side-label">Suggested matches</span>
-        <h3>Freelancers ready right now</h3>
-        <ul className="quest-list">
-          <li>Mia Carter, Level 3, replies in 2 min</li>
-          <li>Zoe Patel, Level 1, available for rush work</li>
-          <li>Leo Walker, Level 3, strong ad testing experience</li>
-        </ul>
+        <button type="button" onClick={() => onOpenFreelancers()}>
+          Browse more freelancers
+        </button>
       </aside>
     </section>
   )
@@ -817,183 +827,129 @@ function PostJobPage() {
 
 function MembershipPage() {
   return (
-    <>
-      <section className="content-card split-layout">
-        <div>
-          <SectionTitle
-            eyebrow="Membership"
-            title="Free to start, unlocked by proof of work"
-            text="New freelancers enter as Level 1 and unlock better jobs, lower fees, and better distribution as they complete work and maintain quality."
-          />
-          <div className="levels-list">
-            {freelancerLevels.map((level) => (
-              <article key={level.name} className="level-card">
-                <span>{level.xp}</span>
-                <h3>{level.name}</h3>
-                <p>{level.focus}</p>
-                <ul>
-                  {level.perks.map((perk) => (
-                    <li key={perk}>{perk}</li>
-                  ))}
-                </ul>
-              </article>
-            ))}
-          </div>
-        </div>
-        <aside className="side-panel">
-          <span className="side-label">Freelancer dashboard</span>
-          <h3>Progress that encourages action</h3>
-          <div className="stats-grid single-column-grid">
-            {dashboardStats.map((stat) => (
-              <article key={stat.label} className="stat-card">
-                <span>{stat.label}</span>
-                <strong>{stat.value}</strong>
-                <small>{stat.note}</small>
-              </article>
-            ))}
-          </div>
-        </aside>
-      </section>
-
-      <section className="content-card">
-        <SectionTitle
-          eyebrow="Plans"
-          title="Optional pricing layers for future monetization"
-          text="This gives the product a clearer business model if you want to pitch it as more than just a marketplace."
-        />
-        <div className="three-grid">
-          {pricingPlans.map((plan) => (
-            <article key={plan.name} className="feature-card pricing-card">
-              <span>{plan.name}</span>
-              <h3>{plan.price}</h3>
-              <p>{plan.note}</p>
-              <ul>
-                {plan.features.map((feature) => (
-                  <li key={feature}>{feature}</li>
-                ))}
-              </ul>
-            </article>
-          ))}
-        </div>
-      </section>
-    </>
+    <section className="content-card">
+      <SectionTitle eyebrow="Monetization" title="Membership tiers for growing freelancers and teams" text="Simple pricing placeholders for the prototype." />
+      <div className="plan-grid">
+        {pricingPlans.map((plan) => (
+          <article key={plan.name} className="plan-card">
+            <span>{plan.name}</span>
+            <strong>{plan.price}</strong>
+            <p>{plan.note}</p>
+            <ul className="bullet-list">
+              {plan.features.map((feature) => (
+                <li key={feature}>{feature}</li>
+              ))}
+            </ul>
+          </article>
+        ))}
+      </div>
+    </section>
   )
 }
 
 function ReferralsPage() {
   return (
-    <section className="content-card split-layout">
+    <section className="content-card two-column-grid">
       <div>
-        <SectionTitle
-          eyebrow="Referral center"
-          title="Referral rewards designed for freelancers and clients"
-          text="Users climb faster by inviting new clients and freelancers, earning points when referrals sign up, verify, land jobs, or spend on the platform."
-        />
-        <div className="growth-grid">
+        <SectionTitle eyebrow="Referral center" title="Reward loops inspired by Temu-style growth" text="Invite freelancers, clients, and teams to unlock boosts and point ladders." />
+        <div className="referral-grid">
           {referrals.map((item) => (
-            <article key={item.title}>
-              <span>{item.title}</span>
+            <article key={item.title} className="referral-card">
+              <h3>{item.title}</h3>
               <strong>{item.reward}</strong>
               <p>{item.detail}</p>
             </article>
           ))}
         </div>
       </div>
-      <aside className="side-panel leaderboard-panel">
-        <span className="side-label">This week</span>
-        <h3>Top climbers</h3>
+      <div>
+        <SectionTitle eyebrow="Top performers" title="Leaderboard snapshot" text="A social proof layer that makes competition visible." />
         <div className="leaderboard-list">
-          {leaderboard.map((entry, index) => (
-            <div key={entry.name} className="leaderboard-row">
-              <b>#{index + 1}</b>
+          {leaderboard.map((item, index) => (
+            <div key={item.name} className="leaderboard-item">
+              <b>0{index + 1}</b>
               <div>
-                <strong>{entry.name}</strong>
-                <span>{entry.xp}</span>
+                <strong>{item.name}</strong>
+                <p>{item.xp}</p>
               </div>
-              <small>{entry.reward}</small>
+              <span>{item.reward}</span>
             </div>
           ))}
         </div>
-      </aside>
+      </div>
     </section>
   )
 }
 
-function LiveMarketplacePanel({ selectedJob, selectedFreelancer }) {
+function PostJobPage() {
   return (
-    <section className="content-card live-marketplace-shell">
+    <section className="content-card two-column-grid">
       <div>
-        <SectionTitle
-          eyebrow="Live marketplace"
-          title="A more realistic operations panel"
-          text="Instead of generic showcase copy, this area now reads like an actual marketplace control surface with jobs, availability, and recent activity."
-        />
-        <div className="live-metrics-grid">
-          {liveMetrics.map((stat) => (
-            <article key={stat.label} className="stat-card">
-              <span>{stat.label}</span>
-              <strong>{stat.value}</strong>
-              <small>{stat.note}</small>
+        <SectionTitle eyebrow="Client onboarding" title="Fast posting flow" text="A lean form preview that shows how clients enter the dispatch system." />
+        <div className="onboarding-grid">
+          {onboardingSteps.map((step, index) => (
+            <article key={step.title} className="step-card">
+              <b>0{index + 1}</b>
+              <h3>{step.title}</h3>
+              <p>{step.text}</p>
             </article>
           ))}
         </div>
       </div>
-
-      <div className="live-marketplace-grid">
-        <article className="activity-card panel-card">
-          <span className="side-label">Recent system activity</span>
-          <h3>Timeline</h3>
-          <div className="timeline-feed">
-            {liveTimeline.map((item) => (
-              <div key={`${item.time}-${item.event}`} className="timeline-feed-row">
-                <strong>{item.time}</strong>
-                <div>
-                  <p>{item.event}</p>
-                  <small>{item.tag}</small>
-                </div>
-              </div>
-            ))}
-          </div>
-        </article>
-
-        <article className="activity-card panel-card">
-          <span className="side-label">Selected job</span>
-          <h3>{selectedJob.title}</h3>
-          <div className="panel-stack">
-            <div className="meta-row">
-              <small>{selectedJob.client}</small>
-              <small>{selectedJob.status}</small>
-            </div>
-            <div className="meta-row">
-              <strong>{selectedJob.budget}</strong>
-              <small>{selectedJob.eta}</small>
-            </div>
-            <ul className="quest-list compact-list">
-              {selectedJob.scope.slice(0, 3).map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </div>
-        </article>
-
-        <article className="activity-card panel-card">
-          <span className="side-label">Selected freelancer</span>
-          <h3>{selectedFreelancer.name}</h3>
-          <div className="contact-header compact-contact-header">
-            <div className={`avatar photo-avatar avatar-${selectedFreelancer.accent}`}>{selectedFreelancer.avatar}</div>
-            <div>
-              <p>{selectedFreelancer.role}</p>
-              <small>{selectedFreelancer.availability}</small>
-            </div>
-          </div>
-          <ul className="quest-list compact-list">
-            <li>{selectedFreelancer.responseTime}</li>
-            <li>{selectedFreelancer.level} • {selectedFreelancer.city}</li>
-            <li>{selectedFreelancer.jobs} jobs completed • {selectedFreelancer.score} ★</li>
-          </ul>
-        </article>
+      <div className="dashboard-grid">
+        {dashboardStats.map((item) => (
+          <article key={item.label} className="metric-card">
+            <span>{item.label}</span>
+            <strong>{item.value}</strong>
+            <p>{item.note}</p>
+          </article>
+        ))}
       </div>
     </section>
+  )
+}
+
+function AuthModal({ mode, form, onChange, onClose, onSubmit }) {
+  return (
+    <div className="modal-backdrop" role="presentation" onClick={onClose}>
+      <div className="auth-modal" role="dialog" aria-modal="true" onClick={(event) => event.stopPropagation()}>
+        <div className="panel-heading">
+          <h3>{mode === 'login' ? 'Welcome back' : 'Create account'}</h3>
+          <button type="button" className="icon-button small-icon" onClick={onClose}>
+            ×
+          </button>
+        </div>
+        <p className="muted-text">
+          {mode === 'login'
+            ? 'Mocked auth flow for the prototype. Use any email and password to enter the app.'
+            : 'Front-end signup state for clients or freelancers. Perfect for demoing account entry.'}
+        </p>
+        <div className="auth-grid">
+          <label>
+            <span>Name</span>
+            <input name="name" value={form.name} onChange={onChange} placeholder="Alex Chen" />
+          </label>
+          <label>
+            <span>Email</span>
+            <input name="email" value={form.email} onChange={onChange} placeholder="alex@giglift.app" />
+          </label>
+          <label>
+            <span>Password</span>
+            <input name="password" type="password" value={form.password} onChange={onChange} placeholder="••••••••" />
+          </label>
+          <label>
+            <span>Account type</span>
+            <select name="accountType" value={form.accountType} onChange={onChange}>
+              <option>Client</option>
+              <option>Freelancer</option>
+            </select>
+          </label>
+        </div>
+        <button type="button" onClick={onSubmit}>
+          {mode === 'login' ? 'Login' : 'Register'}
+        </button>
+      </div>
+    </div>
   )
 }
 
@@ -1001,74 +957,140 @@ function App() {
   const [activePage, setActivePage] = useState('home')
   const [selectedJobId, setSelectedJobId] = useState(1)
   const [selectedFreelancerId, setSelectedFreelancerId] = useState(1)
-  const selectedJob = jobs.find((job) => job.id === selectedJobId) || jobs[0]
-  const selectedFreelancer = freelancers.find((item) => item.id === selectedFreelancerId) || freelancers[0]
+  const [authMode, setAuthMode] = useState('login')
+  const [showAuthModal, setShowAuthModal] = useState(false)
+  const [user, setUser] = useState(null)
+  const [authForm, setAuthForm] = useState({
+    name: 'Alex Chen',
+    email: 'alex@giglift.app',
+    password: 'demo1234',
+    accountType: 'Client',
+  })
+
+  const selectedJob = useMemo(() => jobs.find((job) => job.id === selectedJobId) ?? jobs[0], [selectedJobId])
+  const selectedFreelancer = useMemo(
+    () => freelancers.find((freelancer) => freelancer.id === selectedFreelancerId) ?? freelancers[0],
+    [selectedFreelancerId],
+  )
+
+  const featuredFreelancers = freelancers.slice(0, 4)
+
+  const handleOpenJob = (jobId) => {
+    setSelectedJobId(jobId)
+    setActivePage('job-detail')
+  }
+
+  const handleOpenFreelancer = (freelancerId) => {
+    setSelectedFreelancerId(freelancerId)
+    setActivePage('freelancers')
+  }
+
+  const handleAuthChange = (event) => {
+    const { name, value } = event.target
+    setAuthForm((current) => ({ ...current, [name]: value }))
+  }
+
+  const handleAuthSubmit = () => {
+    setUser({
+      name: authForm.name || 'Alex Chen',
+      email: authForm.email,
+      accountType: authForm.accountType,
+    })
+    setShowAuthModal(false)
+  }
+
+  let pageContent = null
+
+  if (activePage === 'home') {
+    pageContent = <HomePage onOpenPage={setActivePage} onOpenFreelancer={handleOpenFreelancer} featuredFreelancers={featuredFreelancers} />
+  } else if (activePage === 'jobs') {
+    pageContent = <JobsPage onOpenJob={handleOpenJob} />
+  } else if (activePage === 'freelancers') {
+    pageContent = <FreelancersPage selectedFreelancer={selectedFreelancer} onSelectFreelancer={setSelectedFreelancerId} />
+  } else if (activePage === 'job-detail') {
+    pageContent = <JobDetailPage job={selectedJob} selectedFreelancer={selectedFreelancer} onOpenFreelancers={() => setActivePage('freelancers')} />
+  } else if (activePage === 'membership') {
+    pageContent = <MembershipPage />
+  } else if (activePage === 'referrals') {
+    pageContent = <ReferralsPage />
+  } else {
+    pageContent = <PostJobPage />
+  }
 
   return (
-    <div className="page-shell">
-      <nav className="topbar app-nav">
-        <div className="brand">
-          <div className="brand-mark">G</div>
-          <div>
-            <strong>GigLift</strong>
-            <p>Fast freelance work, leveled up</p>
+    <div className="app-shell">
+      <div className="app-frame">
+        <header className="topbar">
+          <div className="brand-lockup">
+            <div className="brand-mark">GL</div>
+            <div>
+              <strong>GigLift</strong>
+              <p>Speed-first freelance marketplace</p>
+            </div>
           </div>
-        </div>
-        <div className="nav-actions">
-          {pages.map(([pageId, label]) => (
-            <button
-              key={pageId}
-              type="button"
-              className={activePage === pageId ? 'nav-tab active-tab' : 'nav-tab'}
-              onClick={() => setActivePage(pageId)}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-      </nav>
 
-      {activePage === 'home' && <HomePage onOpenPage={setActivePage} />}
-      {activePage === 'jobs' && (
-        <JobsPage onOpenPage={setActivePage} onSelectJob={setSelectedJobId} selectedJobId={selectedJobId} />
-      )}
-      {activePage === 'freelancers' && (
-        <FreelancersPage selectedFreelancerId={selectedFreelancerId} onSelectFreelancer={setSelectedFreelancerId} />
-      )}
-      {activePage === 'job-detail' && <JobDetailPage selectedJob={selectedJob} onOpenPage={setActivePage} />}
-      {activePage === 'post-job' && <PostJobPage />}
-      {activePage === 'membership' && <MembershipPage />}
-      {activePage === 'referrals' && <ReferralsPage />}
-
-      <LiveMarketplacePanel selectedJob={selectedJob} selectedFreelancer={selectedFreelancer} />
-
-      <section className="content-card dashboard-grid">
-        <div>
-          <SectionTitle
-            eyebrow="Marketplace energy"
-            title="Ongoing progress, rewards, and platform activity"
-            text="This lower section still keeps the product feeling alive, but now sits behind a more realistic live operations panel."
-          />
-          <div className="stats-grid">
-            {dashboardStats.map((stat) => (
-              <article key={stat.label} className="stat-card">
-                <span>{stat.label}</span>
-                <strong>{stat.value}</strong>
-                <small>{stat.note}</small>
-              </article>
+          <nav className="icon-nav" aria-label="Primary">
+            {navItems.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                className={`icon-nav-item ${activePage === item.id ? 'active' : ''}`}
+                onClick={() => setActivePage(item.id)}
+                title={item.label}
+              >
+                <span className="nav-icon">{item.icon}</span>
+                <span>{item.label}</span>
+              </button>
             ))}
+          </nav>
+
+          <div className="auth-actions">
+            {user ? (
+              <div className="user-chip">
+                <div className="user-dot" />
+                <div>
+                  <strong>{user.name}</strong>
+                  <span>{user.accountType}</span>
+                </div>
+              </div>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  className="ghost-button"
+                  onClick={() => {
+                    setAuthMode('login')
+                    setShowAuthModal(true)
+                  }}
+                >
+                  Log in
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAuthMode('register')
+                    setShowAuthModal(true)
+                  }}
+                >
+                  Sign up
+                </button>
+              </>
+            )}
           </div>
-        </div>
-        <div className="activity-card">
-          <span className="side-label">Live activity</span>
-          <h3>Momentum feed</h3>
-          <ul className="activity-list">
-            {activityFeed.map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
-        </div>
-      </section>
+        </header>
+
+        <main className="page-stack">{pageContent}</main>
+      </div>
+
+      {showAuthModal ? (
+        <AuthModal
+          mode={authMode}
+          form={authForm}
+          onChange={handleAuthChange}
+          onClose={() => setShowAuthModal(false)}
+          onSubmit={handleAuthSubmit}
+        />
+      ) : null}
     </div>
   )
 }
