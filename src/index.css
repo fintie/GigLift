@@ -81,12 +81,11 @@ a {
 }
 
 .app-nav {
-  position: sticky;
-  top: 16px;
-  z-index: 10;
-  padding: 16px 20px;
-  margin-bottom: 24px;
-  border-radius: 24px;
+  position: relative;
+  z-index: 1;
+  padding: 12px 16px;
+  margin-bottom: 18px;
+  border-radius: 20px;
 }
 
 .brand {
@@ -126,7 +125,7 @@ small,
 .nav-actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   flex-wrap: wrap;
 }
 
@@ -140,9 +139,11 @@ small,
 }
 
 .nav-tab {
+  padding: 10px 14px !important;
   background: rgba(255, 255, 255, 0.05) !important;
   color: #dbe2ff !important;
   border: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.92rem;
 }
 
 .active-tab {
@@ -537,7 +538,7 @@ small,
   .hero-card,
   .content-card,
   .app-nav {
-    padding: 20px;
+    padding: 18px;
     border-radius: 24px;
   }
 
