@@ -1082,25 +1082,25 @@ function App() {
             </div>
           </div>
 
-          <nav className="feature-nav" aria-label="Primary">
+          <nav className="feature-nav single-row-nav" aria-label="Primary">
             {navItems.map((item) => (
               <button
                 key={item.id}
                 type="button"
-                className={`feature-link ${activePage === item.id ? 'active' : ''}`}
+                className={`feature-link compact-feature-link ${activePage === item.id ? 'active' : ''}`}
                 onClick={() => setActivePage(item.id)}
                 title={item.label}
                 aria-label={item.label}
               >
-                <span className="nav-icon">{item.icon}</span>
-                <span className="feature-label">{item.label}</span>
+                <span className="nav-icon compact-nav-icon">{item.icon}</span>
+                <span className="feature-label compact-feature-label">{item.label}</span>
               </button>
             ))}
           </nav>
 
-          <div className="utility-rail">
+          <div className="utility-rail compact-utility-rail">
             {user ? (
-              <div className="user-chip compact-user-chip">
+              <div className="user-chip compact-user-chip ultra-compact-user-chip">
                 <div className="user-dot" />
                 <div>
                   <strong>{user.name}</strong>
@@ -1108,10 +1108,10 @@ function App() {
                 </div>
               </div>
             ) : (
-              <div className="auth-actions subtle-auth">
+              <div className="auth-actions subtle-auth compact-subtle-auth">
                 <button
                   type="button"
-                  className="ghost-button mini-action"
+                  className="ghost-button mini-action tiny-action"
                   onClick={() => {
                     setAuthMode('login')
                     setShowAuthModal(true)
@@ -1121,7 +1121,7 @@ function App() {
                 </button>
                 <button
                   type="button"
-                  className="ghost-button mini-action"
+                  className="ghost-button mini-action tiny-action"
                   onClick={() => {
                     setAuthMode('register')
                     setShowAuthModal(true)
