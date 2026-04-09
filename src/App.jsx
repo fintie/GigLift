@@ -36,6 +36,7 @@ const jobs = [
     scope: ['Hero redesign', 'Pricing section cleanup', 'Mobile responsiveness pass'],
     deliverables: ['Figma file', 'Responsive landing page mockups', 'Design notes for developer handoff'],
     stack: ['Figma', 'SaaS', 'Conversion design'],
+    status: 'Reviewing proposals',
   },
   {
     id: 2,
@@ -50,6 +51,7 @@ const jobs = [
     scope: ['3 static concepts', '1 revised final direction', 'Export pack for Meta ads'],
     deliverables: ['1080x1350 exports', 'Editable source file', 'CTA copy suggestions'],
     stack: ['Meta ads', 'Photoshop', 'Beauty brand creative'],
+    status: 'Awaiting designer match',
   },
   {
     id: 3,
@@ -64,6 +66,7 @@ const jobs = [
     scope: ['Logo direction', 'Color and typography system', 'Social starter pack'],
     deliverables: ['Primary logo', 'Brand guide', '6 social post templates'],
     stack: ['Brand identity', 'Startup branding', 'Web3'],
+    status: 'Contest live',
   },
   {
     id: 4,
@@ -78,6 +81,7 @@ const jobs = [
     scope: ['12-slide cleanup', 'Chart readability refresh', 'Visual consistency pass'],
     deliverables: ['Updated deck', 'Master slide system', 'Investor-ready export'],
     stack: ['Pitch decks', 'PowerPoint', 'Fundraising'],
+    status: 'Shortlisting freelancers',
   },
   {
     id: 5,
@@ -92,6 +96,7 @@ const jobs = [
     scope: ['5 short-form edits', 'Subtitle styling', 'Hook testing variations'],
     deliverables: ['5 vertical exports', 'Caption suggestions', 'Thumbnail frames'],
     stack: ['Premiere Pro', 'UGC editing', 'Paid social'],
+    status: 'Matched',
   },
   {
     id: 6,
@@ -106,6 +111,7 @@ const jobs = [
     scope: ['Hero section redesign', 'CTA improvement', 'Premium ecom mood direction'],
     deliverables: ['Desktop + mobile concept', 'Source file', 'Visual notes'],
     stack: ['Shopify', 'Ecommerce', 'Homepage design'],
+    status: 'New rush brief',
   },
 ]
 
@@ -121,6 +127,10 @@ const freelancers = [
     city: 'Sydney',
     earnings: '$8.4k',
     headline: 'Fast identity systems for startup launches and product refreshes.',
+    avatar: 'MC',
+    accent: 'violet',
+    responseTime: 'Replies in 2 min',
+    availability: 'Available now',
   },
   {
     id: 2,
@@ -133,6 +143,10 @@ const freelancers = [
     city: 'Melbourne',
     earnings: '$5.9k',
     headline: 'Converts messy startup messaging into clean, high-performing web flows.',
+    avatar: 'NL',
+    accent: 'cyan',
+    responseTime: 'Replies in 6 min',
+    availability: 'In a project, free tomorrow',
   },
   {
     id: 3,
@@ -145,6 +159,10 @@ const freelancers = [
     city: 'Brisbane',
     earnings: '$4.7k',
     headline: 'Short-form edits built for paid social and founder-led brands.',
+    avatar: 'AB',
+    accent: 'pink',
+    responseTime: 'Replies in 4 min',
+    availability: 'Available for rush work',
   },
   {
     id: 4,
@@ -157,6 +175,10 @@ const freelancers = [
     city: 'Perth',
     earnings: '$11.3k',
     headline: 'High-volume ad systems for brands that test weekly and scale aggressively.',
+    avatar: 'LW',
+    accent: 'gold',
+    responseTime: 'Replies in 9 min',
+    availability: 'Booked this afternoon',
   },
   {
     id: 5,
@@ -169,6 +191,10 @@ const freelancers = [
     city: 'Adelaide',
     earnings: '$2.6k',
     headline: 'Social packs, carousels, and launch visuals with tight turnaround.',
+    avatar: 'ZP',
+    accent: 'green',
+    responseTime: 'Replies in 3 min',
+    availability: 'Available now',
   },
   {
     id: 6,
@@ -181,6 +207,10 @@ const freelancers = [
     city: 'Auckland',
     earnings: '$6.2k',
     headline: 'Investor-ready decks that make strategy and traction easier to understand.',
+    avatar: 'KM',
+    accent: 'blue',
+    responseTime: 'Replies in 5 min',
+    availability: 'Available this evening',
   },
 ]
 
@@ -201,6 +231,20 @@ const dashboardStats = [
   { label: 'Rush acceptance rate', value: '92%', note: 'Top 12% this week' },
   { label: 'Referral points', value: '2,480', note: '2 boosts available' },
   { label: 'Client satisfaction', value: '4.9/5', note: '14 recent reviews' },
+]
+
+const liveMetrics = [
+  { label: 'Active briefs', value: '24', note: '6 need responses in the next hour' },
+  { label: 'Designers online', value: '83', note: '17 currently marked available now' },
+  { label: 'Avg first reply', value: '4 min', note: 'Faster than last week by 18%' },
+  { label: 'Jobs funded today', value: '$12.8k', note: 'Across rush, contest, and direct invite flows' },
+]
+
+const liveTimeline = [
+  { time: '22:04', event: 'Orbitly opened 3 proposals for landing page redesign', tag: 'Client review' },
+  { time: '22:01', event: 'Mia Carter accepted a rush brand polish request', tag: 'Matched' },
+  { time: '21:57', event: 'Calma funded a new UGC edit pack', tag: 'Funded' },
+  { time: '21:54', event: 'Zoe Patel replied to a startup ad creative brief', tag: 'Message sent' },
 ]
 
 const activityFeed = [
@@ -482,6 +526,10 @@ function JobsPage({ onOpenPage, onSelectJob, selectedJobId }) {
               <strong>{job.budget}</strong>
               <small>{job.eta}</small>
             </div>
+            <div className="meta-row">
+              <small>{job.status}</small>
+              <small>{job.category}</small>
+            </div>
             <div className="card-actions">
               <button
                 type="button"
@@ -501,38 +549,89 @@ function JobsPage({ onOpenPage, onSelectJob, selectedJobId }) {
   )
 }
 
-function FreelancersPage() {
+function FreelancersPage({ selectedFreelancerId, onSelectFreelancer }) {
+  const selectedFreelancer = freelancers.find((item) => item.id === selectedFreelancerId) || freelancers[0]
+  const [messageSent, setMessageSent] = useState(false)
+
   return (
-    <section className="content-card">
-      <SectionTitle
-        eyebrow="Mock talent"
-        title="Freelancer profiles with enough depth to feel real"
-        text="The demo includes realistic freelancer snapshots, location tags, earnings, and positioning so client-side matching looks believable."
-      />
-      <div className="freelancer-grid">
-        {freelancers.map((freelancer) => (
-          <article key={freelancer.id} className="freelancer-card">
-            <div className="avatar">{freelancer.name.charAt(0)}</div>
-            <div>
-              <h3>{freelancer.name}</h3>
-              <p>{freelancer.role}</p>
-            </div>
-            <p>{freelancer.headline}</p>
-            <div className="freelancer-meta">
-              <strong>{freelancer.score} ★</strong>
-              <small>{freelancer.jobs} jobs completed</small>
-            </div>
-            <div className="meta-row">
-              <small>{freelancer.level}</small>
-              <small>{freelancer.city}</small>
-            </div>
-            <div className="meta-row">
-              <span className="badge">{freelancer.badge}</span>
-              <small>{freelancer.earnings}</small>
-            </div>
-          </article>
-        ))}
+    <section className="content-card split-layout freelancers-layout">
+      <div>
+        <SectionTitle
+          eyebrow="Mock talent"
+          title="Freelancer profiles with selection and contact flow"
+          text="This now behaves more like a real marketplace. You can browse talent, select a profile, and open a lightweight message flow."
+        />
+        <div className="freelancer-grid">
+          {freelancers.map((freelancer) => (
+            <article
+              key={freelancer.id}
+              className={freelancer.id === selectedFreelancerId ? 'freelancer-card selected-card' : 'freelancer-card'}
+              onClick={() => {
+                onSelectFreelancer(freelancer.id)
+                setMessageSent(false)
+              }}
+            >
+              <div className={`avatar photo-avatar avatar-${freelancer.accent}`}>{freelancer.avatar}</div>
+              <div>
+                <h3>{freelancer.name}</h3>
+                <p>{freelancer.role}</p>
+              </div>
+              <p>{freelancer.headline}</p>
+              <div className="freelancer-meta">
+                <strong>{freelancer.score} ★</strong>
+                <small>{freelancer.jobs} jobs completed</small>
+              </div>
+              <div className="meta-row">
+                <small>{freelancer.level}</small>
+                <small>{freelancer.city}</small>
+              </div>
+              <div className="meta-row">
+                <span className="badge">{freelancer.badge}</span>
+                <small>{freelancer.earnings}</small>
+              </div>
+            </article>
+          ))}
+        </div>
       </div>
+
+      <aside className="side-panel contact-panel">
+        <span className="side-label">Selected freelancer</span>
+        <div className="contact-header">
+          <div className={`avatar photo-avatar large-avatar avatar-${selectedFreelancer.accent}`}>{selectedFreelancer.avatar}</div>
+          <div>
+            <h3>{selectedFreelancer.name}</h3>
+            <p>{selectedFreelancer.role}</p>
+          </div>
+        </div>
+
+        <ul className="quest-list compact-list">
+          <li>{selectedFreelancer.availability}</li>
+          <li>{selectedFreelancer.responseTime}</li>
+          <li>{selectedFreelancer.level} • {selectedFreelancer.city}</li>
+        </ul>
+
+        <div className="form-row">
+          <label>Message</label>
+          <div className="fake-input large-input">
+            Hi {selectedFreelancer.name.split(' ')[0]}, I&apos;m looking for help on a fast-moving startup brief. Are you available to take a design task this week?
+          </div>
+        </div>
+
+        <div className="hero-actions">
+          <button type="button" onClick={() => setMessageSent(true)}>
+            Send message
+          </button>
+          <button type="button" className="ghost-button">
+            Save shortlist
+          </button>
+        </div>
+
+        {messageSent && (
+          <div className="success-box">
+            Message sent to {selectedFreelancer.name}. Expected reply: {selectedFreelancer.responseTime.toLowerCase()}.
+          </div>
+        )}
+      </aside>
     </section>
   )
 }
@@ -789,10 +888,90 @@ function ReferralsPage() {
   )
 }
 
+function LiveMarketplacePanel({ selectedJob, selectedFreelancer }) {
+  return (
+    <section className="content-card live-marketplace-shell">
+      <div>
+        <SectionTitle
+          eyebrow="Live marketplace"
+          title="A more realistic operations panel"
+          text="Instead of generic showcase copy, this area now reads like an actual marketplace control surface with jobs, availability, and recent activity."
+        />
+        <div className="live-metrics-grid">
+          {liveMetrics.map((stat) => (
+            <article key={stat.label} className="stat-card">
+              <span>{stat.label}</span>
+              <strong>{stat.value}</strong>
+              <small>{stat.note}</small>
+            </article>
+          ))}
+        </div>
+      </div>
+
+      <div className="live-marketplace-grid">
+        <article className="activity-card panel-card">
+          <span className="side-label">Recent system activity</span>
+          <h3>Timeline</h3>
+          <div className="timeline-feed">
+            {liveTimeline.map((item) => (
+              <div key={`${item.time}-${item.event}`} className="timeline-feed-row">
+                <strong>{item.time}</strong>
+                <div>
+                  <p>{item.event}</p>
+                  <small>{item.tag}</small>
+                </div>
+              </div>
+            ))}
+          </div>
+        </article>
+
+        <article className="activity-card panel-card">
+          <span className="side-label">Selected job</span>
+          <h3>{selectedJob.title}</h3>
+          <div className="panel-stack">
+            <div className="meta-row">
+              <small>{selectedJob.client}</small>
+              <small>{selectedJob.status}</small>
+            </div>
+            <div className="meta-row">
+              <strong>{selectedJob.budget}</strong>
+              <small>{selectedJob.eta}</small>
+            </div>
+            <ul className="quest-list compact-list">
+              {selectedJob.scope.slice(0, 3).map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </div>
+        </article>
+
+        <article className="activity-card panel-card">
+          <span className="side-label">Selected freelancer</span>
+          <h3>{selectedFreelancer.name}</h3>
+          <div className="contact-header compact-contact-header">
+            <div className={`avatar photo-avatar avatar-${selectedFreelancer.accent}`}>{selectedFreelancer.avatar}</div>
+            <div>
+              <p>{selectedFreelancer.role}</p>
+              <small>{selectedFreelancer.availability}</small>
+            </div>
+          </div>
+          <ul className="quest-list compact-list">
+            <li>{selectedFreelancer.responseTime}</li>
+            <li>{selectedFreelancer.level} • {selectedFreelancer.city}</li>
+            <li>{selectedFreelancer.jobs} jobs completed • {selectedFreelancer.score} ★</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+  )
+}
+
 function App() {
   const [activePage, setActivePage] = useState('home')
   const [selectedJobId, setSelectedJobId] = useState(1)
+  const [selectedFreelancerId, setSelectedFreelancerId] = useState(1)
   const selectedJob = jobs.find((job) => job.id === selectedJobId) || jobs[0]
+  const selectedFreelancer = freelancers.find((item) => item.id === selectedFreelancerId) || freelancers[0]
 
   return (
     <div className="page-shell">
@@ -822,18 +1001,22 @@ function App() {
       {activePage === 'jobs' && (
         <JobsPage onOpenPage={setActivePage} onSelectJob={setSelectedJobId} selectedJobId={selectedJobId} />
       )}
-      {activePage === 'freelancers' && <FreelancersPage />}
+      {activePage === 'freelancers' && (
+        <FreelancersPage selectedFreelancerId={selectedFreelancerId} onSelectFreelancer={setSelectedFreelancerId} />
+      )}
       {activePage === 'job-detail' && <JobDetailPage selectedJob={selectedJob} onOpenPage={setActivePage} />}
       {activePage === 'post-job' && <PostJobPage />}
       {activePage === 'membership' && <MembershipPage />}
       {activePage === 'referrals' && <ReferralsPage />}
 
+      <LiveMarketplacePanel selectedJob={selectedJob} selectedFreelancer={selectedFreelancer} />
+
       <section className="content-card dashboard-grid">
         <div>
           <SectionTitle
-            eyebrow="Live dashboard"
-            title="A marketplace demo with motion, status, and energy"
-            text="This lower panel keeps the prototype feeling active with mocked live updates, progress indicators, and earnings snapshots."
+            eyebrow="Marketplace energy"
+            title="Ongoing progress, rewards, and platform activity"
+            text="This lower section still keeps the product feeling alive, but now sits behind a more realistic live operations panel."
           />
           <div className="stats-grid">
             {dashboardStats.map((stat) => (
