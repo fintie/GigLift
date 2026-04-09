@@ -131,6 +131,12 @@ const freelancers = [
     accent: 'violet',
     responseTime: 'Replies in 2 min',
     availability: 'Available now',
+    status: 'online',
+    chat: [
+      { from: 'client', text: 'Hi Mia, I need a premium landing page refresh for an AI bookkeeping startup.', time: '21:58' },
+      { from: 'freelancer', text: 'Sounds like a fit. Do you already have wireframes or should I rethink the section hierarchy too?', time: '22:01' },
+      { from: 'client', text: 'Please rethink the hierarchy too. Stronger conversion focus would help.', time: '22:03' },
+    ],
   },
   {
     id: 2,
@@ -147,6 +153,11 @@ const freelancers = [
     accent: 'cyan',
     responseTime: 'Replies in 6 min',
     availability: 'In a project, free tomorrow',
+    status: 'away',
+    chat: [
+      { from: 'client', text: 'Hey Noah, would you be open to a homepage redesign later this week?', time: '20:44' },
+      { from: 'freelancer', text: 'Yes, I can start tomorrow afternoon. If you send brand notes, I can scope it quickly.', time: '20:52' },
+    ],
   },
   {
     id: 3,
@@ -163,6 +174,11 @@ const freelancers = [
     accent: 'pink',
     responseTime: 'Replies in 4 min',
     availability: 'Available for rush work',
+    status: 'online',
+    chat: [
+      { from: 'client', text: 'Need 5 quick UGC edits for wellness ads. Tight turnaround.', time: '21:10' },
+      { from: 'freelancer', text: 'I can do that. If you send the raw clips tonight, I can return first cuts tomorrow morning.', time: '21:14' },
+    ],
   },
   {
     id: 4,
@@ -179,6 +195,11 @@ const freelancers = [
     accent: 'gold',
     responseTime: 'Replies in 9 min',
     availability: 'Booked this afternoon',
+    status: 'busy',
+    chat: [
+      { from: 'client', text: 'We need ad creative with stronger CTR angles for a skincare launch.', time: '19:32' },
+      { from: 'freelancer', text: 'Happy to help. I am booked now, but I can start a first direction tomorrow morning.', time: '19:41' },
+    ],
   },
   {
     id: 5,
@@ -195,6 +216,11 @@ const freelancers = [
     accent: 'green',
     responseTime: 'Replies in 3 min',
     availability: 'Available now',
+    status: 'online',
+    chat: [
+      { from: 'client', text: 'Can you help with 6 launch graphics for a startup waitlist push?', time: '22:00' },
+      { from: 'freelancer', text: 'Yes, I can turn the first concepts around tonight if the copy is ready.', time: '22:02' },
+    ],
   },
   {
     id: 6,
@@ -211,6 +237,11 @@ const freelancers = [
     accent: 'blue',
     responseTime: 'Replies in 5 min',
     availability: 'Available this evening',
+    status: 'online',
+    chat: [
+      { from: 'client', text: 'Looking for a seed deck cleanup before investor intros next week.', time: '18:11' },
+      { from: 'freelancer', text: 'That works well for me. Send the current deck and I can suggest a stronger story arc.', time: '18:16' },
+    ],
   },
 ]
 
@@ -554,83 +585,83 @@ function FreelancersPage({ selectedFreelancerId, onSelectFreelancer }) {
   const [messageSent, setMessageSent] = useState(false)
 
   return (
-    <section className="content-card split-layout freelancers-layout">
+    <section className="content-card split-layout chat-layout">
       <div>
         <SectionTitle
           eyebrow="Mock talent"
-          title="Freelancer profiles with selection and contact flow"
-          text="This now behaves more like a real marketplace. You can browse talent, select a profile, and open a lightweight message flow."
+          title="Freelancer profiles with a chat-style contact flow"
+          text="This now feels more like a real hiring interface, with a selectable talent list and a conversation thread instead of a generic contact box."
         />
-        <div className="freelancer-grid">
+        <div className="freelancer-grid chat-freelancer-grid">
           {freelancers.map((freelancer) => (
             <article
               key={freelancer.id}
-              className={freelancer.id === selectedFreelancerId ? 'freelancer-card selected-card' : 'freelancer-card'}
+              className={freelancer.id === selectedFreelancerId ? 'freelancer-card selected-card chat-card' : 'freelancer-card chat-card'}
               onClick={() => {
                 onSelectFreelancer(freelancer.id)
                 setMessageSent(false)
               }}
             >
-              <div className={`avatar photo-avatar avatar-${freelancer.accent}`}>{freelancer.avatar}</div>
-              <div>
-                <h3>{freelancer.name}</h3>
-                <p>{freelancer.role}</p>
+              <div className="chat-card-top">
+                <div className={`avatar photo-avatar avatar-${freelancer.accent}`}>{freelancer.avatar}</div>
+                <div>
+                  <h3>{freelancer.name}</h3>
+                  <p>{freelancer.role}</p>
+                </div>
               </div>
               <p>{freelancer.headline}</p>
-              <div className="freelancer-meta">
-                <strong>{freelancer.score} ★</strong>
-                <small>{freelancer.jobs} jobs completed</small>
+              <div className="meta-row">
+                <small>{freelancer.availability}</small>
+                <small className={`status-pill status-${freelancer.status}`}>{freelancer.status}</small>
               </div>
               <div className="meta-row">
-                <small>{freelancer.level}</small>
+                <small>{freelancer.responseTime}</small>
                 <small>{freelancer.city}</small>
-              </div>
-              <div className="meta-row">
-                <span className="badge">{freelancer.badge}</span>
-                <small>{freelancer.earnings}</small>
               </div>
             </article>
           ))}
         </div>
       </div>
 
-      <aside className="side-panel contact-panel">
-        <span className="side-label">Selected freelancer</span>
+      <aside className="side-panel chat-panel">
+        <span className="side-label">Conversation</span>
         <div className="contact-header">
           <div className={`avatar photo-avatar large-avatar avatar-${selectedFreelancer.accent}`}>{selectedFreelancer.avatar}</div>
           <div>
             <h3>{selectedFreelancer.name}</h3>
             <p>{selectedFreelancer.role}</p>
+            <small>{selectedFreelancer.responseTime} • {selectedFreelancer.availability}</small>
           </div>
         </div>
 
-        <ul className="quest-list compact-list">
-          <li>{selectedFreelancer.availability}</li>
-          <li>{selectedFreelancer.responseTime}</li>
-          <li>{selectedFreelancer.level} • {selectedFreelancer.city}</li>
-        </ul>
+        <div className="chat-thread">
+          {selectedFreelancer.chat.map((item, index) => (
+            <div key={`${selectedFreelancer.id}-${index}-${item.time}`} className={item.from === 'client' ? 'chat-bubble client-bubble' : 'chat-bubble freelancer-bubble'}>
+              <p>{item.text}</p>
+              <small>{item.time}</small>
+            </div>
+          ))}
+          {messageSent && (
+            <div className="chat-bubble client-bubble pending-bubble">
+              <p>Hi {selectedFreelancer.name.split(' ')[0]}, I&apos;d like to move forward on a startup design brief. Can you take this on this week?</p>
+              <small>Just now</small>
+            </div>
+          )}
+        </div>
 
-        <div className="form-row">
-          <label>Message</label>
+        <div className="chat-composer">
           <div className="fake-input large-input">
-            Hi {selectedFreelancer.name.split(' ')[0]}, I&apos;m looking for help on a fast-moving startup brief. Are you available to take a design task this week?
+            Hi {selectedFreelancer.name.split(' ')[0]}, I&apos;d like to move forward on a startup design brief. Can you take this on this week?
+          </div>
+          <div className="hero-actions">
+            <button type="button" onClick={() => setMessageSent(true)}>
+              Send message
+            </button>
+            <button type="button" className="ghost-button">
+              Attach brief
+            </button>
           </div>
         </div>
-
-        <div className="hero-actions">
-          <button type="button" onClick={() => setMessageSent(true)}>
-            Send message
-          </button>
-          <button type="button" className="ghost-button">
-            Save shortlist
-          </button>
-        </div>
-
-        {messageSent && (
-          <div className="success-box">
-            Message sent to {selectedFreelancer.name}. Expected reply: {selectedFreelancer.responseTime.toLowerCase()}.
-          </div>
-        )}
       </aside>
     </section>
   )

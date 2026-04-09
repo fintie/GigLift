@@ -466,6 +466,93 @@ small,
   margin-top: 10px;
 }
 
+.chat-layout {
+  align-items: start;
+}
+
+.chat-freelancer-grid {
+  gap: 14px;
+}
+
+.chat-card {
+  cursor: pointer;
+}
+
+.chat-card-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.chat-panel {
+  display: grid;
+  gap: 14px;
+}
+
+.chat-thread {
+  display: grid;
+  gap: 12px;
+  max-height: 460px;
+  overflow: auto;
+  padding-right: 6px;
+}
+
+.chat-bubble {
+  max-width: 88%;
+  padding: 14px 16px;
+  border-radius: 18px;
+  display: grid;
+  gap: 8px;
+}
+
+.chat-bubble p,
+.timeline-feed-row p {
+  margin: 0;
+}
+
+.client-bubble {
+  margin-left: auto;
+  background: linear-gradient(135deg, rgba(141, 114, 255, 0.24) 0%, rgba(91, 240, 255, 0.18) 100%);
+  border: 1px solid rgba(141, 114, 255, 0.28);
+}
+
+.freelancer-bubble {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.pending-bubble {
+  box-shadow: 0 0 0 1px rgba(91, 240, 255, 0.16);
+}
+
+.chat-composer {
+  display: grid;
+  gap: 14px;
+}
+
+.status-pill {
+  padding: 4px 10px;
+  border-radius: 999px;
+  text-transform: capitalize;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+}
+
+.status-online {
+  background: rgba(50, 215, 161, 0.14);
+  color: #8cf4c8;
+}
+
+.status-away {
+  background: rgba(91, 140, 255, 0.14);
+  color: #9abbff;
+}
+
+.status-busy {
+  background: rgba(247, 185, 85, 0.14);
+  color: #ffd48a;
+}
+
 .timeline-feed {
   display: grid;
   gap: 12px;
@@ -663,6 +750,10 @@ small,
   .live-marketplace-grid,
   .live-metrics-grid {
     grid-template-columns: 1fr;
+  }
+
+  .chat-bubble {
+    max-width: 100%;
   }
 
   .filter-row {
