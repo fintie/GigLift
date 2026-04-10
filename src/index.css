@@ -1,7 +1,7 @@
 :root {
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   color: #f7f7f7;
-  background: #050505;
+  background: #0a0712;
   line-height: 1.45;
   font-weight: 400;
   color-scheme: dark;
@@ -16,8 +16,9 @@ html, body, #root { margin: 0; min-height: 100%; }
 body {
   min-width: 320px;
   background:
-    radial-gradient(circle at top, rgba(255, 112, 67, 0.18), transparent 28%),
-    linear-gradient(180deg, #101010 0%, #050505 100%);
+    radial-gradient(circle at top, rgba(123, 92, 255, 0.22), transparent 30%),
+    radial-gradient(circle at bottom, rgba(255, 66, 165, 0.12), transparent 28%),
+    linear-gradient(180deg, #140f22 0%, #090611 100%);
 }
 button, input { font: inherit; }
 button {
@@ -43,7 +44,7 @@ input {
   width: min(100%, 430px);
   min-height: 880px;
   border-radius: 34px;
-  background: linear-gradient(180deg, #191919 0%, #0d0d0d 100%);
+  background: linear-gradient(180deg, #1a1430 0%, #0d0918 100%);
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.48);
   padding: 22px 18px 110px;
@@ -64,7 +65,7 @@ input {
   gap: 8px;
   padding: 10px 12px;
   border-radius: 999px;
-  background: rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.08);
   color: white;
 }
 .verified-icon {
@@ -75,8 +76,8 @@ input {
   margin-top: 14px;
   padding: 12px 14px;
   border-radius: 16px;
-  background: rgba(255,107,44,0.14);
-  color: #ffb491;
+  background: rgba(138, 92, 246, 0.18);
+  color: #d7c3ff;
   font-size: 0.9rem;
 }
 .search-hero, .tile-section, .job-section, .benefit-section, .profile-section, .tab-section { margin-top: 18px; }
@@ -86,7 +87,7 @@ input {
   align-items: center;
   gap: 12px;
   border-radius: 999px;
-  background: #111111;
+  background: #171125;
   border: 1px solid rgba(255, 255, 255, 0.12);
   padding: 10px 10px 10px 14px;
   color: #d8d8d8;
@@ -100,7 +101,7 @@ input {
 .later-pill { margin-left: auto; padding: 10px 14px; border-radius: 999px; }
 .search-panel, .detail-card {
   margin-top: 12px;
-  background: #141414;
+  background: #161125;
   border-radius: 22px;
   padding: 16px;
 }
@@ -116,12 +117,12 @@ input {
 .hero-copy { margin-top: 18px; align-items: flex-end; }
 .hero-copy h2 { max-width: 240px; font-size: 1.5rem; line-height: 1.1; }
 .primary-cta {
-  background: linear-gradient(135deg, #ff6b2c, #ff874d);
+  background: linear-gradient(135deg, #7c5cff, #a855f7);
   color: #fff;
   border-radius: 18px;
   padding: 14px 18px;
   font-weight: 700;
-  box-shadow: 0 14px 34px rgba(255, 107, 44, 0.32);
+  box-shadow: 0 14px 34px rgba(124, 92, 255, 0.34);
 }
 .primary-cta.small { padding: 10px 14px; border-radius: 14px; }
 .service-grid, .profile-grid {
@@ -131,7 +132,7 @@ input {
   margin-top: 14px;
 }
 .service-card, .profile-stat, .job-card, .benefit-card, .row-card {
-  background: #1a1a1a;
+  background: #191327;
   border-radius: 20px;
   padding: 14px 10px;
   position: relative;
@@ -140,12 +141,12 @@ input {
 }
 .service-card, .profile-stat { min-height: 104px; }
 .active-card {
-  outline: 1px solid rgba(255, 107, 44, 0.8);
-  box-shadow: 0 0 0 3px rgba(255, 107, 44, 0.12);
+  outline: 1px solid rgba(124, 92, 255, 0.85);
+  box-shadow: 0 0 0 3px rgba(124, 92, 255, 0.16);
 }
 .tile-badge {
   position: absolute; top: 10px; right: 10px; padding: 2px 7px; border-radius: 999px;
-  background: #ff6b2c; color: #fff; font-size: 0.68rem; font-weight: 700;
+  background: linear-gradient(135deg, #7c5cff, #ec4899); color: #fff; font-size: 0.68rem; font-weight: 700;
 }
 .tile-icon {
   width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center;
@@ -156,17 +157,17 @@ input {
 .job-list, .benefit-list, .service-list, .activity-list { display: grid; gap: 12px; margin-top: 14px; }
 .job-card, .benefit-card { padding: 16px; }
 .job-tag {
-  background: #ff6b2c; color: white; padding: 5px 9px; border-radius: 999px; font-size: 0.75rem; font-weight: 700;
+  background: linear-gradient(135deg, #7c5cff, #ec4899); color: white; padding: 5px 9px; border-radius: 999px; font-size: 0.75rem; font-weight: 700;
 }
 .live-dot { color: #73ff98; font-size: 0.82rem; }
 .job-meta { margin-top: 14px; color: #d6d6d6; font-size: 0.88rem; }
 .ghost-link { padding: 0; background: transparent; color: #dcdcdc; }
 .profile-badge {
-  padding: 8px 12px; border-radius: 999px; background: rgba(255, 107, 44, 0.15); color: #ff9d72; font-size: 0.85rem;
+  padding: 8px 12px; border-radius: 999px; background: rgba(124, 92, 255, 0.18); color: #d8c8ff; font-size: 0.85rem;
 }
 .avatar {
   width: 50px; height: 50px; border-radius: 18px; display: grid; place-items: center;
-  background: linear-gradient(135deg, #ff6b2c, #7c3aed); font-weight: 800;
+  background: linear-gradient(135deg, #7c5cff, #ec4899); font-weight: 800;
 }
 .ghost-light { padding: 10px 12px; border-radius: 14px; }
 .profile-stat { min-height: 86px; }
@@ -180,7 +181,7 @@ input {
 }
 .static-card { background: #141414; }
 .bottom-nav {
-  position: absolute; left: 14px; right: 14px; bottom: 14px; background: rgba(11, 11, 11, 0.98);
+  position: absolute; left: 14px; right: 14px; bottom: 14px; background: rgba(14, 10, 24, 0.98);
   border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 24px; padding: 10px;
 }
 .nav-item {
@@ -195,7 +196,7 @@ input {
 
 .provider-hero {
   margin-top: 16px;
-  background: linear-gradient(135deg, rgba(255,107,44,0.16), rgba(124,58,237,0.18));
+  background: linear-gradient(135deg, rgba(124,92,255,0.22), rgba(236,72,153,0.16));
   border-radius: 24px;
   padding: 18px;
   display: flex;
