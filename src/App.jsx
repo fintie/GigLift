@@ -59,6 +59,7 @@ function App() {
   const [dashboardOpen, setDashboardOpen] = useState(false)
   const [selectedProfileCard, setSelectedProfileCard] = useState('points')
   const [savedJobs, setSavedJobs] = useState([])
+  const [serviceDetailId, setServiceDetailId] = useState(null)
 
   const visibleJobs = useMemo(() => {
     const byCategory = selectedService === 'all' ? jobs : jobs.filter((job) => job.category === selectedService)
@@ -76,9 +77,10 @@ function App() {
 
   const openService = (serviceId) => {
     setSelectedService(serviceId)
+    setServiceDetailId(serviceId === 'all' ? null : serviceId)
     setActiveTab('services')
     const service = services.find((item) => item.id === serviceId)
-    pushToast(service ? `Showing ${service.title} jobs` : 'Showing all services')
+    pushToast(service ? `Opened ${service.title} section` : 'Showing all services')
   }
 
   const openJob = (jobId) => {
@@ -117,11 +119,13 @@ function App() {
   const onPostJob = () => {
     setActiveTab('services')
     setSelectedService('all')
+    setServiceDetailId(null)
     pushToast('Post job flow opened')
   }
 
   const onSeeAll = () => {
     setActiveTab('services')
+    setServiceDetailId(null)
     pushToast('Viewing all live services and jobs')
   }
 
@@ -144,6 +148,14 @@ function App() {
   const onProfileCardClick = (id) => {
     setSelectedProfileCard(id)
     pushToast(`Opened ${profileCards.find((card) => card.id === id)?.label}`)
+  }
+
+  const openServicePage = (serviceId) => {
+    setSelectedService(serviceId)
+    setServiceDetailId(serviceId)
+    setActiveTab('services')
+    const service = services.find((item) => item.id === serviceId)
+    if (service) pushToast(`Entered ${service.title} page`)
   }
 
   const onActivityAction = (item) => {
@@ -210,7 +222,7 @@ function App() {
 
               <div className="service-grid">
                 {services.map((tile) => (
-                  <button key={tile.id} className={selectedService === tile.id ? 'service-card active-card' : 'service-card'} onClick={() => openService(tile.id)}>
+                  <button key={tile.id} className={selectedService === tile.id ? 'service-card active-card' : 'service-card'} onClick={() => openServicePage(tile.id)}>
                     <span className="tile-badge">{tile.badge}</span>
                     <div className="tile-icon">{tile.icon}</div>
                     <strong>{tile.title}</strong>
@@ -308,7 +320,7 @@ function App() {
 
             <div className="service-list">
               {services.map((service) => (
-                <button key={service.id} className={selectedService === service.id ? 'row-card active-card' : 'row-card'} onClick={() => setSelectedService(service.id)}>
+                <button key={service.id} className={selectedService === service.id ? 'row-card active-card' : 'row-card'} onClick={() => openServicePage(service.id)}>
                   <div>
                     <strong>{service.title}</strong>
                     <p>{service.desc}</p>
@@ -318,19 +330,49 @@ function App() {
               ))}
             </div>
 
-            <div className="detail-card">
-              <div className="section-head compact">
-                <div>
-                  <h3>{selectedService === 'all' ? 'All services' : services.find((item) => item.id === selectedService)?.title}</h3>
-                  <span>
-                    {selectedService === 'all'
-                      ? 'Select a category to narrow down job results.'
-                      : services.find((item) => item.id === selectedService)?.desc}
-                  </span>
+            {serviceDetailId ? (
+              <div className="detail-card">
+                <div className="section-head compact">
+                  <div>
+                    <h3>{services.find((item) => item.id === serviceDetailId)?.title} section</h3>
+                    <span>{services.find((item) => item.id === serviceDetailId)?.desc}</span>
+                  </div>
+                  <button className="ghost-link" onClick={() => { setSelectedService('all'); setServiceDetailId(null); pushToast('Back to all services') }}>Back</button>
                 </div>
-                <button className="ghost-link" onClick={() => { setActiveTab('home'); pushToast('Returned to home jobs feed') }}>Open jobs</button>
+
+                <div className="service-page-grid">
+                  {jobs.filter((job) => job.category === serviceDetailId).map((job) => (
+                    <button key={job.id} className="row-card" onClick={() => openJob(job.id)}>
+                      <div>
+                        <strong>{job.title}</strong>
+                        <p>{job.client} · {job.price} · {job.eta}</p>
+                      </div>
+                      <span className="job-tag">Open</span>
+                    </button>
+                  ))}
+                </div>
+
+                <div className="quick-actions">
+                  <button onClick={() => { setActiveTab('home'); pushToast('Opened matching jobs on Home') }}>View in Home</button>
+                  <button onClick={() => pushToast('Top freelancers panel opened')}>Top freelancers</button>
+                  <button onClick={() => pushToast('Category trends opened')}>Category trends</button>
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="detail-card">
+                <div className="section-head compact">
+                  <div>
+                    <h3>{selectedService === 'all' ? 'All services' : services.find((item) => item.id === selectedService)?.title}</h3>
+                    <span>
+                      {selectedService === 'all'
+                        ? 'Select a category to enter its dedicated section page.'
+                        : services.find((item) => item.id === selectedService)?.desc}
+                    </span>
+                  </div>
+                  <button className="ghost-link" onClick={() => { setActiveTab('home'); pushToast('Returned to home jobs feed') }}>Open jobs</button>
+                </div>
+              </div>
+            )}
           </section>
         )}
 
