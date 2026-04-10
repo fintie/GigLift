@@ -245,9 +245,6 @@ function App() {
                 </div>
               )}
 
-              <div className="hero-inline">
-                <button className="primary-cta" onClick={onPostJob}>Post a job</button>
-              </div>
             </section>
 
             <section className="tile-section">
