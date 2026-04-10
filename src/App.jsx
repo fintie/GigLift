@@ -46,6 +46,41 @@ const profileCards = [
   { id: 'membership', label: 'Rank', value: '#24', detail: 'Leaderboard position based on completed gigs and streak.' },
 ]
 
+const serviceProviders = {
+  logo: [
+    { id: 'l1', name: 'MarkStudio', meta: 'Logo systems · 4.9', note: 'Minimal brand systems for SaaS and creator brands.' },
+    { id: 'l2', name: 'MonoMark', meta: 'Fast turnaround · 4.8', note: 'Sharp monograms and icon-first startup logos.' },
+  ],
+  uiux: [
+    { id: 'u1', name: 'PixelOrbit', meta: 'Mobile UX · 5.0', note: 'High-conversion app flows and polished UI kits.' },
+    { id: 'u2', name: 'FrameLab', meta: 'Product design · 4.9', note: 'Figma systems, dashboards, and onboarding revamps.' },
+  ],
+  video: [
+    { id: 'v1', name: 'CutHouse', meta: 'UGC edits · 4.9', note: 'Performance-driven shorts and launch edits.' },
+    { id: 'v2', name: 'MotionPort', meta: 'Brand video · 4.8', note: 'Premium product cuts and social campaign motion.' },
+  ],
+  dev: [
+    { id: 'd1', name: 'LaunchStack', meta: 'React builds · 5.0', note: 'Fast landing pages and frontend product builds.' },
+    { id: 'd2', name: 'ShipLab', meta: 'MVP delivery · 4.9', note: 'Startup web apps with strong execution speed.' },
+  ],
+  ads: [
+    { id: 'a1', name: 'ScaleMedia', meta: 'Meta ads · 4.9', note: 'Creative testing systems for DTC brands.' },
+    { id: 'a2', name: 'HookPilot', meta: 'Paid social · 4.8', note: 'Performance ad angles and conversion hooks.' },
+  ],
+  deck: [
+    { id: 'p1', name: 'PitchCraft', meta: 'Investor decks · 4.9', note: 'Fundraise storylines with cleaner slides.' },
+    { id: 'p2', name: 'SlideSprint', meta: 'Sales decks · 4.7', note: 'Fast polish for enterprise and startup decks.' },
+  ],
+  '3d': [
+    { id: 't1', name: 'RenderClub', meta: '3D product scenes · 4.8', note: 'Glossy product renders and launch loops.' },
+    { id: 't2', name: 'DepthLab', meta: 'Motion 3D · 4.7', note: 'Animated hero scenes and campaign visuals.' },
+  ],
+  ugc: [
+    { id: 'g1', name: 'CreatorFlow', meta: 'UGC creators · 4.9', note: 'Authentic talking-head and lifestyle content.' },
+    { id: 'g2', name: 'TrendSprint', meta: 'TikTok-first · 4.8', note: 'Hooky vertical content built for ads.' },
+  ],
+}
+
 function App() {
   const [activeTab, setActiveTab] = useState('home')
   const [selectedService, setSelectedService] = useState('all')
@@ -72,6 +107,8 @@ function App() {
   const selectedJob = visibleJobs.find((job) => job.id === selectedJobId) || visibleJobs[0] || jobs[0]
   const activeBenefit = benefits.find((item) => item.id === selectedBenefit) || benefits[0]
   const activeProfileCard = profileCards.find((card) => card.id === selectedProfileCard) || profileCards[0]
+  const activeService = services.find((item) => item.id === serviceDetailId)
+  const activeProviders = serviceDetailId ? serviceProviders[serviceDetailId] || [] : []
 
   const pushToast = (message) => setToast(message)
 
@@ -310,68 +347,73 @@ function App() {
 
         {activeTab === 'services' && (
           <section className="tab-section">
-            <div className="section-head">
-              <div>
-                <h3>Services</h3>
-                <span>Browse categories and jump into matching gigs</span>
-              </div>
-              <button className="primary-cta small" onClick={onPostJob}>Create brief</button>
-            </div>
-
-            <div className="service-list">
-              {services.map((service) => (
-                <button key={service.id} className={selectedService === service.id ? 'row-card active-card' : 'row-card'} onClick={() => openServicePage(service.id)}>
-                  <div>
-                    <strong>{service.title}</strong>
-                    <p>{service.desc}</p>
-                  </div>
-                  <span className="job-tag">{jobs.filter((job) => job.category === service.id).length} gigs</span>
-                </button>
-              ))}
-            </div>
-
             {serviceDetailId ? (
-              <div className="detail-card">
-                <div className="section-head compact">
+              <>
+                <div className="section-head">
                   <div>
-                    <h3>{services.find((item) => item.id === serviceDetailId)?.title} section</h3>
-                    <span>{services.find((item) => item.id === serviceDetailId)?.desc}</span>
+                    <h3>{activeService?.title}</h3>
+                    <span>{activeService?.desc}</span>
                   </div>
-                  <button className="ghost-link" onClick={() => { setSelectedService('all'); setServiceDetailId(null); pushToast('Back to all services') }}>Back</button>
+                  <button className="ghost-link" onClick={() => { setServiceDetailId(null); setSelectedService('all'); pushToast('Back to services') }}>Back</button>
                 </div>
 
-                <div className="service-page-grid">
-                  {jobs.filter((job) => job.category === serviceDetailId).map((job) => (
-                    <button key={job.id} className="row-card" onClick={() => openJob(job.id)}>
+                <div className="provider-hero">
+                  <div>
+                    <p className="section-label">Top service providers</p>
+                    <strong>{activeProviders[0]?.name || 'Featured provider'}</strong>
+                    <p>{activeProviders[0]?.meta || 'High quality delivery'} · {activeProviders[0]?.note || ''}</p>
+                  </div>
+                  <button className="primary-cta small" onClick={() => pushToast('Provider contact opened')}>Contact</button>
+                </div>
+
+                <div className="provider-list">
+                  {activeProviders.map((provider) => (
+                    <button key={provider.id} className="row-card" onClick={() => pushToast(`Opened ${provider.name} profile`)}>
                       <div>
-                        <strong>{job.title}</strong>
-                        <p>{job.client} · {job.price} · {job.eta}</p>
+                        <strong>{provider.name}</strong>
+                        <p>{provider.meta}</p>
+                        <p>{provider.note}</p>
                       </div>
-                      <span className="job-tag">Open</span>
+                      <span className="job-tag">View</span>
                     </button>
                   ))}
                 </div>
 
-                <div className="quick-actions">
-                  <button onClick={() => { setActiveTab('home'); pushToast('Opened matching jobs on Home') }}>View in Home</button>
-                  <button onClick={() => pushToast('Top freelancers panel opened')}>Top freelancers</button>
-                  <button onClick={() => pushToast('Category trends opened')}>Category trends</button>
-                </div>
-              </div>
-            ) : (
-              <div className="detail-card">
-                <div className="section-head compact">
-                  <div>
-                    <h3>{selectedService === 'all' ? 'All services' : services.find((item) => item.id === selectedService)?.title}</h3>
-                    <span>
-                      {selectedService === 'all'
-                        ? 'Select a category to enter its dedicated section page.'
-                        : services.find((item) => item.id === selectedService)?.desc}
-                    </span>
+                <div className="detail-card">
+                  <div className="section-head compact">
+                    <div>
+                      <h3>Open briefs in {activeService?.title}</h3>
+                      <span>Jump straight into matching work from this provider page.</span>
+                    </div>
+                    <button className="ghost-link" onClick={() => { setActiveTab('home'); pushToast('Opened matching jobs on Home') }}>Open jobs</button>
                   </div>
-                  <button className="ghost-link" onClick={() => { setActiveTab('home'); pushToast('Returned to home jobs feed') }}>Open jobs</button>
+                  <div className="quick-actions">
+                    {jobs.filter((job) => job.category === serviceDetailId).map((job) => (
+                      <button key={job.id} onClick={() => openJob(job.id)}>{job.client}</button>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              </>
+            ) : (
+              <>
+                <div className="section-head">
+                  <div>
+                    <h3>Services</h3>
+                    <span>Pick a category and go directly into its provider page</span>
+                  </div>
+                  <button className="primary-cta small" onClick={onPostJob}>Create brief</button>
+                </div>
+
+                <div className="service-grid service-grid-large">
+                  {services.map((service) => (
+                    <button key={service.id} className={selectedService === service.id ? 'service-card active-card' : 'service-card'} onClick={() => openServicePage(service.id)}>
+                      <span className="tile-badge">{service.badge}</span>
+                      <div className="tile-icon">{service.icon}</div>
+                      <strong>{service.title}</strong>
+                    </button>
+                  ))}
+                </div>
+              </>
             )}
           </section>
         )}
