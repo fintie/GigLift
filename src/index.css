@@ -11,30 +11,27 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-* {
-  box-sizing: border-box;
-}
-
-html,
-body,
-#root {
-  margin: 0;
-  min-height: 100%;
-}
-
+* { box-sizing: border-box; }
+html, body, #root { margin: 0; min-height: 100%; }
 body {
   min-width: 320px;
   background:
     radial-gradient(circle at top, rgba(255, 112, 67, 0.18), transparent 28%),
     linear-gradient(180deg, #101010 0%, #050505 100%);
 }
-
+button, input { font: inherit; }
 button {
-  font: inherit;
   border: 0;
   cursor: pointer;
 }
-
+input {
+  width: 100%;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  background: #101010;
+  color: white;
+  padding: 12px 14px;
+}
 .app {
   min-height: 100vh;
   display: flex;
@@ -42,7 +39,6 @@ button {
   justify-content: center;
   padding: 24px;
 }
-
 .phone-shell {
   width: min(100%, 430px);
   min-height: 880px;
@@ -53,83 +49,39 @@ button {
   padding: 22px 18px 110px;
   position: relative;
 }
-
-.top-strip,
-.hero-copy,
-.section-head,
-.job-badges,
-.job-meta,
-.profile-hero,
-.avatar-wrap,
-.mission-panel,
-.bottom-nav {
+.top-strip, .hero-copy, .section-head, .job-badges, .job-meta, .profile-hero, .avatar-wrap, .mission-panel, .bottom-nav, .quick-actions {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
 }
-
-.top-strip h1,
-.top-strip p,
-.section-head h3,
-.section-head span,
-.hero-copy h2,
-.hero-copy p,
-.job-card h4,
-.job-card p,
-.benefit-card p,
-.profile-hero p,
-.profile-stat span {
-  margin: 0;
-}
-
-.eyebrow,
-.section-label,
-.section-head span,
-.job-card p,
-.profile-hero p,
-.profile-stat span,
-.mission-panel p,
-small {
-  color: #a9a9a9;
-}
-
-.top-strip h1 {
-  font-size: 1.5rem;
-  margin-top: 4px;
-}
-
+.top-strip h1, .top-strip p, .section-head h3, .section-head span, .hero-copy h2, .hero-copy p, .job-card h4, .job-card p, .benefit-card p, .profile-hero p, .profile-stat span, .detail-card p, .row-card p, .toast-bar { margin: 0; }
+.eyebrow, .section-label, .section-head span, .job-card p, .profile-hero p, .profile-stat span, .mission-panel p, small, .detail-card p, .row-card p { color: #a9a9a9; }
+.top-strip h1 { font-size: 1.5rem; margin-top: 4px; }
 .verified-chip {
   display: inline-flex;
   align-items: center;
   gap: 8px;
   padding: 10px 12px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255,255,255,0.06);
+  color: white;
+}
+.verified-icon {
+  width: 22px; height: 22px; border-radius: 999px; display: inline-grid; place-items: center;
+  background: linear-gradient(135deg, #3b82f6, #7c3aed); color: white; font-size: 0.8rem; font-weight: 800;
+}
+.toast-bar {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: rgba(255,107,44,0.14);
+  color: #ffb491;
   font-size: 0.9rem;
 }
-
-.verified-icon {
-  width: 22px;
-  height: 22px;
-  border-radius: 999px;
-  display: inline-grid;
-  place-items: center;
-  background: linear-gradient(135deg, #3b82f6, #7c3aed);
-  color: white;
-  font-size: 0.8rem;
-  font-weight: 800;
-}
-
-.search-hero,
-.tile-section,
-.job-section,
-.benefit-section,
-.profile-section {
-  margin-top: 18px;
-}
-
+.search-hero, .tile-section, .job-section, .benefit-section, .profile-section, .tab-section { margin-top: 18px; }
 .search-bar {
+  width: 100%;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -139,35 +91,30 @@ small {
   padding: 10px 10px 10px 14px;
   color: #d8d8d8;
 }
-
-.search-icon {
-  font-size: 1.15rem;
-}
-
-.later-pill,
-.ghost-link,
-.ghost-light {
+.interactive { text-align: left; }
+.search-icon { font-size: 1.15rem; }
+.later-pill, .ghost-link, .ghost-light, .quick-actions button {
   background: rgba(255, 255, 255, 0.06);
   color: #f7f7f7;
 }
-
-.later-pill {
-  margin-left: auto;
-  padding: 10px 14px;
-  border-radius: 999px;
+.later-pill { margin-left: auto; padding: 10px 14px; border-radius: 999px; }
+.search-panel, .detail-card {
+  margin-top: 12px;
+  background: #141414;
+  border-radius: 22px;
+  padding: 16px;
 }
-
-.hero-copy {
-  margin-top: 18px;
-  align-items: flex-end;
+.quick-actions {
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  margin-top: 12px;
 }
-
-.hero-copy h2 {
-  max-width: 240px;
-  font-size: 1.5rem;
-  line-height: 1.1;
+.quick-actions button {
+  padding: 10px 12px;
+  border-radius: 14px;
 }
-
+.hero-copy { margin-top: 18px; align-items: flex-end; }
+.hero-copy h2 { max-width: 240px; font-size: 1.5rem; line-height: 1.1; }
 .primary-cta {
   background: linear-gradient(135deg, #ff6b2c, #ff874d);
   color: #fff;
@@ -176,166 +123,72 @@ small {
   font-weight: 700;
   box-shadow: 0 14px 34px rgba(255, 107, 44, 0.32);
 }
-
-.primary-cta.small {
-  padding: 10px 14px;
-  border-radius: 14px;
-}
-
-.service-grid,
-.profile-grid {
+.primary-cta.small { padding: 10px 14px; border-radius: 14px; }
+.service-grid, .profile-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
   margin-top: 14px;
 }
-
-.service-card,
-.profile-stat {
+.service-card, .profile-stat, .job-card, .benefit-card, .row-card {
   background: #1a1a1a;
   border-radius: 20px;
   padding: 14px 10px;
   position: relative;
-  min-height: 104px;
-}
-
-.tile-badge {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  padding: 2px 7px;
-  border-radius: 999px;
-  background: #ff6b2c;
-  color: #fff;
-  font-size: 0.68rem;
-  font-weight: 700;
-}
-
-.tile-icon {
-  width: 44px;
-  height: 44px;
-  border-radius: 14px;
-  display: grid;
-  place-items: center;
-  background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
-  margin-bottom: 16px;
-  font-weight: 700;
-}
-
-.service-card strong,
-.profile-stat strong,
-.benefit-card strong,
-.job-card h4,
-.mission-panel strong {
-  display: block;
-}
-
-.job-list,
-.benefit-list {
-  display: grid;
-  gap: 12px;
-  margin-top: 14px;
-}
-
-.job-card,
-.benefit-card,
-.profile-hero,
-.mission-panel {
-  background: #141414;
-  border-radius: 22px;
-  padding: 16px;
-}
-
-.job-tag {
-  background: #ff6b2c;
   color: white;
-  padding: 5px 9px;
-  border-radius: 999px;
-  font-size: 0.75rem;
-  font-weight: 700;
+  text-align: left;
 }
-
-.live-dot {
-  color: #73ff98;
-  font-size: 0.82rem;
+.service-card, .profile-stat { min-height: 104px; }
+.active-card {
+  outline: 1px solid rgba(255, 107, 44, 0.8);
+  box-shadow: 0 0 0 3px rgba(255, 107, 44, 0.12);
 }
-
-.job-meta {
-  margin-top: 14px;
-  color: #d6d6d6;
-  font-size: 0.88rem;
+.tile-badge {
+  position: absolute; top: 10px; right: 10px; padding: 2px 7px; border-radius: 999px;
+  background: #ff6b2c; color: #fff; font-size: 0.68rem; font-weight: 700;
 }
-
-.ghost-link {
-  padding: 0;
-  background: transparent;
-  color: #dcdcdc;
+.tile-icon {
+  width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center;
+  background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+  margin-bottom: 16px; font-weight: 700;
 }
-
+.service-card strong, .profile-stat strong, .benefit-card strong, .job-card h4, .mission-panel strong, .detail-card strong, .row-card strong { display: block; }
+.job-list, .benefit-list, .service-list, .activity-list { display: grid; gap: 12px; margin-top: 14px; }
+.job-card, .benefit-card { padding: 16px; }
+.job-tag {
+  background: #ff6b2c; color: white; padding: 5px 9px; border-radius: 999px; font-size: 0.75rem; font-weight: 700;
+}
+.live-dot { color: #73ff98; font-size: 0.82rem; }
+.job-meta { margin-top: 14px; color: #d6d6d6; font-size: 0.88rem; }
+.ghost-link { padding: 0; background: transparent; color: #dcdcdc; }
 .profile-badge {
-  padding: 8px 12px;
-  border-radius: 999px;
-  background: rgba(255, 107, 44, 0.15);
-  color: #ff9d72;
-  font-size: 0.85rem;
+  padding: 8px 12px; border-radius: 999px; background: rgba(255, 107, 44, 0.15); color: #ff9d72; font-size: 0.85rem;
 }
-
 .avatar {
-  width: 50px;
-  height: 50px;
-  border-radius: 18px;
-  display: grid;
-  place-items: center;
-  background: linear-gradient(135deg, #ff6b2c, #7c3aed);
-  font-weight: 800;
+  width: 50px; height: 50px; border-radius: 18px; display: grid; place-items: center;
+  background: linear-gradient(135deg, #ff6b2c, #7c3aed); font-weight: 800;
 }
-
-.ghost-light {
-  padding: 10px 12px;
-  border-radius: 14px;
-}
-
-.profile-stat {
-  min-height: 86px;
-}
-
-.bottom-nav {
-  position: absolute;
-  left: 14px;
-  right: 14px;
-  bottom: 14px;
-  background: rgba(11, 11, 11, 0.98);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 24px;
-  padding: 10px;
-}
-
-.nav-item {
-  flex: 1;
-  background: transparent;
-  color: #9e9e9e;
+.ghost-light { padding: 10px 12px; border-radius: 14px; }
+.profile-stat { min-height: 86px; }
+.mission-panel, .profile-hero, .success-card { background: #141414; border-radius: 22px; padding: 16px; margin-top: 14px; }
+.compact { align-items: flex-start; }
+.row-card {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 6px;
-  padding: 8px 4px;
-  border-radius: 16px;
+  justify-content: space-between;
+  gap: 12px;
 }
-
-.nav-item.active {
-  color: #fff;
-  background: rgba(255, 255, 255, 0.06);
+.static-card { background: #141414; }
+.bottom-nav {
+  position: absolute; left: 14px; right: 14px; bottom: 14px; background: rgba(11, 11, 11, 0.98);
+  border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 24px; padding: 10px;
 }
-
+.nav-item {
+  flex: 1; background: transparent; color: #9e9e9e; display: flex; flex-direction: column; align-items: center; gap: 6px;
+  padding: 8px 4px; border-radius: 16px;
+}
+.nav-item.active { color: #fff; background: rgba(255, 255, 255, 0.06); }
 @media (max-width: 520px) {
-  .app {
-    padding: 0;
-  }
-
-  .phone-shell {
-    width: 100%;
-    min-height: 100vh;
-    border-radius: 0;
-    padding-top: 18px;
-  }
+  .app { padding: 0; }
+  .phone-shell { width: 100%; min-height: 100vh; border-radius: 0; padding-top: 18px; }
 }
