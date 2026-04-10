@@ -81,7 +81,10 @@ input {
   font-size: 0.9rem;
 }
 .search-hero, .tile-section, .job-section, .benefit-section, .profile-section, .tab-section { margin-top: 18px; }
+.search-row { display: flex; align-items: center; gap: 12px; }
+.persistent-top { margin-bottom: 16px; }
 .search-bar {
+  flex: 1;
   width: 100%;
   display: flex;
   align-items: center;
@@ -95,13 +98,13 @@ input {
 .interactive { text-align: left; }
 .search-icon { font-size: 1.15rem; }
 .later-pill, .ghost-link, .ghost-light, .quick-actions button {
-  background: rgba(255, 255, 255, 0.06);
-  color: #f7f7f7;
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
 }
 .later-pill { margin-left: auto; padding: 10px 14px; border-radius: 999px; }
 .search-panel, .detail-card {
   margin-top: 12px;
-  background: #161125;
+  background: #211936;
   border-radius: 22px;
   padding: 16px;
 }
@@ -114,10 +117,9 @@ input {
   padding: 10px 12px;
   border-radius: 14px;
 }
-.hero-copy { margin-top: 18px; align-items: flex-end; }
-.hero-copy h2 { max-width: 240px; font-size: 1.5rem; line-height: 1.1; }
+.hero-inline { margin-top: 14px; display: flex; justify-content: flex-end; }
 .primary-cta {
-  background: linear-gradient(135deg, #7c5cff, #a855f7);
+  background: linear-gradient(135deg, #8b5cf6, #ec4899);
   color: #fff;
   border-radius: 18px;
   padding: 14px 18px;
@@ -132,7 +134,7 @@ input {
   margin-top: 14px;
 }
 .service-card, .profile-stat, .job-card, .benefit-card, .row-card {
-  background: #191327;
+  background: linear-gradient(180deg, #2a2142 0%, #201834 100%);
   border-radius: 20px;
   padding: 14px 10px;
   position: relative;
@@ -150,18 +152,18 @@ input {
 }
 .tile-icon {
   width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center;
-  background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+  background: linear-gradient(135deg, rgba(255,255,255,0.18), rgba(255,255,255,0.05));
   margin-bottom: 16px; font-weight: 700;
 }
 .service-card strong, .profile-stat strong, .benefit-card strong, .job-card h4, .mission-panel strong, .detail-card strong, .row-card strong { display: block; }
 .job-list, .benefit-list, .service-list, .activity-list { display: grid; gap: 12px; margin-top: 14px; }
-.job-card, .benefit-card { padding: 16px; }
+.job-card, .benefit-card { padding: 16px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.08); }
 .job-tag {
   background: linear-gradient(135deg, #7c5cff, #ec4899); color: white; padding: 5px 9px; border-radius: 999px; font-size: 0.75rem; font-weight: 700;
 }
 .live-dot { color: #73ff98; font-size: 0.82rem; }
 .job-meta { margin-top: 14px; color: #d6d6d6; font-size: 0.88rem; }
-.ghost-link { padding: 0; background: transparent; color: #dcdcdc; }
+.ghost-link { padding: 0; background: transparent; color: #f1eaff; }
 .profile-badge {
   padding: 8px 12px; border-radius: 999px; background: rgba(124, 92, 255, 0.18); color: #d8c8ff; font-size: 0.85rem;
 }
@@ -169,7 +171,7 @@ input {
   width: 50px; height: 50px; border-radius: 18px; display: grid; place-items: center;
   background: linear-gradient(135deg, #7c5cff, #ec4899); font-weight: 800;
 }
-.ghost-light { padding: 10px 12px; border-radius: 14px; }
+.ghost-light { padding: 10px 12px; border-radius: 14px; background: rgba(255,255,255,0.14); color: white; }
 .profile-stat { min-height: 86px; }
 .mission-panel, .profile-hero, .success-card { background: #141414; border-radius: 22px; padding: 16px; margin-top: 14px; }
 .compact { align-items: flex-start; }
@@ -206,4 +208,6 @@ input {
 }
 .provider-hero strong { display: block; margin: 4px 0; }
 .provider-list { display: grid; gap: 12px; margin-top: 14px; }
-.service-grid-large { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.service-grid-large { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.persistent-grid { margin-bottom: 16px; }
+.search-post { white-space: nowrap; }

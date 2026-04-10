@@ -220,11 +220,14 @@ function App() {
         {activeTab === 'home' && (
           <>
             <section className="search-hero">
-              <button className="search-bar interactive" onClick={onSearchFocus}>
+              <div className="search-row">
+                <button className="search-bar interactive" onClick={onSearchFocus}>
                 <span className="search-icon">⌕</span>
                 <span>{searchQuery || 'Where to? Search jobs, talent, or services'}</span>
                 <span className="later-pill">Search</span>
-              </button>
+                </button>
+                <button className="primary-cta search-post" onClick={onPostJob}>Post a job</button>
+              </div>
 
               {searchOpen && (
                 <div className="search-panel">
@@ -242,11 +245,7 @@ function App() {
                 </div>
               )}
 
-              <div className="hero-copy">
-                <div>
-                  <p className="section-label">For you</p>
-                  <h2>Uber-style freelance home, rebuilt for GigLift</h2>
-                </div>
+              <div className="hero-inline">
                 <button className="primary-cta" onClick={onPostJob}>Post a job</button>
               </div>
             </section>
@@ -401,17 +400,6 @@ function App() {
                     <h3>Services</h3>
                     <span>Pick a category and go directly into its provider page</span>
                   </div>
-                  <button className="primary-cta small" onClick={onPostJob}>Create brief</button>
-                </div>
-
-                <div className="service-grid service-grid-large">
-                  {services.map((service) => (
-                    <button key={service.id} className={selectedService === service.id ? 'service-card active-card' : 'service-card'} onClick={() => openServicePage(service.id)}>
-                      <span className="tile-badge">{service.badge}</span>
-                      <div className="tile-icon">{service.icon}</div>
-                      <strong>{service.title}</strong>
-                    </button>
-                  ))}
                 </div>
               </>
             )}
