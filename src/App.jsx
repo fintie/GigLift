@@ -2,620 +2,280 @@ import { useMemo, useState } from 'react'
 import './index.css'
 
 const navItems = [
-  { id: 'home', label: 'Home', icon: '⌂' },
-  { id: 'tasks', label: 'Tasks', icon: '▣' },
-  { id: 'agents', label: 'Agents', icon: '🤖' },
-  { id: 'workflows', label: 'Workflows', icon: '⟲' },
-  { id: 'control', label: 'Control', icon: '⌘' },
+  { id: 'home', label: 'Quick Actions', icon: '⚡' },
+  { id: 'execute', label: 'Run Task', icon: '▶' },
+  { id: 'results', label: 'Results', icon: '◫' },
+  { id: 'marketplace', label: 'Marketplace', icon: '👤' },
+  { id: 'architecture', label: 'Architecture', icon: '⌘' },
 ]
 
-const filters = [
-  { id: 'all', label: 'All marketplace' },
-  { id: 'ai', label: 'AI only' },
-  { id: 'human', label: 'Human only' },
-  { id: 'hybrid', label: 'Hybrid' },
+const scenarios = [
+  {
+    id: 'property-listing',
+    segment: 'Real Estate',
+    icon: '🏡',
+    title: 'Create Property Listing',
+    summary: 'Generate listing copy, ad creative, and buyer follow-up in one AI workflow.',
+    taskType: 'ai_instant',
+    confidenceThreshold: 0.74,
+    credits: 6,
+    workflow: ['Listing Agent', 'Ad Agent', 'Email Agent'],
+    outputLabels: ['Title', 'Description', 'Facebook Ad Copy', 'Email Version'],
+    form: [
+      { key: 'address', label: 'Property address', type: 'text', placeholder: '12 Ocean View Rd, Bondi' },
+      { key: 'propertyType', label: 'Property type', type: 'select', options: ['Apartment', 'House', 'Townhouse'] },
+      { key: 'bedrooms', label: 'Bedrooms', type: 'number', placeholder: '3' },
+      { key: 'highlights', label: 'Key highlights', type: 'textarea', placeholder: 'Ocean views, renovated kitchen, close to transport' },
+    ],
+  },
+  {
+    id: 'google-review',
+    segment: 'Local Business',
+    icon: '🍔',
+    title: 'Reply to Google Reviews',
+    summary: 'Draft polished review responses and follow-up outreach in seconds.',
+    taskType: 'ai_instant',
+    confidenceThreshold: 0.76,
+    credits: 3,
+    workflow: ['Sentiment Agent', 'Reply Agent'],
+    outputLabels: ['Professional Reply', 'Friendly Version', 'Follow-up Message'],
+    form: [
+      { key: 'businessName', label: 'Business name', type: 'text', placeholder: 'Sunset Burger Bar' },
+      { key: 'reviewRating', label: 'Review rating', type: 'select', options: ['1 star', '2 star', '3 star', '4 star', '5 star'] },
+      { key: 'reviewText', label: 'Review text', type: 'textarea', placeholder: 'Paste the customer review here' },
+      { key: 'tone', label: 'Preferred tone', type: 'select', options: ['Professional', 'Warm', 'Apologetic', 'Playful'] },
+    ],
+  },
+  {
+    id: 'care-notes',
+    segment: 'Aged Care',
+    icon: '👵',
+    title: 'Generate Care Notes',
+    summary: 'Convert shift details into structured care notes and family-safe summaries.',
+    taskType: 'hybrid_review',
+    confidenceThreshold: 0.8,
+    credits: 5,
+    workflow: ['Clinical Notes Agent', 'Family Update Agent'],
+    outputLabels: ['Care Note Summary', 'Clinical Observation List', 'Family Update Message'],
+    form: [
+      { key: 'residentName', label: 'Resident first name', type: 'text', placeholder: 'Margaret' },
+      { key: 'shiftSummary', label: 'Shift summary', type: 'textarea', placeholder: 'Mobility stable, appetite reduced at lunch, family visited at 3pm' },
+      { key: 'incident', label: 'Incident or concern', type: 'select', options: ['No incident', 'Minor concern', 'Escalation needed'] },
+      { key: 'language', label: 'Preferred family language', type: 'select', options: ['English', 'Chinese', 'Arabic', 'Vietnamese'] },
+    ],
+  },
+  {
+    id: 'trade-quote',
+    segment: 'Trades',
+    icon: '🔧',
+    title: 'Generate Quote',
+    summary: 'Turn a rough job request into a customer-ready quote, invoice draft, and SMS follow-up.',
+    taskType: 'hybrid_review',
+    confidenceThreshold: 0.72,
+    credits: 4,
+    workflow: ['Quote Agent', 'Invoice Agent', 'SMS Agent'],
+    outputLabels: ['Quote Summary', 'Line Items', 'Invoice Draft', 'Follow-up SMS'],
+    form: [
+      { key: 'jobType', label: 'Job type', type: 'text', placeholder: 'Hot water system replacement' },
+      { key: 'location', label: 'Location', type: 'text', placeholder: 'Parramatta' },
+      { key: 'scope', label: 'Scope details', type: 'textarea', placeholder: 'Old unit leaking, customer wants replacement this week' },
+      { key: 'urgency', label: 'Urgency', type: 'select', options: ['Standard', 'Urgent', 'Emergency'] },
+    ],
+  },
 ]
 
-const dbSchema = {
-  existingUserCompatibility: {
-    entity: 'User',
-    fields: ['id', 'name', 'email', 'role', 'created_at'],
-    note: 'Existing users remain primary identities. Agents attach through owner_user_id and tasks can still be assigned to humans via assigned_to_user_id.',
-  },
-  agent: {
-    entity: 'Agent',
-    fields: ['id', 'name', 'description', 'capabilities[]', 'pricing_model', 'endpoint', 'owner_user_id', 'rating', 'success_rate'],
-  },
-  task: {
+const schemaBlueprint = [
+  {
     entity: 'Task',
-    fields: ['id', 'title', 'description', 'input_data JSON', 'expected_output_type', 'budget', 'status', 'created_by', 'assigned_to_agent_id?', 'assigned_to_user_id?'],
+    description: 'Extends the existing task record for AI-first execution while keeping backward compatibility.',
+    fields: ['id', 'title', 'description', 'scenario_type', 'input_data', 'status', 'ai_confidence_score', 'requires_human', 'created_by'],
   },
-  taskExecution: {
+  {
     entity: 'TaskExecution',
-    fields: ['id', 'task_id', 'executor_type', 'executor_id', 'logs', 'output', 'status', 'started_at', 'completed_at'],
+    description: 'Stores execution runs for AI, human, or hybrid processing.',
+    fields: ['id', 'task_id', 'execution_mode', 'executor_id', 'logs', 'output', 'quality_score', 'started_at', 'completed_at'],
   },
-  agentBid: {
-    entity: 'AgentBid',
-    fields: ['agent_id', 'task_id', 'proposed_price', 'estimated_time', 'auto_accept'],
+  {
+    entity: 'MarketplaceJob',
+    description: 'Secondary marketplace object created only when AI confidence is low or user requests human help.',
+    fields: ['id', 'linked_task_id', 'budget', 'status', 'assigned_human_id', 'bids_count'],
   },
+  {
+    entity: 'AgentRoute',
+    description: 'Maps each scenario to one or more agents and workflow steps.',
+    fields: ['scenario_type', 'agent_ids[]', 'fallback_policy', 'confidence_threshold', 'workflow_template'],
+  },
+]
+
+const marketplaceJobs = [
+  {
+    id: 'job-1001',
+    linkedTaskId: 'task-care-notes',
+    title: 'Review family update before sending',
+    segment: 'Aged Care',
+    budget: '$45',
+    status: 'posted_to_marketplace',
+    reason: 'AI confidence below threshold',
+    bids: 3,
+  },
+  {
+    id: 'job-1002',
+    linkedTaskId: 'task-trade-quote',
+    title: 'Site visit required for final trade quote',
+    segment: 'Trades',
+    budget: '$120',
+    status: 'assigned_to_human',
+    reason: 'Physical work needed',
+    bids: 2,
+  },
+]
+
+const subscriptionPlans = [
+  { name: 'Starter', price: '$49/mo', detail: '120 AI credits, email support' },
+  { name: 'Growth', price: '$149/mo', detail: '500 AI credits, hybrid review workflows' },
+  { name: 'Ops', price: '$349/mo', detail: 'Unlimited AI routing, team seats, priority fallback' },
+]
+
+const initialFormState = Object.fromEntries(
+  scenarios.flatMap((scenario) => scenario.form.map((field) => [field.key, '']))
+)
+
+function buildStructuredOutput(scenario, values) {
+  switch (scenario.id) {
+    case 'property-listing':
+      return {
+        Title: `${values.bedrooms || '3'} bedroom ${values.propertyType || 'home'} in ${values.address || 'prime location'}`,
+        Description: `Beautifully presented ${values.propertyType?.toLowerCase() || 'property'} featuring ${values.highlights || 'modern finishes and great lifestyle access'}.`,
+        'Facebook Ad Copy': `Just listed in ${values.address || 'your suburb'}: ${values.highlights || 'move-in-ready and full of light'}. Book an inspection today.`,
+        'Email Version': `Hi buyer, this ${values.propertyType?.toLowerCase() || 'property'} at ${values.address || 'our latest listing'} could be a strong fit. Key highlights: ${values.highlights || 'excellent condition and lifestyle convenience'}.`,
+      }
+    case 'google-review':
+      return {
+        'Professional Reply': `Hi from ${values.businessName || 'our team'}, thank you for your ${values.reviewRating || ''} review. We appreciate the feedback and will use it to keep improving.`,
+        'Friendly Version': `Thanks so much for stopping by ${values.businessName || 'our business'} and sharing your thoughts. We really appreciate it.`,
+        'Follow-up Message': `Hi, thanks again for your feedback. If you'd like, we'd love to invite you back and make the next visit even better.`,
+      }
+    case 'care-notes':
+      return {
+        'Care Note Summary': `${values.residentName || 'Resident'} remained stable during the shift. Summary: ${values.shiftSummary || 'No summary provided.'}`,
+        'Clinical Observation List': `Incident level: ${values.incident || 'No incident'}. Monitor appetite, mobility, and mood changes from the shift notes.`,
+        'Family Update Message': `Hello, here is a short update for ${values.residentName || 'your family member'}: ${values.shiftSummary || 'The shift was stable overall.'}`,
+      }
+    default:
+      return {
+        'Quote Summary': `Draft quote for ${values.jobType || 'the requested job'} in ${values.location || 'your area'}.`,
+        'Line Items': `Inspection, materials, labour, contingency based on scope: ${values.scope || 'details to be confirmed'}.`,
+        'Invoice Draft': `Invoice draft prepared for ${values.jobType || 'service job'} with urgency level ${values.urgency || 'Standard'}.`,
+        'Follow-up SMS': `Hi, thanks for your enquiry about ${values.jobType || 'the job'}. I’ve prepared a draft quote and can confirm next steps shortly.`,
+      }
+  }
 }
-
-const agents = [
-  {
-    id: 'agent-01',
-    name: 'Atlas Research',
-    description: 'Research and structured brief generation agent for growth, market mapping, and SEO discovery.',
-    capabilities: ['research', 'seo', 'classification'],
-    pricingModel: 'per_task',
-    endpoint: 'https://api.agentgig.dev/atlas/run',
-    ownerUserId: 'user_128',
-    rating: 4.9,
-    successRate: '97%',
-    exampleOutputs: ['Market map PDF', 'SERP cluster JSON', 'Competitor brief'],
-    pastTasks: 312,
-    autoAcceptBudget: '$120 - $600',
-    subscriptionCategories: ['seo', 'research', 'growth'],
-    type: 'ai',
-  },
-  {
-    id: 'agent-02',
-    name: 'Lyra Writer',
-    description: 'Long-form writing and landing page copy agent with CMS-ready packaging.',
-    capabilities: ['copywriting', 'seo', 'content'],
-    pricingModel: 'fixed',
-    endpoint: 'local://runner/lyra-writer',
-    ownerUserId: 'user_204',
-    rating: 4.8,
-    successRate: '95%',
-    exampleOutputs: ['SEO blog draft', 'Landing page copy', 'Meta description pack'],
-    pastTasks: 227,
-    autoAcceptBudget: '$80 - $300',
-    subscriptionCategories: ['content', 'landing pages'],
-    type: 'ai',
-  },
-  {
-    id: 'human-01',
-    name: 'Maya Chen',
-    description: 'Human growth operator used for QA, escalation, and publishing fallback.',
-    capabilities: ['qa', 'publishing', 'review'],
-    pricingModel: 'subscription',
-    endpoint: 'human://marketplace/maya-chen',
-    ownerUserId: 'user_001',
-    rating: 4.9,
-    successRate: '99%',
-    exampleOutputs: ['Final QA report', 'Published CMS entry', 'Approval notes'],
-    pastTasks: 184,
-    autoAcceptBudget: 'Manual only',
-    subscriptionCategories: ['review', 'hybrid'],
-    type: 'human',
-  },
-]
-
-const tasks = [
-  {
-    id: 'task-401',
-    title: 'Write SEO blog + publish to CMS',
-    description: 'Create a ranked SEO article, review it, and publish it into the content system with metadata.',
-    inputData: '{ "topic": "best payroll software", "keywords": ["payroll automation", "SME payroll"] }',
-    expectedOutputType: 'file + JSON',
-    budget: '$420',
-    status: 'running',
-    createdBy: 'user_091',
-    assignedToAgentId: 'agent-01',
-    assignedToUserId: 'human-01',
-    mode: 'hybrid',
-    routeSummary: 'Research → Writing → Human publish fallback',
-    keywords: ['seo', 'blog', 'publish'],
-  },
-  {
-    id: 'task-402',
-    title: 'Classify inbound tickets and update CRM',
-    description: 'Review support payloads, classify priority, and push structured updates into CRM.',
-    inputData: '{ "source": "zendesk", "volume": 120 }',
-    expectedOutputType: 'JSON',
-    budget: '$260',
-    status: 'open',
-    createdBy: 'user_188',
-    assignedToAgentId: null,
-    assignedToUserId: null,
-    mode: 'ai',
-    routeSummary: 'Intent extraction → best ops agent → API execution',
-    keywords: ['support', 'classification', 'crm'],
-  },
-  {
-    id: 'task-403',
-    title: 'Landing page audit with manual strategy review',
-    description: 'Audit page structure, surface conversion gaps, and escalate the final strategy memo to a human reviewer.',
-    inputData: '{ "url": "https://example.com" }',
-    expectedOutputType: 'text',
-    budget: '$180',
-    status: 'assigned',
-    createdBy: 'user_055',
-    assignedToAgentId: 'agent-02',
-    assignedToUserId: 'human-01',
-    mode: 'hybrid',
-    routeSummary: 'Agent analysis → human reviewer approval',
-    keywords: ['audit', 'landing page', 'review'],
-  },
-]
-
-const taskExecutions = [
-  {
-    id: 'exec-9001',
-    taskId: 'task-401',
-    executorType: 'agent',
-    executorId: 'agent-01',
-    logs: ['Intent extracted', 'Research outline generated', 'SEO draft completed'],
-    output: 'seo-blog-draft.md',
-    status: 'completed',
-    startedAt: '08:01',
-    completedAt: '08:06',
-  },
-  {
-    id: 'exec-9002',
-    taskId: 'task-401',
-    executorType: 'human',
-    executorId: 'human-01',
-    logs: ['QA review started', 'CMS publish confirmed'],
-    output: 'cms-entry-1443',
-    status: 'running',
-    startedAt: '08:07',
-    completedAt: null,
-  },
-]
-
-const agentBids = [
-  {
-    agentId: 'agent-01',
-    taskId: 'task-402',
-    proposedPrice: '$210',
-    estimatedTime: '12 min',
-    autoAccept: true,
-  },
-  {
-    agentId: 'agent-02',
-    taskId: 'task-403',
-    proposedPrice: '$160',
-    estimatedTime: '35 min',
-    autoAccept: false,
-  },
-]
-
-const routingSteps = [
-  'Extract task intent using keywords or embeddings',
-  'Match against agent capabilities and pricing constraints',
-  'Rank top 3 agents by fit, rating, success rate, and response mode',
-  'Suggest auto-assign, manual selection, or open bidding',
-]
-
-const paymentRules = [
-  'Budget is locked when task is created',
-  'Release payment when agent completes successfully or user approves output',
-  'Platform fee supports 10% to 20% fee bands',
-  'Credits system can simplify budget handling and agent payouts',
-]
-
-const workflowTemplate = [
-  { id: 'wf-1', step: 'Research', assigned: 'Atlas Research', output: 'Keyword and source brief' },
-  { id: 'wf-2', step: 'Write', assigned: 'Lyra Writer', output: 'SEO article draft' },
-  { id: 'wf-3', step: 'Publish', assigned: 'Maya Chen', output: 'CMS entry + QA approval' },
-]
 
 function App() {
   const [activeTab, setActiveTab] = useState('home')
-  const [activeFilter, setActiveFilter] = useState('all')
-  const [autoMode, setAutoMode] = useState(true)
-  const [selectedTaskId, setSelectedTaskId] = useState('task-401')
-  const [selectedAgentId, setSelectedAgentId] = useState('agent-01')
-  const [registrationMode, setRegistrationMode] = useState('api')
-  const [registrationForm, setRegistrationForm] = useState({
-    name: 'Nova Ops',
-    description: 'Autonomous ops agent for structured back-office work.',
-    capabilities: 'operations, crm, research',
-    endpoint: 'https://api.agentgig.dev/nova/run',
-    localConfig: 'docker://nova-ops:latest',
-  })
-  const [testResult, setTestResult] = useState('Ready to send a sample task')
-  const [routingMode, setRoutingMode] = useState('auto-assign')
+  const [selectedScenarioId, setSelectedScenarioId] = useState('property-listing')
+  const [taskMode, setTaskMode] = useState('AI Instant Mode')
+  const [formValues, setFormValues] = useState(initialFormState)
+  const [result, setResult] = useState(null)
+  const [lifecycleState, setLifecycleState] = useState('draft')
+  const [showMarketplaceEscalation, setShowMarketplaceEscalation] = useState(false)
 
-  const selectedTask = tasks.find((task) => task.id === selectedTaskId) ?? tasks[0]
-  const selectedAgent = agents.find((agent) => agent.id === selectedAgentId) ?? agents[0]
+  const selectedScenario = scenarios.find((scenario) => scenario.id === selectedScenarioId) ?? scenarios[0]
 
-  const filteredAgents = useMemo(() => {
-    if (activeFilter === 'ai') return agents.filter((agent) => agent.type === 'ai')
-    if (activeFilter === 'human') return agents.filter((agent) => agent.type === 'human')
-    if (activeFilter === 'hybrid') return agents.filter((agent) => agent.type !== 'human' || agent.capabilities.includes('review'))
-    return agents
-  }, [activeFilter])
+  const suggestedAgents = useMemo(() => {
+    return selectedScenario.workflow.map((agent, index) => ({
+      name: agent,
+      fit: Number((0.91 - index * 0.08).toFixed(2)),
+      quality: Number((0.94 - index * 0.05).toFixed(2)),
+    }))
+  }, [selectedScenario])
 
-  const rankedAgents = useMemo(() => {
-    const taskKeywords = selectedTask.keywords.join(' ')
-    return agents
-      .filter((agent) => agent.type === 'ai')
-      .map((agent) => {
-        const matches = agent.capabilities.filter((cap) => taskKeywords.includes(cap) || selectedTask.description.toLowerCase().includes(cap)).length
-        const score = matches * 30 + agent.rating * 10 + Number.parseInt(agent.successRate, 10) / 2
-        return { ...agent, score }
-      })
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 3)
-  }, [selectedTask])
+  const executionPreview = useMemo(() => {
+    const confidence = selectedScenario.segment === 'Aged Care' ? 0.68 : selectedScenario.segment === 'Trades' ? 0.73 : 0.89
+    const quality = selectedScenario.segment === 'Local Business' ? 0.92 : 0.87
+    return { confidence, quality }
+  }, [selectedScenario])
 
-  const selectedTaskExecutions = taskExecutions.filter((execution) => execution.taskId === selectedTask.id)
-  const selectedTaskBids = agentBids.filter((bid) => bid.taskId === selectedTask.id)
-
-  const updateForm = (field, value) => {
-    setRegistrationForm((prev) => ({ ...prev, [field]: value }))
+  const updateField = (key, value) => {
+    setFormValues((prev) => ({ ...prev, [key]: value }))
   }
 
-  const runAgentTest = () => {
-    const target = registrationMode === 'api' ? registrationForm.endpoint : registrationForm.localConfig
-    setTestResult(`Sample task sent to ${target}. Response: success, latency 1.2s, JSON output valid.`)
+  const runTask = () => {
+    const confidence = executionPreview.confidence
+    const output = buildStructuredOutput(selectedScenario, formValues)
+    const needsHuman = taskMode === 'Human Mode' || confidence < selectedScenario.confidenceThreshold
+
+    setLifecycleState(needsHuman ? 'needs_human' : 'ai_completed')
+    setShowMarketplaceEscalation(needsHuman)
+    setResult({
+      scenarioType: selectedScenario.id,
+      output,
+      confidence,
+      quality: executionPreview.quality,
+      executionMode: taskMode === 'Human Mode' ? 'HUMAN' : taskMode === 'Hybrid Mode' ? 'HYBRID' : 'AI',
+      taskState: needsHuman ? 'needs_human' : 'ai_completed',
+    })
+    setActiveTab('results')
   }
 
-  const renderHome = () => (
-    <>
-      <section className="hero-panel">
-        <div className="hero-copy">
-          <p className="eyebrow">AgentGig Marketplace</p>
-          <h1>Let AI Agents Work For You</h1>
-          <p className="hero-text">Post a task. AI agents complete it automatically, with human fallback available whenever approval, review, or publishing needs a person.</p>
-          <div className="hero-actions">
-            <button className="primary-button" onClick={() => setActiveTab('tasks')}>Post task</button>
-            <button className="ghost-button" onClick={() => setActiveTab('agents')}>Explore agents</button>
-          </div>
-          <div className="mode-strip">
-            <span className="pill">🤖 AI Agents</span>
-            <span className="pill muted">👤 Human Freelancers</span>
-            <button className={autoMode ? 'toggle active' : 'toggle'} onClick={() => setAutoMode((prev) => !prev)}>
-              Auto Mode {autoMode ? 'On' : 'Off'}
-            </button>
-          </div>
+  const sendToHuman = () => {
+    setLifecycleState('posted_to_marketplace')
+    setShowMarketplaceEscalation(true)
+    setActiveTab('marketplace')
+  }
+
+  const renderScenarioCard = (scenario) => (
+    <button
+      key={scenario.id}
+      className={selectedScenarioId === scenario.id ? 'scenario-card active-card' : 'scenario-card'}
+      onClick={() => {
+        setSelectedScenarioId(scenario.id)
+        setActiveTab('execute')
+      }}
+    >
+      <div className="scenario-head">
+        <span className="scenario-icon">{scenario.icon}</span>
+        <div>
+          <p className="eyebrow">{scenario.segment}</p>
+          <strong>{scenario.title}</strong>
         </div>
-
-        <div className="hero-card">
-          <strong>How it works</strong>
-          <ol>
-            <li>Post task</li>
-            <li>AI picks best agent</li>
-            <li>Task runs automatically</li>
-            <li>Get results</li>
-          </ol>
-          <div className="hero-card-footer">Auto-routing, bidding, execution, logging, and approval flow in one marketplace.</div>
-        </div>
-      </section>
-
-      <section className="section-grid triple">
-        <article className="panel compact-panel">
-          <div className="panel-head"><h3>Featured Agents</h3></div>
-          <div className="stack-list">
-            {agents.filter((agent) => agent.type === 'ai').map((agent) => (
-              <button key={agent.id} className={selectedAgentId === agent.id ? 'list-card active-card' : 'list-card'} onClick={() => { setSelectedAgentId(agent.id); setActiveTab('agents') }}>
-                <div className="list-card-top">
-                  <strong>{agent.name}</strong>
-                  <span>{agent.successRate}</span>
-                </div>
-                <p>{agent.capabilities.join(' · ')}</p>
-              </button>
-            ))}
-          </div>
-        </article>
-
-        <article className="panel compact-panel">
-          <div className="panel-head"><h3>Live Tasks</h3></div>
-          <div className="stack-list">
-            {tasks.map((task) => (
-              <button key={task.id} className={selectedTaskId === task.id ? 'list-card active-card' : 'list-card'} onClick={() => { setSelectedTaskId(task.id); setActiveTab('tasks') }}>
-                <div className="list-card-top">
-                  <strong>{task.title}</strong>
-                  <span>{task.status}</span>
-                </div>
-                <p>{task.routeSummary}</p>
-              </button>
-            ))}
-          </div>
-        </article>
-
-        <article className="panel compact-panel">
-          <div className="panel-head"><h3>Routing system</h3></div>
-          <div className="stack-list text-list">
-            {routingSteps.map((step) => (
-              <div key={step} className="simple-row">{step}</div>
-            ))}
-          </div>
-        </article>
-      </section>
-    </>
+      </div>
+      <p>{scenario.summary}</p>
+      <div className="chip-row">
+        <span>{scenario.credits} credits</span>
+        <span>{scenario.taskType === 'ai_instant' ? 'AI first' : 'Hybrid ready'}</span>
+      </div>
+    </button>
   )
 
-  const renderTasks = () => (
-    <section className="section-grid two-column">
-      <div className="panel">
-        <div className="panel-head">
-          <div>
-            <p className="eyebrow">Marketplace filters</p>
-            <h3>Tasks and routing choices</h3>
-          </div>
-          <div className="chip-row">
-            {filters.map((filter) => (
-              <button key={filter.id} className={activeFilter === filter.id ? 'filter-chip active' : 'filter-chip'} onClick={() => setActiveFilter(filter.id)}>{filter.label}</button>
-            ))}
-          </div>
-        </div>
-        <div className="stack-list">
-          {tasks.map((task) => (
-            <button key={task.id} className={selectedTaskId === task.id ? 'list-card active-card' : 'list-card'} onClick={() => setSelectedTaskId(task.id)}>
-              <div className="list-card-top">
-                <strong>{task.title}</strong>
-                <span>{task.budget}</span>
-              </div>
-              <p>{task.description}</p>
-              <div className="chip-row">
-                <span>{task.status}</span>
-                <span>{task.expectedOutputType}</span>
-                <span>{task.mode}</span>
-              </div>
-            </button>
+  const renderField = (field) => {
+    if (field.type === 'textarea') {
+      return <textarea value={formValues[field.key]} onChange={(e) => updateField(field.key, e.target.value)} rows={4} placeholder={field.placeholder} />
+    }
+    if (field.type === 'select') {
+      return (
+        <select value={formValues[field.key]} onChange={(e) => updateField(field.key, e.target.value)}>
+          <option value="">Select</option>
+          {field.options.map((option) => (
+            <option key={option} value={option}>{option}</option>
           ))}
-        </div>
-      </div>
-
-      <div className="panel detail-panel">
-        <div className="panel-head">
-          <div>
-            <p className="eyebrow">Task detail</p>
-            <h3>{selectedTask.title}</h3>
-          </div>
-          <button className="primary-button">Run Task</button>
-        </div>
-        <div className="detail-block">
-          <span>Description</span>
-          <strong>{selectedTask.description}</strong>
-        </div>
-        <div className="detail-block">
-          <span>Input data</span>
-          <strong>{selectedTask.inputData}</strong>
-        </div>
-        <div className="detail-block">
-          <span>Completed by</span>
-          <strong>{selectedTask.assignedToAgentId ? '🤖 AI Agent' : ''}{selectedTask.assignedToAgentId && selectedTask.assignedToUserId ? ' + ' : ''}{selectedTask.assignedToUserId ? '👤 Human Freelancer' : 'Unassigned'}</strong>
-        </div>
-        <div className="action-row">
-          <button className={routingMode === 'auto-assign' ? 'filter-chip active' : 'filter-chip'} onClick={() => setRoutingMode('auto-assign')}>Auto-assign best agent</button>
-          <button className={routingMode === 'manual' ? 'filter-chip active' : 'filter-chip'} onClick={() => setRoutingMode('manual')}>Manual selection</button>
-          <button className={routingMode === 'bidding' ? 'filter-chip active' : 'filter-chip'} onClick={() => setRoutingMode('bidding')}>Open bidding</button>
-        </div>
-        <div className="detail-block">
-          <span>Top 3 suggested agents</span>
-          <div className="stack-list compact-stack">
-            {rankedAgents.map((agent) => (
-              <div key={agent.id} className="simple-row strong-row">
-                <span>{agent.name}</span>
-                <span>Score {agent.score.toFixed(0)}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="detail-block">
-          <span>Agent bids</span>
-          <div className="stack-list compact-stack">
-            {selectedTaskBids.length ? selectedTaskBids.map((bid) => {
-              const bidder = agents.find((agent) => agent.id === bid.agentId)
-              return (
-                <div key={`${bid.agentId}-${bid.taskId}`} className="simple-row strong-row">
-                  <span>{bidder?.name ?? bid.agentId}</span>
-                  <span>{bid.proposedPrice} · {bid.estimatedTime} · {bid.autoAccept ? 'Auto' : 'Manual'}</span>
-                </div>
-              )
-            }) : <div className="simple-row">No bids yet</div>}
-          </div>
-        </div>
-        <div className="action-row">
-          <button className="ghost-button small">View Logs</button>
-          <button className="ghost-button small">View Output</button>
-        </div>
-      </div>
-    </section>
-  )
-
-  const renderAgents = () => (
-    <section className="section-grid two-column">
-      <div className="panel">
-        <div className="panel-head">
-          <div>
-            <p className="eyebrow">Agent Registration Flow</p>
-            <h3>Create and test AI agents</h3>
-          </div>
-          <div className="action-row slim">
-            <button className={registrationMode === 'api' ? 'filter-chip active' : 'filter-chip'} onClick={() => setRegistrationMode('api')}>API endpoint</button>
-            <button className={registrationMode === 'local' ? 'filter-chip active' : 'filter-chip'} onClick={() => setRegistrationMode('local')}>Local runner</button>
-          </div>
-        </div>
-
-        <div className="form-grid">
-          <label>
-            <span>Name</span>
-            <input value={registrationForm.name} onChange={(e) => updateForm('name', e.target.value)} />
-          </label>
-          <label>
-            <span>Description</span>
-            <textarea value={registrationForm.description} onChange={(e) => updateForm('description', e.target.value)} rows={3} />
-          </label>
-          <label>
-            <span>Capabilities</span>
-            <input value={registrationForm.capabilities} onChange={(e) => updateForm('capabilities', e.target.value)} />
-          </label>
-          {registrationMode === 'api' ? (
-            <label>
-              <span>API endpoint</span>
-              <input value={registrationForm.endpoint} onChange={(e) => updateForm('endpoint', e.target.value)} />
-            </label>
-          ) : (
-            <label>
-              <span>Local execution config</span>
-              <input value={registrationForm.localConfig} onChange={(e) => updateForm('localConfig', e.target.value)} />
-            </label>
-          )}
-        </div>
-
-        <div className="action-row">
-          <button className="primary-button" onClick={runAgentTest}>Test Agent</button>
-          <button className="ghost-button">Create Agent</button>
-        </div>
-        <div className="detail-block">
-          <span>Test result</span>
-          <strong>{testResult}</strong>
-        </div>
-      </div>
-
-      <div className="panel detail-panel">
-        <div className="panel-head">
-          <div>
-            <p className="eyebrow">Agent profile</p>
-            <h3>{selectedAgent.name}</h3>
-          </div>
-          <button className="primary-button small">View profile</button>
-        </div>
-        <div className="detail-block">
-          <span>Skills</span>
-          <strong>{selectedAgent.capabilities.join(', ')}</strong>
-        </div>
-        <div className="detail-block">
-          <span>Past tasks</span>
-          <strong>{selectedAgent.pastTasks} completed</strong>
-        </div>
-        <div className="detail-block">
-          <span>Success rate</span>
-          <strong>{selectedAgent.successRate}</strong>
-        </div>
-        <div className="detail-block">
-          <span>Example outputs</span>
-          <strong>{selectedAgent.exampleOutputs.join(' · ')}</strong>
-        </div>
-        <div className="stack-list compact-stack">
-          {filteredAgents.map((agent) => (
-            <button key={agent.id} className={selectedAgentId === agent.id ? 'list-card active-card' : 'list-card'} onClick={() => setSelectedAgentId(agent.id)}>
-              <div className="list-card-top">
-                <strong>{agent.type === 'ai' ? '🤖' : '👤'} {agent.name}</strong>
-                <span>{agent.rating}</span>
-              </div>
-              <p>{agent.description}</p>
-            </button>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-
-  const renderWorkflows = () => (
-    <section className="section-grid two-column">
-      <div className="panel">
-        <div className="panel-head">
-          <div>
-            <p className="eyebrow">Sequential DAG workflow</p>
-            <h3>Multi-agent task execution</h3>
-          </div>
-        </div>
-        <div className="stack-list">
-          {workflowTemplate.map((node, index) => (
-            <div key={node.id} className="workflow-card">
-              <div className="workflow-index">{index + 1}</div>
-              <div>
-                <strong>{node.step}</strong>
-                <p>{node.assigned}</p>
-                <span>{node.output}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="panel detail-panel">
-        <div className="panel-head">
-          <div>
-            <p className="eyebrow">Execution pipeline</p>
-            <h3>Assignment, retries, timeouts, logs</h3>
-          </div>
-        </div>
-        <div className="stack-list text-list">
-          <div className="simple-row">1. Task assigned to agent</div>
-          <div className="simple-row">2. System sends input to API endpoint or local runner</div>
-          <div className="simple-row">3. Agent returns text, JSON, or file output</div>
-          <div className="simple-row">4. Result stored and task status updated</div>
-          <div className="simple-row">5. Retry, timeout, and logging wrap the execution lifecycle</div>
-        </div>
-        <div className="detail-block">
-          <span>Supported outputs</span>
-          <strong>JSON output, text output, file output with cloud storage reference</strong>
-        </div>
-        <div className="detail-block">
-          <span>Task executions</span>
-          <div className="stack-list compact-stack">
-            {selectedTaskExecutions.map((execution) => (
-              <div key={execution.id} className="simple-row strong-row blocky">
-                <div>
-                  <strong>{execution.executorType === 'agent' ? '🤖 Agent' : '👤 Human'} · {execution.executorId}</strong>
-                  <p>{execution.logs.join(' · ')}</p>
-                </div>
-                <span>{execution.status}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
-  )
-
-  const renderControl = () => (
-    <section className="section-grid two-column">
-      <div className="panel">
-        <div className="panel-head">
-          <div>
-            <p className="eyebrow">Schema blueprint</p>
-            <h3>Backward-compatible data model</h3>
-          </div>
-        </div>
-        <div className="schema-grid">
-          {Object.values(dbSchema).map((entry) => (
-            <article key={entry.entity} className="schema-card">
-              <strong>{entry.entity}</strong>
-              <p>{entry.note ?? 'New marketplace entity'}</p>
-              <span>{entry.fields.join(' • ')}</span>
-            </article>
-          ))}
-        </div>
-      </div>
-
-      <div className="panel detail-panel">
-        <div className="panel-head">
-          <div>
-            <p className="eyebrow">Payment logic</p>
-            <h3>Budgets, fees, release rules</h3>
-          </div>
-        </div>
-        <div className="stack-list text-list">
-          {paymentRules.map((rule) => (
-            <div key={rule} className="simple-row">{rule}</div>
-          ))}
-        </div>
-        <div className="detail-block">
-          <span>Auto accept tasks</span>
-          <strong>Agents subscribe to categories and auto-accept work inside allowed budget range for autonomous earning.</strong>
-        </div>
-      </div>
-    </section>
-  )
+        </select>
+      )
+    }
+    return <input type={field.type} value={formValues[field.key]} onChange={(e) => updateField(field.key, e.target.value)} placeholder={field.placeholder} />
+  }
 
   return (
     <div className="app-shell">
       <header className="topbar">
         <div>
-          <p className="eyebrow">GigLift → AgentGig</p>
-          <h2>Agent-native marketplace demo</h2>
+          <p className="eyebrow">GigHub</p>
+          <h1>AI-first Task Marketplace with Human-in-the-loop</h1>
+          <p className="subtext">AI completes tasks instantly by default. Humans step in only when needed.</p>
         </div>
         <div className="topbar-actions">
-          <span className="status-pill">Backward compatible with users</span>
-          <span className="status-pill active">Auto Mode {autoMode ? 'Enabled' : 'Disabled'}</span>
+          <span className="status-pill active">AI first. Human second.</span>
+          <span className="status-pill">Credits + commission model</span>
         </div>
       </header>
 
@@ -628,11 +288,268 @@ function App() {
         ))}
       </nav>
 
-      {activeTab === 'home' && renderHome()}
-      {activeTab === 'tasks' && renderTasks()}
-      {activeTab === 'agents' && renderAgents()}
-      {activeTab === 'workflows' && renderWorkflows()}
-      {activeTab === 'control' && renderControl()}
+      {activeTab === 'home' && (
+        <>
+          <section className="hero-panel">
+            <div className="hero-copy">
+              <p className="eyebrow">Scenario-based entry</p>
+              <h2>What do you need today?</h2>
+              <p className="hero-text">Choose a business scenario, fill a short structured form, and let AI run the workflow. If confidence is low, GigHub automatically falls back to the human marketplace.</p>
+              <div className="mode-strip">
+                <span className="pill">AI Instant Mode</span>
+                <span className="pill muted">Hybrid Mode</span>
+                <span className="pill muted">Human Mode</span>
+              </div>
+            </div>
+            <div className="hero-card">
+              <strong>Task lifecycle</strong>
+              <div className="stack-list compact-stack">
+                {['draft', 'running_ai', 'ai_completed', 'needs_human', 'posted_to_marketplace', 'assigned_to_human', 'completed'].map((state) => (
+                  <div key={state} className={state === lifecycleState ? 'simple-row strong-row active-row' : 'simple-row'}>{state}</div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <section className="scenario-grid">
+            {scenarios.map(renderScenarioCard)}
+          </section>
+
+          <section className="section-grid three-column">
+            <article className="panel compact-panel">
+              <div className="panel-head"><h3>AI Quick Actions</h3></div>
+              <div className="stack-list compact-stack">
+                {scenarios.map((scenario) => (
+                  <button key={scenario.id} className="quick-action" onClick={() => { setSelectedScenarioId(scenario.id); setActiveTab('execute') }}>
+                    <span>{scenario.icon}</span>
+                    <span>{scenario.title}</span>
+                  </button>
+                ))}
+              </div>
+            </article>
+
+            <article className="panel compact-panel">
+              <div className="panel-head"><h3>Target segments</h3></div>
+              <div className="stack-list compact-stack text-list">
+                <div className="simple-row">🏡 Real Estate Agents</div>
+                <div className="simple-row">🍔 Local Businesses</div>
+                <div className="simple-row">👵 Aged Care Facilities</div>
+                <div className="simple-row">🔧 Trades</div>
+              </div>
+            </article>
+
+            <article className="panel compact-panel">
+              <div className="panel-head"><h3>Monetization</h3></div>
+              <div className="stack-list compact-stack text-list">
+                {subscriptionPlans.map((plan) => (
+                  <div key={plan.name} className="simple-row strong-row blocky">
+                    <div>
+                      <strong>{plan.name}</strong>
+                      <p>{plan.detail}</p>
+                    </div>
+                    <span>{plan.price}</span>
+                  </div>
+                ))}
+              </div>
+            </article>
+          </section>
+        </>
+      )}
+
+      {activeTab === 'execute' && (
+        <section className="section-grid two-column">
+          <div className="panel">
+            <div className="panel-head">
+              <div>
+                <p className="eyebrow">Structured task form</p>
+                <h3>{selectedScenario.icon} {selectedScenario.title}</h3>
+              </div>
+              <div className="action-row slim">
+                {['AI Instant Mode', 'Hybrid Mode', 'Human Mode'].map((mode) => (
+                  <button key={mode} className={taskMode === mode ? 'filter-chip active' : 'filter-chip'} onClick={() => setTaskMode(mode)}>{mode}</button>
+                ))}
+              </div>
+            </div>
+            <div className="form-grid">
+              {selectedScenario.form.map((field) => (
+                <label key={field.key}>
+                  <span>{field.label}</span>
+                  {renderField(field)}
+                </label>
+              ))}
+            </div>
+            <div className="action-row">
+              <button className="primary-button" onClick={() => { setLifecycleState('running_ai'); runTask() }}>Run Task</button>
+              <button className="ghost-button" onClick={() => setFormValues(initialFormState)}>Reset</button>
+            </div>
+          </div>
+
+          <div className="panel detail-panel">
+            <div className="panel-head">
+              <div>
+                <p className="eyebrow">AI routing</p>
+                <h3>Execution engine preview</h3>
+              </div>
+            </div>
+            <div className="detail-block">
+              <span>Scenario</span>
+              <strong>{selectedScenario.segment} / {selectedScenario.id}</strong>
+            </div>
+            <div className="detail-block">
+              <span>Suggested agents</span>
+              <div className="stack-list compact-stack">
+                {suggestedAgents.map((agent) => (
+                  <div key={agent.name} className="simple-row strong-row">
+                    <span>{agent.name}</span>
+                    <span>fit {agent.fit} · quality {agent.quality}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="detail-block">
+              <span>Confidence scoring</span>
+              <strong>{executionPreview.confidence} threshold {selectedScenario.confidenceThreshold}</strong>
+            </div>
+            <div className="detail-block">
+              <span>Fallback rule</span>
+              <strong>If confidence is low, output is unsatisfactory, or physical work is needed, post to marketplace.</strong>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {activeTab === 'results' && (
+        <section className="section-grid two-column">
+          <div className="panel detail-panel">
+            <div className="panel-head">
+              <div>
+                <p className="eyebrow">Structured output</p>
+                <h3>{selectedScenario.title} results</h3>
+              </div>
+              <span className={result?.taskState === 'needs_human' ? 'status-pill' : 'status-pill active'}>{result?.taskState || 'draft'}</span>
+            </div>
+            <div className="stack-list">
+              {result ? Object.entries(result.output).map(([label, value]) => (
+                <div key={label} className="detail-block">
+                  <span>{label}</span>
+                  <strong>{value}</strong>
+                </div>
+              )) : <div className="detail-block"><strong>No task run yet</strong></div>}
+            </div>
+          </div>
+
+          <div className="panel detail-panel">
+            <div className="panel-head">
+              <div>
+                <p className="eyebrow">Result controls</p>
+                <h3>Improve or escalate</h3>
+              </div>
+            </div>
+            <div className="detail-block">
+              <span>Confidence / quality</span>
+              <strong>{result ? `${result.confidence} / ${result.quality}` : 'Waiting for execution'}</strong>
+            </div>
+            <div className="action-row">
+              <button className="primary-button" onClick={() => setActiveTab('execute')}>Improve with AI</button>
+              <button className="ghost-button" onClick={sendToHuman}>Send to human</button>
+            </div>
+            <div className="detail-block">
+              <span>Execution mode</span>
+              <strong>{result?.executionMode || taskMode}</strong>
+            </div>
+            <div className="detail-block">
+              <span>Human-in-the-loop</span>
+              <strong>{showMarketplaceEscalation ? 'Marketplace job will be created as fallback.' : 'No fallback triggered yet.'}</strong>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {activeTab === 'marketplace' && (
+        <section className="section-grid two-column">
+          <div className="panel">
+            <div className="panel-head">
+              <div>
+                <p className="eyebrow">Secondary marketplace</p>
+                <h3>Only used after AI step</h3>
+              </div>
+            </div>
+            <div className="stack-list">
+              {marketplaceJobs.map((job) => (
+                <div key={job.id} className="list-card active-card">
+                  <div className="list-card-top">
+                    <strong>{job.title}</strong>
+                    <span>{job.budget}</span>
+                  </div>
+                  <p>{job.segment} · {job.reason}</p>
+                  <div className="chip-row">
+                    <span>{job.status}</span>
+                    <span>{job.bids} bids</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="panel detail-panel">
+            <div className="panel-head">
+              <div>
+                <p className="eyebrow">Human fallback system</p>
+                <h3>Airtasker-style marketplace reuse</h3>
+              </div>
+            </div>
+            <div className="stack-list text-list">
+              <div className="simple-row">1. AI runs first by default</div>
+              <div className="simple-row">2. Low confidence or dissatisfaction triggers escalation</div>
+              <div className="simple-row">3. Marketplace job is created with linked task ID</div>
+              <div className="simple-row">4. Humans bid, accept, and complete the fallback work</div>
+            </div>
+            <div className="detail-block">
+              <span>Commission model</span>
+              <strong>10% to 20% commission on human marketplace work</strong>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {activeTab === 'architecture' && (
+        <section className="section-grid two-column">
+          <div className="panel">
+            <div className="panel-head">
+              <div>
+                <p className="eyebrow">Deliverables</p>
+                <h3>Refactor plan and API updates</h3>
+              </div>
+            </div>
+            <div className="stack-list text-list">
+              <div className="simple-row">1. Refactor homepage into scenario-based entry</div>
+              <div className="simple-row">2. Extend backend schema for AI-first tasks and human fallback</div>
+              <div className="simple-row">3. Add structured task execution forms and result pages</div>
+              <div className="simple-row">4. Define AI execution engine with confidence and quality evaluation</div>
+              <div className="simple-row">5. Reuse marketplace as fallback-only human layer</div>
+              <div className="simple-row">6. Prepare API surfaces for task run, evaluation, and escalation</div>
+            </div>
+          </div>
+
+          <div className="panel">
+            <div className="panel-head">
+              <div>
+                <p className="eyebrow">Updated schema</p>
+                <h3>Future-ready system design</h3>
+              </div>
+            </div>
+            <div className="schema-grid">
+              {schemaBlueprint.map((item) => (
+                <article key={item.entity} className="schema-card">
+                  <strong>{item.entity}</strong>
+                  <p>{item.description}</p>
+                  <span>{item.fields.join(' • ')}</span>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
     </div>
   )
 }
