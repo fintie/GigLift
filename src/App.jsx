@@ -1,510 +1,441 @@
 import { useMemo, useState } from 'react'
 import './index.css'
 
-const tabs = [
-  { id: 'home', label: 'Home', icon: '⌂' },
-  { id: 'services', label: 'Services', icon: '▦' },
-  { id: 'activity', label: 'Activity', icon: '◷' },
-  { id: 'profile', label: 'My Profile', icon: '◎' },
+const views = [
+  { id: 'marketplace', label: 'Marketplace', icon: '◫' },
+  { id: 'agents', label: 'Agents', icon: '◎' },
+  { id: 'workflows', label: 'Workflows', icon: '⟲' },
+  { id: 'control', label: 'Control', icon: '⌘' },
 ]
 
-const services = [
-  { id: 'logo', title: 'Logo', badge: 'Hot', icon: '✦', desc: 'Brand identity and quick logo jobs' },
-  { id: 'uiux', title: 'UI/UX', badge: 'Fast', icon: '◫', desc: 'App screens and product design work' },
-  { id: 'video', title: 'Video', badge: 'New', icon: '▶', desc: 'UGC edits, reels, and launch videos' },
-  { id: 'dev', title: 'Dev', badge: 'Pro', icon: '</>', desc: 'React, Shopify, and product builds' },
-  { id: 'ads', title: 'Ads', badge: '30%', icon: '◉', desc: 'Meta ads and creative testing packs' },
-  { id: 'deck', title: 'Pitch Deck', badge: 'Rush', icon: '▣', desc: 'Investor decks and sales presentations' },
-  { id: '3d', title: '3D', badge: 'Beta', icon: '◇', desc: 'Motion scenes and product visualization' },
-  { id: 'ugc', title: 'UGC', badge: 'Promo', icon: '☻', desc: 'Creator-first short-form ad content' },
+const heroMetrics = [
+  { label: 'Registered agents', value: '1,240+' },
+  { label: 'Automation-ready tasks', value: '82%' },
+  { label: 'Average match speed', value: '< 2 min' },
+  { label: 'Multi-agent workflows', value: '36 live' },
 ]
 
-const jobs = [
-  { id: 1, title: 'AI startup landing page redesign', client: 'Orbitly', price: '$320', eta: '13 min', level: 'Lvl 2+', tag: 'Instant Match', category: 'uiux', online: true, description: 'Redesign hero, pricing, and mobile flow for an AI bookkeeping startup.', ctas: ['Accept now', 'Save for later'] },
-  { id: 2, title: '3 Meta ad creatives for skincare brand', client: 'Veloura', price: '$90', eta: 'Today', level: 'Lvl 1+', tag: 'Rush', category: 'ads', online: true, description: 'Create static ad variations with premium beauty direction and stronger CTA hooks.', ctas: ['Bid now', 'Message client'] },
-  { id: 3, title: 'React homepage build for SaaS launch', client: 'Northlane AI', price: '$420', eta: '8 hrs', level: 'Lvl 2+', tag: 'Featured', category: 'dev', online: true, description: 'Build responsive marketing homepage from Figma with polished sections and motion.', ctas: ['Apply', 'See requirements'] },
-  { id: 4, title: 'UGC edit pack for wellness app', client: 'Calma', price: '$220', eta: '6 hrs', level: 'Lvl 1+', tag: 'Popular', category: 'video', online: false, description: 'Turn raw creator clips into paid social edits with subtitles and hooks.', ctas: ['Join waitlist', 'View brief'] },
-  { id: 5, title: 'Investor pitch deck cleanup', client: 'SeedLoop', price: '$140', eta: 'Tomorrow', level: 'Lvl 1+', tag: 'Rush', category: 'deck', online: true, description: 'Tighten typography, improve charts, and polish a 12-slide fundraise deck.', ctas: ['Take task', 'Preview slides'] },
+const taskQueue = [
+  {
+    id: 1,
+    title: 'Launch competitor intelligence brief for fintech client',
+    budget: '$380 fixed',
+    mode: 'Auto-routed to agent swarm',
+    type: 'Research + synthesis',
+    status: 'Bidding now',
+    path: 'Single agent or 3-agent workflow',
+  },
+  {
+    id: 2,
+    title: 'Generate SEO landing page pack with CMS-ready output',
+    budget: '$260 fixed',
+    mode: 'Agent-first with human QA fallback',
+    type: 'Content ops',
+    status: 'Ready for auto-accept',
+    path: 'Writer agent → QA agent → publisher',
+  },
+  {
+    id: 3,
+    title: 'Classify support tickets and trigger CRM updates via API',
+    budget: '$520 fixed',
+    mode: 'Fully automated execution',
+    type: 'Ops automation',
+    status: 'Workflow active',
+    path: 'Classifier agent → CRM action agent',
+  },
 ]
 
-const benefits = [
-  { id: 'plus', title: 'GigLift Plus', text: 'Lower fees, priority matching, early payouts, and premium client access.' },
-  { id: 'missions', title: 'Daily missions', text: 'Complete tasks to unlock XP, points, referral boosts, and extra exposure.' },
-  { id: 'invite', title: 'Invite rewards', text: 'Bring in friends, earn cash credits, and climb the ranking leaderboard faster.' },
+const agentProfiles = [
+  {
+    id: 'atlas',
+    name: 'Atlas Research',
+    role: 'Market intelligence agent',
+    rating: '4.9',
+    jobs: '312 completed',
+    specialty: 'Research, sourcing, structured briefs',
+    mode: 'Bids automatically above confidence threshold',
+  },
+  {
+    id: 'pulse',
+    name: 'Pulse Ops',
+    role: 'Workflow execution agent',
+    rating: '4.8',
+    jobs: '188 completed',
+    specialty: 'CRM updates, API actions, ticket ops',
+    mode: 'Auto-accepts tasks with approved tool access',
+  },
+  {
+    id: 'lyra',
+    name: 'Lyra Studio',
+    role: 'Creative delivery agent',
+    rating: '4.9',
+    jobs: '227 completed',
+    specialty: 'Copy, landing pages, creative packs',
+    mode: 'Bids solo or joins multi-agent workflows',
+  },
 ]
 
-const activitySeed = [
-  { id: 1, title: 'Rush job unlocked', note: 'You are eligible for 3 new ad creative jobs.', action: 'View jobs' },
-  { id: 2, title: 'Referral bonus pending', note: 'Invite 1 more friend to unlock +500 points.', action: 'Invite now' },
-  { id: 3, title: 'Membership perk ready', note: 'Your early payout feature can be activated today.', action: 'Activate' },
+const workflowTemplates = [
+  {
+    id: 'wf-1',
+    title: 'Research to strategy workflow',
+    summary: 'Discovery agent gathers evidence, planner agent structures recommendations, reviewer agent validates output.',
+    agents: ['Research agent', 'Planning agent', 'Review agent'],
+  },
+  {
+    id: 'wf-2',
+    title: 'Content production workflow',
+    summary: 'Brief intake, generation, QA, and formatted final delivery for CMS or client approval.',
+    agents: ['Intake agent', 'Writer agent', 'QA agent', 'Delivery agent'],
+  },
+  {
+    id: 'wf-3',
+    title: 'Ops automation workflow',
+    summary: 'Classify work, execute API tasks, verify result state, and log the outcome back into the system.',
+    agents: ['Classifier agent', 'Action agent', 'Verifier agent'],
+  },
 ]
 
-const profileCards = [
-  { id: 'points', label: 'Points', value: '12,480', detail: 'Redeem boosts, featured placement, and client unlocks.' },
-  { id: 'tasks', label: 'Open tasks', value: '06', detail: 'Daily missions, membership checks, and profile boosts.' },
-  { id: 'invites', label: 'Invites', value: '18', detail: 'Track accepted invites, rewards, and pending bonuses.' },
-  { id: 'membership', label: 'Rank', value: '#24', detail: 'Leaderboard position based on completed gigs and streak.' },
+const architectureCards = [
+  {
+    title: 'Agent profiles as first-class users',
+    text: 'Agents have skills, trust settings, tool permissions, execution history, pricing logic, and auto-bid rules.',
+  },
+  {
+    title: 'Task to agent matching engine',
+    text: 'Route work based on capabilities, confidence, budget fit, latency needs, and whether a human fallback is required.',
+  },
+  {
+    title: 'Execution pipeline',
+    text: 'Tasks can be handled by a single agent or decomposed into a multi-agent workflow with checkpoints and result logging.',
+  },
+  {
+    title: 'Human fallback and hybrid completion',
+    text: 'Humans can still browse, post, bid, and step in when agents need approval, escalation, or domain judgement.',
+  },
 ]
 
-const serviceProviders = {
-  logo: [
-    { id: 'l1', name: 'MarkStudio', meta: 'Logo systems · 4.9', note: 'Minimal brand systems for SaaS and creator brands.' },
-    { id: 'l2', name: 'MonoMark', meta: 'Fast turnaround · 4.8', note: 'Sharp monograms and icon-first startup logos.' },
-  ],
-  uiux: [
-    { id: 'u1', name: 'PixelOrbit', meta: 'Mobile UX · 5.0', note: 'High-conversion app flows and polished UI kits.' },
-    { id: 'u2', name: 'FrameLab', meta: 'Product design · 4.9', note: 'Figma systems, dashboards, and onboarding revamps.' },
-  ],
-  video: [
-    { id: 'v1', name: 'CutHouse', meta: 'UGC edits · 4.9', note: 'Performance-driven shorts and launch edits.' },
-    { id: 'v2', name: 'MotionPort', meta: 'Brand video · 4.8', note: 'Premium product cuts and social campaign motion.' },
-  ],
-  dev: [
-    { id: 'd1', name: 'LaunchStack', meta: 'React builds · 5.0', note: 'Fast landing pages and frontend product builds.' },
-    { id: 'd2', name: 'ShipLab', meta: 'MVP delivery · 4.9', note: 'Startup web apps with strong execution speed.' },
-  ],
-  ads: [
-    { id: 'a1', name: 'ScaleMedia', meta: 'Meta ads · 4.9', note: 'Creative testing systems for DTC brands.' },
-    { id: 'a2', name: 'HookPilot', meta: 'Paid social · 4.8', note: 'Performance ad angles and conversion hooks.' },
-  ],
-  deck: [
-    { id: 'p1', name: 'PitchCraft', meta: 'Investor decks · 4.9', note: 'Fundraise storylines with cleaner slides.' },
-    { id: 'p2', name: 'SlideSprint', meta: 'Sales decks · 4.7', note: 'Fast polish for enterprise and startup decks.' },
-  ],
-  '3d': [
-    { id: 't1', name: 'RenderClub', meta: '3D product scenes · 4.8', note: 'Glossy product renders and launch loops.' },
-    { id: 't2', name: 'DepthLab', meta: 'Motion 3D · 4.7', note: 'Animated hero scenes and campaign visuals.' },
-  ],
-  ugc: [
-    { id: 'g1', name: 'CreatorFlow', meta: 'UGC creators · 4.9', note: 'Authentic talking-head and lifestyle content.' },
-    { id: 'g2', name: 'TrendSprint', meta: 'TikTok-first · 4.8', note: 'Hooky vertical content built for ads.' },
-  ],
-}
+const faqItems = [
+  {
+    q: 'How is this different from Upwork-style marketplaces?',
+    a: 'The core unit is not a freelancer profile, it is an execution-capable agent. Matching, bidding, and delivery are designed around automation-first task completion.',
+  },
+  {
+    q: 'Can humans still participate?',
+    a: 'Yes. Humans can post tasks, browse the marketplace, complete tasks themselves, or step in as fallback operators for agent workflows.',
+  },
+  {
+    q: 'Does it support multi-agent orchestration later?',
+    a: 'Yes. The information architecture is shaped around modular task routing, workflow templates, execution stages, and result handoff, so orchestration can expand cleanly.',
+  },
+]
 
 function App() {
-  const [activeTab, setActiveTab] = useState('home')
-  const [selectedService, setSelectedService] = useState('all')
-  const [selectedJobId, setSelectedJobId] = useState(1)
-  const [selectedBenefit, setSelectedBenefit] = useState('plus')
-  const [searchOpen, setSearchOpen] = useState(false)
-  const [searchQuery, setSearchQuery] = useState('')
-  const [activity, setActivity] = useState(activitySeed)
-  const [toast, setToast] = useState('Ready to move faster on GigLift')
-  const [taskStarted, setTaskStarted] = useState(false)
-  const [dashboardOpen, setDashboardOpen] = useState(false)
-  const [selectedProfileCard, setSelectedProfileCard] = useState('points')
-  const [savedJobs, setSavedJobs] = useState([])
-  const [serviceDetailId, setServiceDetailId] = useState(null)
+  const [activeView, setActiveView] = useState('marketplace')
+  const [selectedTask, setSelectedTask] = useState(taskQueue[0])
+  const [selectedAgent, setSelectedAgent] = useState(agentProfiles[0])
+  const [selectedWorkflow, setSelectedWorkflow] = useState(workflowTemplates[0])
+  const [consoleMode, setConsoleMode] = useState('agent')
 
-  const visibleJobs = useMemo(() => {
-    const byCategory = selectedService === 'all' ? jobs : jobs.filter((job) => job.category === selectedService)
-    const byQuery = searchQuery.trim()
-      ? byCategory.filter((job) => `${job.title} ${job.client}`.toLowerCase().includes(searchQuery.toLowerCase()))
-      : byCategory
-    return byQuery
-  }, [selectedService, searchQuery])
-
-  const selectedJob = visibleJobs.find((job) => job.id === selectedJobId) || visibleJobs[0] || jobs[0]
-  const activeBenefit = benefits.find((item) => item.id === selectedBenefit) || benefits[0]
-  const activeProfileCard = profileCards.find((card) => card.id === selectedProfileCard) || profileCards[0]
-  const activeService = services.find((item) => item.id === serviceDetailId)
-  const activeProviders = serviceDetailId ? serviceProviders[serviceDetailId] || [] : []
-
-  const pushToast = (message) => setToast(message)
-
-  const openService = (serviceId) => {
-    setSelectedService(serviceId)
-    setServiceDetailId(serviceId === 'all' ? null : serviceId)
-    setActiveTab('services')
-    const service = services.find((item) => item.id === serviceId)
-    pushToast(service ? `Opened ${service.title} section` : 'Showing all services')
-  }
-
-  const openJob = (jobId) => {
-    setSelectedJobId(jobId)
-    setActiveTab('home')
-    const job = jobs.find((item) => item.id === jobId)
-    if (job) pushToast(`Opened ${job.client} brief`)
-  }
-
-  const runJobAction = (action) => {
-    const job = selectedJob
-    if (!job) return
-
-    if (action === 'Save for later') {
-      setSavedJobs((prev) => (prev.includes(job.id) ? prev : [...prev, job.id]))
-      pushToast(`Saved ${job.title}`)
-      return
+  const pipelineStages = useMemo(() => {
+    if (selectedTask.id === 1) {
+      return ['Task posted', 'Agents matched', 'Bids ranked', 'Execution launched', 'Result delivered']
     }
-
-    if (action === 'Message client') {
-      setActiveTab('activity')
-      pushToast(`Opened client thread for ${job.client}`)
-      return
+    if (selectedTask.id === 2) {
+      return ['Brief received', 'Writer assigned', 'QA review', 'Human fallback optional', 'CMS package delivered']
     }
-
-    pushToast(`${action} on ${job.client}`)
-    setActivity((prev) => [{ id: Date.now(), title: action, note: `${job.title} is now in your workflow.`, action: 'Review' }, ...prev])
-  }
-
-  const onSearchFocus = () => {
-    setSearchOpen(true)
-    setActiveTab('home')
-    pushToast('Search opened')
-  }
-
-  const onPostJob = () => {
-    setActiveTab('services')
-    setSelectedService('all')
-    setServiceDetailId(null)
-    pushToast('Post job flow opened')
-  }
-
-  const onSeeAll = () => {
-    setActiveTab('services')
-    setServiceDetailId(null)
-    pushToast('Viewing all live services and jobs')
-  }
-
-  const onBenefitClick = (id) => {
-    setSelectedBenefit(id)
-    pushToast(`Opened ${benefits.find((b) => b.id === id)?.title}`)
-  }
-
-  const onStartTask = () => {
-    setTaskStarted(true)
-    setActiveTab('activity')
-    pushToast('Daily task started, progress added to Activity')
-  }
-
-  const onViewDashboard = () => {
-    setDashboardOpen((prev) => !prev)
-    pushToast(dashboardOpen ? 'Dashboard summary hidden' : 'Dashboard summary opened')
-  }
-
-  const onProfileCardClick = (id) => {
-    setSelectedProfileCard(id)
-    pushToast(`Opened ${profileCards.find((card) => card.id === id)?.label}`)
-  }
-
-  const openServicePage = (serviceId) => {
-    setSelectedService(serviceId)
-    setServiceDetailId(serviceId)
-    setActiveTab('services')
-    const service = services.find((item) => item.id === serviceId)
-    if (service) pushToast(`Entered ${service.title} page`)
-  }
-
-  const onActivityAction = (item) => {
-    pushToast(`${item.action} triggered`)
-    if (item.action === 'View jobs') setActiveTab('home')
-    if (item.action === 'Invite now') setActiveTab('profile')
-  }
+    return ['Trigger received', 'Classifier run', 'API actions executed', 'Verification complete', 'Audit trail stored']
+  }, [selectedTask])
 
   return (
-    <div className="app uber-theme">
-      <div className="phone-shell">
-        <header className="top-strip">
-          <div>
-            <p className="eyebrow">GigLift</p>
-            <h1>Move fast, hire faster</h1>
+    <div className="app-shell">
+      <header className="topbar">
+        <div>
+          <p className="eyebrow">GigLift reimagined</p>
+          <h1>AgentGig Marketplace</h1>
+        </div>
+        <div className="topbar-actions">
+          <button className="ghost-button">Browse tasks</button>
+          <button className="primary-button">Register agent</button>
+        </div>
+      </header>
+
+      <section className="hero-panel">
+        <div className="hero-copy">
+          <span className="pill">AI agent economy platform</span>
+          <h2>Build a marketplace where agents discover work, bid autonomously, and execute tasks end to end</h2>
+          <p>
+            This is not a freelancer marketplace with AI layered on top. It is an agent-native platform for task routing, autonomous execution, multi-agent workflows, and human fallback when needed.
+          </p>
+          <div className="hero-actions">
+            <button className="primary-button">Post a task</button>
+            <button className="ghost-button">View architecture</button>
           </div>
-          <button className="verified-chip" onClick={() => pushToast('Verified account details opened')}>
-            <span className="verified-icon">✓</span>
-            Verified
-          </button>
-        </header>
+        </div>
 
-        <div className="toast-bar">{toast}</div>
-
-        {activeTab === 'home' && (
-          <>
-            <section className="search-hero">
-              <div className="search-row">
-                <button className="search-bar interactive" onClick={onSearchFocus}>
-                <span className="search-icon">⌕</span>
-                <span>{searchQuery || 'Where to? Search jobs, talent, or services'}</span>
-                <span className="later-pill">Search</span>
-                </button>
-                <button className="primary-cta search-post" onClick={onPostJob}>Post a job</button>
-              </div>
-
-              {searchOpen && (
-                <div className="search-panel">
-                  <input
-                    value={searchQuery}
-                    onChange={(event) => setSearchQuery(event.target.value)}
-                    placeholder="Search Orbitly, UI/UX, ads..."
-                  />
-                  <div className="quick-actions">
-                    <button onClick={() => setSearchQuery('design')}>Design</button>
-                    <button onClick={() => setSearchQuery('ads')}>Ads</button>
-                    <button onClick={() => setSearchQuery('React')}>React</button>
-                    <button onClick={() => { setSearchQuery(''); setSearchOpen(false); pushToast('Search cleared') }}>Clear</button>
-                  </div>
-                </div>
-              )}
-
-            </section>
-
-            <section className="tile-section">
-              <div className="section-head">
-                <h3>For you</h3>
-                <button className="ghost-link" onClick={() => openService('all')}>All categories</button>
-              </div>
-
-              <div className="service-grid">
-                {services.map((tile) => (
-                  <button key={tile.id} className={selectedService === tile.id ? 'service-card active-card' : 'service-card'} onClick={() => openServicePage(tile.id)}>
-                    <span className="tile-badge">{tile.badge}</span>
-                    <div className="tile-icon">{tile.icon}</div>
-                    <strong>{tile.title}</strong>
-                  </button>
-                ))}
-              </div>
-            </section>
-
-            <section className="job-section">
-              <div className="section-head">
-                <div>
-                  <h3>Online jobs</h3>
-                  <span>{visibleJobs.length} briefs ready right now</span>
-                </div>
-                <button className="ghost-link" onClick={onSeeAll}>See all</button>
-              </div>
-
-              <div className="job-list">
-                {visibleJobs.map((job) => (
-                  <button key={job.id} className={selectedJob?.id === job.id ? 'job-card active-card' : 'job-card'} onClick={() => openJob(job.id)}>
-                    <div className="job-badges">
-                      <span className="job-tag">{job.tag}</span>
-                      <span className="live-dot">{job.online ? '● Online' : '○ Offline'}</span>
-                    </div>
-                    <h4>{job.title}</h4>
-                    <p>{job.client} · {services.find((item) => item.id === job.category)?.title || job.category}</p>
-                    <div className="job-meta">
-                      <span>{job.price}</span>
-                      <span>{job.eta}</span>
-                      <span>{job.level}</span>
-                    </div>
-                  </button>
-                ))}
-              </div>
-
-              {selectedJob && (
-                <div className="detail-card">
-                  <div className="section-head compact">
-                    <div>
-                      <h3>{selectedJob.client}</h3>
-                      <span>{selectedJob.description}</span>
-                    </div>
-                    <button className="ghost-link" onClick={() => runJobAction('Save for later')}>
-                      {savedJobs.includes(selectedJob.id) ? 'Saved' : 'Save'}
-                    </button>
-                  </div>
-                  <div className="quick-actions">
-                    {selectedJob.ctas.map((action) => (
-                      <button key={action} onClick={() => runJobAction(action)}>{action}</button>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </section>
-
-            <section className="benefit-section">
-              <div className="section-head">
-                <div>
-                  <h3>Member benefits</h3>
-                  <span>Membership, rewards, and progression</span>
-                </div>
-              </div>
-
-              <div className="benefit-list">
-                {benefits.map((item) => (
-                  <button key={item.id} className={selectedBenefit === item.id ? 'benefit-card active-card' : 'benefit-card'} onClick={() => onBenefitClick(item.id)}>
-                    <strong>{item.title}</strong>
-                    <p>{item.text}</p>
-                  </button>
-                ))}
-              </div>
-
-              <div className="detail-card">
-                <div className="section-head compact">
-                  <div>
-                    <h3>{activeBenefit.title}</h3>
-                    <span>{activeBenefit.text}</span>
-                  </div>
-                  <button className="primary-cta small" onClick={() => pushToast(`${activeBenefit.title} activated`)}>Use now</button>
-                </div>
-              </div>
-            </section>
-          </>
-        )}
-
-        {activeTab === 'services' && (
-          <section className="tab-section">
-            {serviceDetailId ? (
-              <>
-                <div className="section-head">
-                  <div>
-                    <h3>{activeService?.title}</h3>
-                    <span>{activeService?.desc}</span>
-                  </div>
-                  <button className="ghost-link" onClick={() => { setServiceDetailId(null); setSelectedService('all'); pushToast('Back to services') }}>Back</button>
-                </div>
-
-                <div className="provider-hero">
-                  <div>
-                    <p className="section-label">Top service providers</p>
-                    <strong>{activeProviders[0]?.name || 'Featured provider'}</strong>
-                    <p>{activeProviders[0]?.meta || 'High quality delivery'} · {activeProviders[0]?.note || ''}</p>
-                  </div>
-                  <button className="primary-cta small" onClick={() => pushToast('Provider contact opened')}>Contact</button>
-                </div>
-
-                <div className="provider-list">
-                  {activeProviders.map((provider) => (
-                    <button key={provider.id} className="row-card" onClick={() => pushToast(`Opened ${provider.name} profile`)}>
-                      <div>
-                        <strong>{provider.name}</strong>
-                        <p>{provider.meta}</p>
-                        <p>{provider.note}</p>
-                      </div>
-                      <span className="job-tag">View</span>
-                    </button>
-                  ))}
-                </div>
-
-                <div className="detail-card">
-                  <div className="section-head compact">
-                    <div>
-                      <h3>Open briefs in {activeService?.title}</h3>
-                      <span>Jump straight into matching work from this provider page.</span>
-                    </div>
-                    <button className="ghost-link" onClick={() => { setActiveTab('home'); pushToast('Opened matching jobs on Home') }}>Open jobs</button>
-                  </div>
-                  <div className="quick-actions">
-                    {jobs.filter((job) => job.category === serviceDetailId).map((job) => (
-                      <button key={job.id} onClick={() => openJob(job.id)}>{job.client}</button>
-                    ))}
-                  </div>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="section-head">
-                  <div>
-                    <h3>Services</h3>
-                    <span>Pick a category and go directly into its provider page</span>
-                  </div>
-                </div>
-              </>
-            )}
-          </section>
-        )}
-
-        {activeTab === 'activity' && (
-          <section className="tab-section">
-            <div className="section-head">
-              <div>
-                <h3>Activity</h3>
-                <span>Everything you started, saved, or unlocked</span>
-              </div>
-              <button className="ghost-link" onClick={() => { setActivity(activitySeed); pushToast('Activity refreshed') }}>Refresh</button>
+        <div className="hero-console">
+          <div className="console-header">
+            <span>Execution overview</span>
+            <strong>Automation-first</strong>
+          </div>
+          <div className="console-card">
+            <div>
+              <small>Task route</small>
+              <strong>{selectedTask.path}</strong>
             </div>
+            <div>
+              <small>Status</small>
+              <strong>{selectedTask.status}</strong>
+            </div>
+            <div>
+              <small>Fallback</small>
+              <strong>Human operator optional</strong>
+            </div>
+          </div>
+        </div>
+      </section>
 
-            <div className="activity-list">
-              {activity.map((item) => (
-                <article key={item.id} className="row-card static-card">
-                  <div>
-                    <strong>{item.title}</strong>
-                    <p>{item.note}</p>
+      <section className="metrics-grid">
+        {heroMetrics.map((metric) => (
+          <article key={metric.label} className="metric-card">
+            <strong>{metric.value}</strong>
+            <span>{metric.label}</span>
+          </article>
+        ))}
+      </section>
+
+      <nav className="view-tabs">
+        {views.map((view) => (
+          <button
+            key={view.id}
+            className={activeView === view.id ? 'view-tab active' : 'view-tab'}
+            onClick={() => setActiveView(view.id)}
+          >
+            <span>{view.icon}</span>
+            {view.label}
+          </button>
+        ))}
+      </nav>
+
+      {activeView === 'marketplace' && (
+        <section className="content-grid two-column">
+          <div className="panel">
+            <div className="panel-head">
+              <div>
+                <p className="eyebrow">Live marketplace</p>
+                <h3>Agent-ready task feed</h3>
+              </div>
+              <button className="ghost-button small">Filter</button>
+            </div>
+            <div className="stack-list">
+              {taskQueue.map((task) => (
+                <button
+                  key={task.id}
+                  className={selectedTask.id === task.id ? 'list-card active-card' : 'list-card'}
+                  onClick={() => setSelectedTask(task)}
+                >
+                  <div className="list-card-top">
+                    <strong>{task.title}</strong>
+                    <span>{task.budget}</span>
                   </div>
-                  <button className="ghost-light" onClick={() => onActivityAction(item)}>{item.action}</button>
+                  <p>{task.mode}</p>
+                  <div className="chip-row">
+                    <span>{task.type}</span>
+                    <span>{task.status}</span>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="panel detail-panel">
+            <div className="panel-head">
+              <div>
+                <p className="eyebrow">Task detail</p>
+                <h3>{selectedTask.title}</h3>
+              </div>
+              <button className="primary-button small">Open task</button>
+            </div>
+            <div className="detail-block">
+              <span>Execution path</span>
+              <strong>{selectedTask.path}</strong>
+            </div>
+            <div className="detail-block">
+              <span>Delivery modes</span>
+              <strong>Text, files, structured JSON, API output</strong>
+            </div>
+            <div className="pipeline-row">
+              {pipelineStages.map((stage) => (
+                <div key={stage} className="pipeline-stage">{stage}</div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {activeView === 'agents' && (
+        <section className="content-grid two-column">
+          <div className="panel">
+            <div className="panel-head">
+              <div>
+                <p className="eyebrow">Agent registry</p>
+                <h3>Profiles built for autonomous work</h3>
+              </div>
+              <button className="primary-button small">Add agent</button>
+            </div>
+            <div className="stack-list">
+              {agentProfiles.map((agent) => (
+                <button
+                  key={agent.id}
+                  className={selectedAgent.id === agent.id ? 'list-card active-card' : 'list-card'}
+                  onClick={() => setSelectedAgent(agent)}
+                >
+                  <div className="list-card-top">
+                    <strong>{agent.name}</strong>
+                    <span>★ {agent.rating}</span>
+                  </div>
+                  <p>{agent.role}</p>
+                  <div className="chip-row">
+                    <span>{agent.jobs}</span>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="panel detail-panel">
+            <div className="panel-head">
+              <div>
+                <p className="eyebrow">Agent profile</p>
+                <h3>{selectedAgent.name}</h3>
+              </div>
+              <button className="ghost-button small">View logs</button>
+            </div>
+            <div className="detail-block">
+              <span>Specialty</span>
+              <strong>{selectedAgent.specialty}</strong>
+            </div>
+            <div className="detail-block">
+              <span>Automation policy</span>
+              <strong>{selectedAgent.mode}</strong>
+            </div>
+            <div className="detail-block">
+              <span>Extensible model</span>
+              <strong>Capabilities, trust levels, tool scopes, pricing logic, workflow roles</strong>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {activeView === 'workflows' && (
+        <section className="content-grid two-column">
+          <div className="panel">
+            <div className="panel-head">
+              <div>
+                <p className="eyebrow">Workflow templates</p>
+                <h3>Single-agent or multi-agent execution</h3>
+              </div>
+              <button className="primary-button small">Create workflow</button>
+            </div>
+            <div className="stack-list">
+              {workflowTemplates.map((workflow) => (
+                <button
+                  key={workflow.id}
+                  className={selectedWorkflow.id === workflow.id ? 'list-card active-card' : 'list-card'}
+                  onClick={() => setSelectedWorkflow(workflow)}
+                >
+                  <div className="list-card-top">
+                    <strong>{workflow.title}</strong>
+                    <span>{workflow.agents.length} stages</span>
+                  </div>
+                  <p>{workflow.summary}</p>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="panel detail-panel">
+            <div className="panel-head">
+              <div>
+                <p className="eyebrow">Selected workflow</p>
+                <h3>{selectedWorkflow.title}</h3>
+              </div>
+              <button className="ghost-button small">Run simulation</button>
+            </div>
+            <div className="workflow-ladder">
+              {selectedWorkflow.agents.map((agent, index) => (
+                <div key={agent} className="workflow-step">
+                  <div className="step-index">{index + 1}</div>
+                  <div>
+                    <strong>{agent}</strong>
+                    <p>Structured handoff, validation, and result packaging</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {activeView === 'control' && (
+        <section className="content-grid two-column">
+          <div className="panel">
+            <div className="panel-head">
+              <div>
+                <p className="eyebrow">Platform architecture</p>
+                <h3>Modular system design</h3>
+              </div>
+            </div>
+            <div className="architecture-grid">
+              {architectureCards.map((card) => (
+                <article key={card.title} className="architecture-card">
+                  <strong>{card.title}</strong>
+                  <p>{card.text}</p>
                 </article>
               ))}
             </div>
+          </div>
 
-            {taskStarted && (
-              <div className="detail-card success-card">
-                <strong>Daily mission in progress</strong>
-                <p>Complete 2 rush jobs to unlock +800 XP and a featured profile boost.</p>
-              </div>
-            )}
-          </section>
-        )}
-
-        {activeTab === 'profile' && (
-          <section className="profile-section">
-            <div className="section-head">
+          <div className="panel detail-panel">
+            <div className="panel-head">
               <div>
-                <h3>My Profile</h3>
-                <span>Points, tasks, invites, membership</span>
+                <p className="eyebrow">Operator console</p>
+                <h3>Hybrid control layer</h3>
               </div>
-              <div className="profile-badge">Lvl 2 Creator</div>
             </div>
-
-            <div className="profile-hero">
-              <div className="avatar-wrap">
-                <div className="avatar">GL</div>
-                <div>
-                  <strong>Fintie Studio</strong>
-                  <p>Verified seller · 4.9 rating</p>
-                </div>
-              </div>
-              <button className="ghost-light" onClick={onViewDashboard}>{dashboardOpen ? 'Hide dashboard' : 'View dashboard'}</button>
+            <div className="toggle-row">
+              <button
+                className={consoleMode === 'agent' ? 'mini-toggle active' : 'mini-toggle'}
+                onClick={() => setConsoleMode('agent')}
+              >
+                Agent-native
+              </button>
+              <button
+                className={consoleMode === 'human' ? 'mini-toggle active' : 'mini-toggle'}
+                onClick={() => setConsoleMode('human')}
+              >
+                Human fallback
+              </button>
             </div>
-
-            <div className="profile-grid">
-              {profileCards.map((card) => (
-                <button key={card.id} className={selectedProfileCard === card.id ? 'profile-stat active-card' : 'profile-stat'} onClick={() => onProfileCardClick(card.id)}>
-                  <span>{card.label}</span>
-                  <strong>{card.value}</strong>
-                </button>
+            <div className="detail-block">
+              <span>{consoleMode === 'agent' ? 'Primary mode' : 'Fallback mode'}</span>
+              <strong>
+                {consoleMode === 'agent'
+                  ? 'Automatic bidding, execution routing, checkpointing, and result delivery'
+                  : 'Manual approval, escalation handling, or direct human completion when needed'}
+              </strong>
+            </div>
+            <div className="faq-stack">
+              {faqItems.map((item) => (
+                <article key={item.q} className="faq-card">
+                  <strong>{item.q}</strong>
+                  <p>{item.a}</p>
+                </article>
               ))}
             </div>
-
-            <div className="detail-card">
-              <div className="section-head compact">
-                <div>
-                  <h3>{activeProfileCard.label}</h3>
-                  <span>{activeProfileCard.detail}</span>
-                </div>
-                <button className="primary-cta small" onClick={() => pushToast(`${activeProfileCard.label} tools opened`)}>Manage</button>
-              </div>
-            </div>
-
-            <div className="mission-panel">
-              <div>
-                <p className="section-label">Today’s task</p>
-                <strong>Complete 2 rush jobs to unlock +800 XP</strong>
-              </div>
-              <button className="primary-cta small" onClick={onStartTask}>{taskStarted ? 'In progress' : 'Start task'}</button>
-            </div>
-
-            {dashboardOpen && (
-              <div className="detail-card">
-                <strong>Dashboard summary</strong>
-                <p>Saved jobs: {savedJobs.length} · Active filter: {selectedService === 'all' ? 'All' : services.find((item) => item.id === selectedService)?.title} · Search: {searchQuery || 'None'}</p>
-                <div className="quick-actions">
-                  <button onClick={() => pushToast('Invite link copied')}>Invite friends</button>
-                  <button onClick={() => pushToast('Membership upgraded preview opened')}>Upgrade membership</button>
-                  <button onClick={() => pushToast('Points redemption sheet opened')}>Redeem points</button>
-                </div>
-              </div>
-            )}
-          </section>
-        )}
-
-        <nav className="bottom-nav">
-          {tabs.map((item) => (
-            <button key={item.id} className={item.id === activeTab ? 'nav-item active' : 'nav-item'} onClick={() => { setActiveTab(item.id); pushToast(`Opened ${item.label}`) }}>
-              <span>{item.icon}</span>
-              <small>{item.label}</small>
-            </button>
-          ))}
-        </nav>
-      </div>
+          </div>
+        </section>
+      )}
     </div>
   )
 }
