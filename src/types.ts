@@ -74,12 +74,15 @@ export interface DashboardTask {
 
 export interface MarketplaceJob {
   id: string
+  linkedTaskId?: string
   title: string
   budget: string
-  eta: string
-  category: string
-  location: string
-  status: 'open' | 'assigned' | 'completed'
+  eta?: string
+  category?: string
+  location?: string
+  status: 'open' | 'assigned' | 'completed' | 'posted_to_marketplace' | 'assigned_to_human'
+  bids?: number
+  reason?: string
 }
 
 export interface OnboardingFormValues {
@@ -87,4 +90,35 @@ export interface OnboardingFormValues {
   industry: Industry
   businessSize: BusinessSize
   goals: string[]
+}
+
+export interface ApiTask {
+  id: string
+  title: string
+  description: string
+  scenario_type: ScenarioType
+  input_data: Record<string, string>
+  status: TaskLifecycle
+  ai_confidence_score: number | null
+  requires_human: boolean
+  created_by?: string
+  output_data?: unknown
+}
+
+export interface ApiExecution {
+  id: string
+  task_id: string
+  execution_mode: 'agent' | 'human' | 'hybrid'
+  output?: unknown
+  quality_score?: number
+  confidence_score?: number
+  status?: string
+}
+
+export interface CreateTaskPayload {
+  title: string
+  description: string
+  scenario_type: ScenarioType
+  input_data: Record<string, string>
+  created_by?: string
 }
