@@ -1,10 +1,30 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { SeoHead } from '../components/SeoHead'
-import { ScenarioPicker } from '../features/scenarios/ScenarioPicker'
 import { scenarioDefinitions } from '../features/scenarios/config'
 import { api } from '../services/api'
 import { toTaskResult } from '../services/taskAdapters'
 import type { CreateTaskPayload, ScenarioType } from '../types'
+
+const showcaseCards = [
+  {
+    title: 'Repairs',
+    image:
+      'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=1200&q=80',
+    to: '/onboarding',
+  },
+  {
+    title: 'Rentals',
+    image:
+      'https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=1200&q=80',
+    to: '/dashboard',
+  },
+  {
+    title: 'Property intel',
+    image:
+      'https://images.unsplash.com/photo-1460317442991-0ec209397118?auto=format&fit=crop&w=1200&q=80',
+    to: '/property-intel',
+  },
+]
 
 export function LandingPage() {
   const navigate = useNavigate()
@@ -37,92 +57,85 @@ export function LandingPage() {
   }
 
   return (
-    <main className="page-shell">
+    <main className="page-shell landing-page">
       <SeoHead
-        title="GigHub Greater Sydney"
-        description="AI-first home task execution for Greater Sydney residents, plus a Sydney property intel page designed for search and AI agents."
+        title="Property Management System"
+        description="Property Management System for Greater Sydney, with lighter visual browsing, quick actions, and property intelligence."
         path="/"
         keywords={[
-          'GigHub',
-          'Greater Sydney home support',
-          'AI-first task execution',
+          'Property Management System',
+          'Greater Sydney property management',
+          'property operations dashboard',
           'Sydney property intel',
-          'home repairs Sydney',
+          'repairs management',
           'rental support Sydney',
-          'AI agent searchable property page',
         ]}
         jsonLd={{
           '@context': 'https://schema.org',
           '@type': 'WebSite',
-          name: 'GigHub',
+          name: 'Property Management System',
           url: 'https://pms.nextgenius.com.au/',
-          description:
-            'GigHub helps Greater Sydney residents handle repairs, rental issues, home care, moving help, and property intelligence.',
-          potentialAction: {
-            '@type': 'SearchAction',
-            target: 'https://pms.nextgenius.com.au/property-intel',
-            'query-input': 'required name=query',
-          },
+          description: 'Property Management System for repairs, rentals, operations, and Sydney property intelligence.',
         }}
       />
 
-      <section className="hero-card">
-        <span className="eyebrow">GigHub, Greater Sydney</span>
-        <h1>Get home tasks organised, run by AI first, with local human backup when needed</h1>
-        <p>
-          GigHub is a resident-focused workspace for repairs, rental issues, home care coordination, moving help, and
-          Greater Sydney property intelligence. Start with structured inputs, let AI produce the first draft, then
-          escalate locally if the job needs a real person.
-        </p>
-        <div className="hero-actions">
-          <Link className="primary-button" to="/onboarding">
-            Start guided intake
-          </Link>
-          <Link className="secondary-button" to="/property-intel">
-            Explore Sydney property intel
-          </Link>
+      <section className="hero-card hero-card--light hero-card--image">
+        <div className="hero-card__content">
+          <span className="eyebrow">Property Management System</span>
+          <h1>Manage properties faster</h1>
+          <p>Repairs, rentals, operations, and Sydney property insights in one place.</p>
+          <div className="hero-actions">
+            <Link className="primary-button" to="/onboarding">
+              Get started
+            </Link>
+            <Link className="secondary-button" to="/property-intel">
+              View insights
+            </Link>
+          </div>
+        </div>
+        <div className="hero-visual-grid">
+          {showcaseCards.map((card) => (
+            <Link key={card.title} className="image-tile" to={card.to} style={{ backgroundImage: `url(${card.image})` }}>
+              <span>{card.title}</span>
+            </Link>
+          ))}
         </div>
       </section>
 
-      <section className="panel">
-        <div className="panel__header">
+      <section className="panel panel--light">
+        <div className="panel__header compact-header">
           <div>
-            <span className="eyebrow">Direct use</span>
-            <h2>Launch a resident task in one click</h2>
-            <p>Good for residents, operators, or AI agents that want a fast structured starting point.</p>
+            <span className="eyebrow">Quick actions</span>
+            <h2>Start with one click</h2>
           </div>
         </div>
-        <div className="quick-start-grid">
+        <div className="quick-start-grid quick-start-grid--visual">
           {scenarioDefinitions.map((scenario) => (
-            <article key={scenario.id} className="scenario-card">
+            <article key={scenario.id} className="scenario-card scenario-card--light">
               <span className="scenario-card__segment">{scenario.segment}</span>
               <h3>{scenario.title}</h3>
-              <p>{scenario.summary}</p>
               <button className="primary-button" type="button" onClick={() => void handleQuickStart(scenario.id)}>
-                Run this flow
+                Open
               </button>
             </article>
           ))}
         </div>
       </section>
 
-      <section className="panel">
-        <div className="panel__header">
-          <div>
-            <span className="eyebrow">Sydney area insights</span>
-            <h2>Separate property intelligence page for search and agent discovery</h2>
-            <p>
-              Kept separate from the main resident task flow so the core product stays focused, while a crawlable and
-              AI-readable housing context layer keeps growing beside it.
-            </p>
-          </div>
-          <Link className="secondary-button" to="/property-intel">
-            Open property intel
-          </Link>
-        </div>
+      <section className="panel panel--light feature-strip">
+        <article className="mini-feature-card">
+          <h3>Repairs</h3>
+          <p>Track issues and dispatch faster.</p>
+        </article>
+        <article className="mini-feature-card">
+          <h3>Rentals</h3>
+          <p>Keep tenant workflows organised.</p>
+        </article>
+        <article className="mini-feature-card">
+          <h3>Insights</h3>
+          <p>See Greater Sydney market signals.</p>
+        </article>
       </section>
-
-      <ScenarioPicker scenarios={scenarioDefinitions} />
     </main>
   )
 }
