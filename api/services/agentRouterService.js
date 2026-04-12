@@ -1,19 +1,19 @@
 const routeMap = {
-  'property-listing': {
-    agents: ['listing-agent', 'ad-agent', 'email-agent'],
-    threshold: 0.74,
-  },
-  'google-review': {
-    agents: ['sentiment-agent', 'reply-agent'],
+  'home-repairs': {
+    agents: ['repair-scope-agent', 'quote-agent', 'message-agent'],
     threshold: 0.76,
   },
-  'care-notes': {
-    agents: ['care-notes-agent', 'family-update-agent'],
+  'rental-support': {
+    agents: ['tenancy-agent', 'evidence-agent', 'message-agent'],
+    threshold: 0.78,
+  },
+  'home-care': {
+    agents: ['care-notes-agent', 'schedule-agent', 'family-update-agent'],
     threshold: 0.8,
   },
-  'trade-quote': {
-    agents: ['quote-agent', 'invoice-agent', 'sms-agent'],
-    threshold: 0.72,
+  'moving-help': {
+    agents: ['moving-agent', 'checklist-agent', 'provider-agent'],
+    threshold: 0.74,
   },
 }
 

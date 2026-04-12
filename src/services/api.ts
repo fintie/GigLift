@@ -11,17 +11,21 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     ...init,
   })
 
+  const json = await response.json().catch(() => null)
+
   if (!response.ok) {
-    const text = await response.text()
-    throw new Error(text || `Request failed with status ${response.status}`)
+    throw new Error((json as { error?: string } | null)?.error ?? `Request failed: ${response.status}`)
   }
 
-  return response.json() as Promise<T>
+  return json as T
 }
 
 export const api = {
-  listTasks() {
+  getTasks() {
     return request<{ data: ApiTask[] }>('/tasks')
+  },
+  getTask(taskId: string) {
+    return request<{ data: ApiTask }>(`/tasks/${taskId}`)
   },
   createTask(payload: CreateTaskPayload) {
     return request<{ data: ApiTask }>('/tasks', {
@@ -34,12 +38,13 @@ export const api = {
       method: 'POST',
     })
   },
-  sendTaskToHuman(taskId: string) {
+  sendTaskToHuman(taskId: string, reason?: string) {
     return request<{ data: MarketplaceJob }>(`/tasks/${taskId}/human-fallback`, {
       method: 'POST',
+      body: JSON.stringify(reason ? { reason } : {}),
     })
   },
-  listMarketplaceJobs() {
+  getMarketplaceJobs() {
     return request<{ data: MarketplaceJob[] }>('/marketplace/jobs')
   },
 }
