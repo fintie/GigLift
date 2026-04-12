@@ -1,0 +1,90 @@
+export type ScenarioType = 'property-listing' | 'google-review' | 'care-notes' | 'trade-quote'
+export type TaskMode = 'ai_instant' | 'hybrid' | 'human'
+export type TaskLifecycle =
+  | 'draft'
+  | 'running_ai'
+  | 'ai_completed'
+  | 'needs_human'
+  | 'posted_to_marketplace'
+  | 'assigned_to_human'
+  | 'completed'
+  | 'failed'
+
+export type UserRole = 'business_owner' | 'operator_admin' | 'provider'
+export type Industry = 'real_estate' | 'aged_care' | 'restaurant' | 'retail' | 'other'
+export type BusinessSize = 'solo' | '2_10' | '11_50' | '51_200'
+
+export interface ScenarioFieldOption {
+  value: string
+  label: string
+}
+
+export interface ScenarioField {
+  key: string
+  label: string
+  type: 'text' | 'textarea' | 'number' | 'select'
+  placeholder?: string
+  required?: boolean
+  options?: ScenarioFieldOption[]
+}
+
+export interface ScenarioDefinition {
+  id: ScenarioType
+  title: string
+  segment: string
+  summary: string
+  mode: TaskMode
+  confidenceThreshold: number
+  fields: ScenarioField[]
+}
+
+export interface StructuredOutput {
+  headline: string
+  summary: string
+  deliverables: string[]
+  nextSteps: string[]
+}
+
+export interface TaskResult {
+  taskId: string
+  title: string
+  scenarioType: ScenarioType
+  mode: TaskMode
+  lifecycle: TaskLifecycle
+  confidence: number
+  qualityScore: number
+  output: StructuredOutput
+  routedAgents: string[]
+  fallbackRecommended: boolean
+}
+
+export interface DashboardMetric {
+  label: string
+  value: string
+  detail: string
+}
+
+export interface DashboardTask {
+  id: string
+  title: string
+  status: TaskLifecycle
+  owner: string
+  updatedAt: string
+}
+
+export interface MarketplaceJob {
+  id: string
+  title: string
+  budget: string
+  eta: string
+  category: string
+  location: string
+  status: 'open' | 'assigned' | 'completed'
+}
+
+export interface OnboardingFormValues {
+  role: UserRole
+  industry: Industry
+  businessSize: BusinessSize
+  goals: string[]
+}
