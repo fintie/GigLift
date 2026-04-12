@@ -81,7 +81,7 @@ export function getPropertyIntelJsonLd() {
     name: 'GigHub Greater Sydney Property Intel',
     description:
       'Greater Sydney property, rental, planning, and interest-rate watch page designed for residents, buyers, renters, owners, and AI agents.',
-    url: 'https://fintie.github.io/GigLift/property-intel',
+    url: 'https://pms.nextgenius.com.au/property-intel',
     keywords: [
       'Greater Sydney property intel',
       'Sydney housing market',
@@ -98,13 +98,13 @@ export function getPropertyIntelJsonLd() {
     creator: {
       '@type': 'Organization',
       name: 'GigHub',
-      url: 'https://fintie.github.io/GigLift/',
+      url: 'https://pms.nextgenius.com.au/',
     },
     distribution: [
       {
         '@type': 'DataDownload',
         name: 'Property intel page',
-        contentUrl: 'https://fintie.github.io/GigLift/property-intel',
+        contentUrl: 'https://pms.nextgenius.com.au/property-intel',
         encodingFormat: 'text/html',
       },
     ],

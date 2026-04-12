@@ -55,12 +55,12 @@ export function LandingPage() {
           '@context': 'https://schema.org',
           '@type': 'WebSite',
           name: 'GigHub',
-          url: 'https://fintie.github.io/GigLift/',
+          url: 'https://pms.nextgenius.com.au/',
           description:
             'GigHub helps Greater Sydney residents handle repairs, rental issues, home care, moving help, and property intelligence.',
           potentialAction: {
             '@type': 'SearchAction',
-            target: 'https://fintie.github.io/GigLift/property-intel',
+            target: 'https://pms.nextgenius.com.au/property-intel',
             'query-input': 'required name=query',
           },
         }}

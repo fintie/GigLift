@@ -9,7 +9,7 @@ interface SeoHeadProps {
 }
 
 const SITE_NAME = 'GigHub'
-const SITE_URL = 'https://fintie.github.io/GigLift'
+const SITE_URL = 'https://pms.nextgenius.com.au'
 const DEFAULT_IMAGE = `${SITE_URL}/favicon.svg`
 
 function upsertMeta(selector: string, create: () => HTMLMetaElement, updater: (node: HTMLMetaElement) => void) {
