@@ -1,4 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom'
+import { SeoHead } from '../components/SeoHead'
 import { ScenarioPicker } from '../features/scenarios/ScenarioPicker'
 import { scenarioDefinitions } from '../features/scenarios/config'
 import { api } from '../services/api'
@@ -37,12 +38,41 @@ export function LandingPage() {
 
   return (
     <main className="page-shell">
+      <SeoHead
+        title="GigHub Greater Sydney"
+        description="AI-first home task execution for Greater Sydney residents, plus a Sydney property intel page designed for search and AI agents."
+        path="/"
+        keywords={[
+          'GigHub',
+          'Greater Sydney home support',
+          'AI-first task execution',
+          'Sydney property intel',
+          'home repairs Sydney',
+          'rental support Sydney',
+          'AI agent searchable property page',
+        ]}
+        jsonLd={{
+          '@context': 'https://schema.org',
+          '@type': 'WebSite',
+          name: 'GigHub',
+          url: 'https://fintie.github.io/GigLift/',
+          description:
+            'GigHub helps Greater Sydney residents handle repairs, rental issues, home care, moving help, and property intelligence.',
+          potentialAction: {
+            '@type': 'SearchAction',
+            target: 'https://fintie.github.io/GigLift/property-intel',
+            'query-input': 'required name=query',
+          },
+        }}
+      />
+
       <section className="hero-card">
         <span className="eyebrow">GigHub, Greater Sydney</span>
         <h1>Get home tasks organised, run by AI first, with local human backup when needed</h1>
         <p>
-          GigHub is a resident-focused workspace for repairs, rental issues, home care coordination, and moving help.
-          Start with structured inputs, let AI produce the first draft, then escalate locally if the job needs a real person.
+          GigHub is a resident-focused workspace for repairs, rental issues, home care coordination, moving help, and
+          Greater Sydney property intelligence. Start with structured inputs, let AI produce the first draft, then
+          escalate locally if the job needs a real person.
         </p>
         <div className="hero-actions">
           <Link className="primary-button" to="/onboarding">
@@ -57,9 +87,9 @@ export function LandingPage() {
       <section className="panel">
         <div className="panel__header">
           <div>
-            <span className="eyebrow">Quick start</span>
-            <h2>Launch a task in one click</h2>
-            <p>Good for users or AI agents that want a fast, structured starting point.</p>
+            <span className="eyebrow">Direct use</span>
+            <h2>Launch a resident task in one click</h2>
+            <p>Good for residents, operators, or AI agents that want a fast structured starting point.</p>
           </div>
         </div>
         <div className="quick-start-grid">
@@ -73,6 +103,22 @@ export function LandingPage() {
               </button>
             </article>
           ))}
+        </div>
+      </section>
+
+      <section className="panel">
+        <div className="panel__header">
+          <div>
+            <span className="eyebrow">Sydney area insights</span>
+            <h2>Separate property intelligence page for search and agent discovery</h2>
+            <p>
+              Kept separate from the main resident task flow so the core product stays focused, while a crawlable and
+              AI-readable housing context layer keeps growing beside it.
+            </p>
+          </div>
+          <Link className="secondary-button" to="/property-intel">
+            Open property intel
+          </Link>
         </div>
       </section>
 

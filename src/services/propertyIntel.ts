@@ -71,3 +71,42 @@ export const propertyIntelSnapshot: PropertyIntelSnapshot = {
     'Public rate and macro commentary for borrowing-condition context',
   ],
 }
+
+export const supportedSydneySuburbs = propertyIntelSnapshot.suburbInsights.map((item) => item.suburb)
+
+export function getPropertyIntelJsonLd() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Dataset',
+    name: 'GigHub Greater Sydney Property Intel',
+    description:
+      'Greater Sydney property, rental, planning, and interest-rate watch page designed for residents, buyers, renters, owners, and AI agents.',
+    url: 'https://fintie.github.io/GigLift/property-intel',
+    keywords: [
+      'Greater Sydney property intel',
+      'Sydney housing market',
+      'Sydney rent trends',
+      'Sydney suburb insights',
+      'AI-readable real estate summary',
+      'ABS housing data',
+      'data.gov.au housing',
+    ],
+    spatialCoverage: {
+      '@type': 'Place',
+      name: 'Greater Sydney Area',
+    },
+    creator: {
+      '@type': 'Organization',
+      name: 'GigHub',
+      url: 'https://fintie.github.io/GigLift/',
+    },
+    distribution: [
+      {
+        '@type': 'DataDownload',
+        name: 'Property intel page',
+        contentUrl: 'https://fintie.github.io/GigLift/property-intel',
+        encodingFormat: 'text/html',
+      },
+    ],
+  }
+}
