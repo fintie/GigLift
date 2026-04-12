@@ -8,50 +8,52 @@ interface OnboardingWizardProps {
 
 export function OnboardingWizard({ values, onChange }: OnboardingWizardProps) {
   const toggleGoal = (goal: string) => {
-    const hasGoal = values.goals.includes(goal)
-    onChange(
-      'goals',
-      hasGoal ? values.goals.filter((item) => item !== goal) : [...values.goals, goal],
-    )
+    const nextGoals = values.goals.includes(goal)
+      ? values.goals.filter((item) => item !== goal)
+      : [...values.goals, goal]
+
+    onChange('goals', nextGoals)
   }
 
   return (
     <section className="panel">
       <div className="panel__header">
         <div>
-          <span className="eyebrow">Onboarding</span>
-          <h2>Set up GigHub for your business</h2>
+          <span className="eyebrow">Resident onboarding</span>
+          <h2>Set up your home task workspace</h2>
+          <p>Tell GigHub who lives in the home and what kinds of household issues you need help with most often.</p>
         </div>
       </div>
 
       <div className="form-grid">
         <label className="field">
-          <span>Role</span>
+          <span>I am mainly a...</span>
           <select value={values.role} onChange={(event) => onChange('role', event.target.value as OnboardingFormValues['role'])}>
-            <option value="business_owner">Business owner</option>
-            <option value="operator_admin">Operator/admin</option>
-            <option value="provider">Freelancer / provider</option>
+            <option value="resident">Resident</option>
+            <option value="tenant">Tenant</option>
+            <option value="landlord">Landlord</option>
+            <option value="family_carer">Family carer</option>
           </select>
         </label>
 
         <label className="field">
-          <span>Industry</span>
+          <span>Primary home setup</span>
           <select value={values.industry} onChange={(event) => onChange('industry', event.target.value as OnboardingFormValues['industry'])}>
-            <option value="real_estate">Real estate</option>
-            <option value="aged_care">Aged care</option>
-            <option value="restaurant">Restaurant</option>
-            <option value="retail">Retail</option>
+            <option value="apartment">Apartment</option>
+            <option value="house">House</option>
+            <option value="rental_property">Rental property</option>
+            <option value="supported_living">Supported living</option>
             <option value="other">Other</option>
           </select>
         </label>
 
-        <label className="field">
-          <span>Business size</span>
+        <label className="field field--full">
+          <span>Household type</span>
           <select value={values.businessSize} onChange={(event) => onChange('businessSize', event.target.value as OnboardingFormValues['businessSize'])}>
-            <option value="solo">Solo</option>
-            <option value="2_10">2-10 staff</option>
-            <option value="11_50">11-50 staff</option>
-            <option value="51_200">51-200 staff</option>
+            <option value="just_me">Just me</option>
+            <option value="couple">Couple</option>
+            <option value="family">Family household</option>
+            <option value="multi_property">Managing multiple properties</option>
           </select>
         </label>
       </div>

@@ -21,8 +21,8 @@ import type { OnboardingFormValues, ScenarioType, TaskResult } from '../types'
 
 export function LandingPage() {
   const navigate = useNavigate()
-  const [activeScenarioId, setActiveScenarioId] = useState<ScenarioType>('property-listing')
-  const [formValues, setFormValues] = useState<Record<string, string>>(createInitialFormValues('property-listing'))
+  const [activeScenarioId, setActiveScenarioId] = useState<ScenarioType>('home-repairs')
+  const [formValues, setFormValues] = useState<Record<string, string>>(createInitialFormValues('home-repairs'))
   const [taskResult, setTaskResult] = useState<TaskResult | null>(null)
   const [onboardingValues, setOnboardingValues] = useState<OnboardingFormValues>(defaultOnboardingValues)
   const [error, setError] = useState<string | null>(null)
@@ -46,11 +46,9 @@ export function LandingPage() {
       setIsSubmitting(true)
       setError(null)
 
-      const title = activeScenario.title
-      const description = activeScenario.summary
       const { data: task } = await api.createTask({
-        title,
-        description,
+        title: activeScenario.title,
+        description: activeScenario.summary,
         scenario_type: activeScenarioId,
         input_data: formValues,
         created_by: 'giglift-web',
@@ -85,15 +83,15 @@ export function LandingPage() {
     <main className="page-shell">
       <header className="hero-shell">
         <div className="hero-copy">
-          <span className="eyebrow">GigHub, AI-first task execution for Australian SMEs</span>
-          <h1>Keep the current GigLift feel, but make it launch-ready.</h1>
+          <span className="eyebrow">GigHub for residents, tenants, carers, and landlords</span>
+          <h1>Handle the messy tasks that come with living in, renting, or caring for a home.</h1>
           <p>
-            AI handles intake, structure, and first-pass execution. Humans step in only when confidence is low,
-            physical work is needed, or the operator wants review.
+            From repairs and renovation planning to rental admin, home-care updates, moving, and cleaning,
+            GigHub starts with AI structured intake and only brings in humans when the task truly needs them.
           </p>
           <div className="hero-actions">
-            <button className="primary-button" type="button">Start a request</button>
-            <button className="secondary-button" type="button" onClick={() => navigate('/dashboard')}>View dashboard</button>
+            <button className="primary-button" type="button">Start with a home issue</button>
+            <button className="secondary-button" type="button" onClick={() => navigate('/dashboard')}>Open resident dashboard</button>
           </div>
           {error ? <p className="error-text">{error}</p> : null}
           {isSubmitting ? <p className="info-text">Running task...</p> : null}
@@ -102,10 +100,10 @@ export function LandingPage() {
         <div className="hero-sidecard">
           <span className="pill">AI first. Human second.</span>
           <ul>
-            <li>Scenario-led intake</li>
-            <li>Structured outputs</li>
-            <li>Human fallback marketplace</li>
-            <li>Operator dashboard and onboarding</li>
+            <li>Repair and renovation scoping</li>
+            <li>Rental and landlord communication</li>
+            <li>Home-care coordination</li>
+            <li>Moving, cleaning, and settle-in help</li>
           </ul>
           {taskResult?.fallbackRecommended ? (
             <button className="secondary-button" type="button" onClick={handleSendToHuman}>

@@ -1,4 +1,4 @@
-export type ScenarioType = 'property-listing' | 'google-review' | 'care-notes' | 'trade-quote'
+export type ScenarioType = 'home-repairs' | 'rental-support' | 'home-care' | 'moving-help'
 export type TaskMode = 'ai_instant' | 'hybrid' | 'human'
 export type TaskLifecycle =
   | 'draft'
@@ -10,9 +10,9 @@ export type TaskLifecycle =
   | 'completed'
   | 'failed'
 
-export type UserRole = 'business_owner' | 'operator_admin' | 'provider'
-export type Industry = 'real_estate' | 'aged_care' | 'restaurant' | 'retail' | 'other'
-export type BusinessSize = 'solo' | '2_10' | '11_50' | '51_200'
+export type UserRole = 'resident' | 'tenant' | 'landlord' | 'family_carer'
+export type Industry = 'apartment' | 'house' | 'rental_property' | 'supported_living' | 'other'
+export type BusinessSize = 'just_me' | 'couple' | 'family' | 'multi_property'
 
 export interface ScenarioFieldOption {
   value: string

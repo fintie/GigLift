@@ -5,75 +5,73 @@ interface TaskResultPanelProps {
 }
 
 export function TaskResultPanel({ result }: TaskResultPanelProps) {
-  if (!result) {
-    return (
-      <section className="panel panel--result">
-        <div className="panel__header">
-          <div>
-            <span className="eyebrow">Execution output</span>
-            <h2>Results appear here</h2>
-          </div>
-        </div>
-        <div className="empty-state">
-          <p>Run a scenario to generate structured output, routing recommendations, and fallback actions.</p>
-        </div>
-      </section>
-    )
-  }
-
   return (
-    <section className="panel panel--result">
+    <section className="panel">
       <div className="panel__header">
         <div>
-          <span className="eyebrow">Execution output</span>
-          <h2>{result.output.headline}</h2>
+          <span className="eyebrow">Structured output</span>
+          <h2>See what AI prepared before you message, book, or escalate</h2>
+          <p>The result panel is built for resident decisions, not chat transcripts.</p>
         </div>
-        <span className={`status-chip status-chip--${result.lifecycle}`}>{result.lifecycle.replaceAll('_', ' ')}</span>
       </div>
 
-      <p className="result-summary">{result.output.summary}</p>
+      {!result ? (
+        <div className="empty-state">
+          <strong>No task has been run yet</strong>
+          <p>Pick a home scenario, fill the structured form, and GigHub will prepare the first-pass output here.</p>
+        </div>
+      ) : (
+        <>
+          <div className="result-summary">
+            <span className={`status-chip status-chip--${result.lifecycle}`}>{result.lifecycle.replaceAll('_', ' ')}</span>
+            <h3>{result.output.headline}</h3>
+            <p>{result.output.summary}</p>
+          </div>
 
-      <div className="metrics-row">
-        <article className="metric-card">
-          <strong>{Math.round(result.confidence * 100)}%</strong>
-          <span>AI confidence</span>
-        </article>
-        <article className="metric-card">
-          <strong>{Math.round(result.qualityScore * 100)}%</strong>
-          <span>Quality score</span>
-        </article>
-        <article className="metric-card">
-          <strong>{result.mode === 'ai_instant' ? 'Instant' : result.mode === 'hybrid' ? 'Hybrid' : 'Human'}</strong>
-          <span>Workflow mode</span>
-        </article>
-      </div>
+          <div className="metrics-row">
+            <article className="metric-card">
+              <span>Confidence</span>
+              <strong>{Math.round(result.confidence * 100)}%</strong>
+              <small>How likely AI can complete the task without human follow-up.</small>
+            </article>
+            <article className="metric-card">
+              <span>Quality score</span>
+              <strong>{Math.round(result.qualityScore * 100)}%</strong>
+              <small>Internal quality estimate for this structured output.</small>
+            </article>
+            <article className="metric-card">
+              <span>Execution mode</span>
+              <strong>{result.mode.replaceAll('_', ' ')}</strong>
+              <small>{result.fallbackRecommended ? 'Human fallback recommended' : 'AI handled the first pass'}</small>
+            </article>
+          </div>
 
-      <div className="result-columns">
-        <div>
-          <h3>Deliverables</h3>
-          <ul>
-            {result.output.deliverables.map((item) => (
-              <li key={item}>{item}</li>
+          <div className="result-columns">
+            <div>
+              <h3>Deliverables</h3>
+              <ul>
+                {result.output.deliverables.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h3>Next steps</h3>
+              <ul>
+                {result.output.nextSteps.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          <div className="panel__actions">
+            {result.routedAgents.map((agent) => (
+              <span key={agent} className="pill pill--ghost">{agent}</span>
             ))}
-          </ul>
-        </div>
-        <div>
-          <h3>Next actions</h3>
-          <ul>
-            {result.output.nextSteps.map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
-        </div>
-      </div>
-
-      <div className="agent-stack">
-        {result.routedAgents.map((agent) => (
-          <span key={agent} className="pill pill--ghost">
-            {agent}
-          </span>
-        ))}
-      </div>
+          </div>
+        </>
+      )}
     </section>
   )
 }
