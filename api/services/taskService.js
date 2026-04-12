@@ -18,26 +18,30 @@ export class TaskService {
     })
   }
 
-  runTask(taskId) {
+  getTask(taskId) {
+    return this.tasksModel.findById(taskId)
+  }
+
+  async runTask(taskId) {
     const task = this.tasksModel.findById(taskId)
     if (!task) {
       return null
     }
 
     this.tasksModel.update(task.id, { status: 'running_ai' })
-    const result = this.aiExecutionService.execute(task)
+    const result = await this.aiExecutionService.execute(this.tasksModel.findById(task.id))
 
     const updatedTask = this.tasksModel.update(task.id, {
-      status: result.requiresHuman ? 'needs_human' : 'ai_completed',
-      ai_confidence_score: result.confidence,
-      requires_human: result.requiresHuman,
+      status: result.shouldEscalate ? 'needs_human' : 'ai_completed',
+      ai_confidence_score: result.execution.confidence_score,
+      requires_human: result.shouldEscalate,
     })
 
     let fallbackJob = null
-    if (result.requiresHuman) {
-      fallbackJob = this.marketplaceFallbackService.createFallbackJob(
+    if (result.shouldEscalate && updatedTask) {
+      fallbackJob = this.marketplaceFallbackService.createJobFromTask(
         updatedTask,
-        result.confidence < result.route.threshold ? 'AI confidence below threshold' : 'Human mode requested'
+        'AI confidence below threshold for resident-safe completion',
       )
       this.tasksModel.update(task.id, { status: 'posted_to_marketplace' })
     }
@@ -46,8 +50,8 @@ export class TaskService {
       task: this.tasksModel.findById(task.id),
       execution: result.execution,
       route: result.route,
-      output: result.output,
-      quality: result.quality,
+      output: result.execution.output,
+      quality: result.execution.quality_score,
       fallbackJob,
     }
   }
@@ -61,7 +65,7 @@ export class TaskService {
       requires_human: true,
     })
 
-    const fallbackJob = this.marketplaceFallbackService.createFallbackJob(task, reason)
+    const fallbackJob = this.marketplaceFallbackService.createJobFromTask(this.tasksModel.findById(task.id), reason)
     const updatedTask = this.tasksModel.update(task.id, { status: 'posted_to_marketplace' })
 
     return { task: updatedTask, fallbackJob }

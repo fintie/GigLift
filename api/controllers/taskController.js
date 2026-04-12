@@ -20,8 +20,16 @@ export class TaskController {
     return res.status(201).json({ data: task })
   }
 
-  runTask = (req, res) => {
-    const result = this.taskService.runTask(req.params.taskId)
+  getTask = (req, res) => {
+    const task = this.taskService.getTask(req.params.taskId)
+    if (!task) {
+      return res.status(404).json({ error: 'Task not found' })
+    }
+    return res.json({ data: task })
+  }
+
+  runTask = async (req, res) => {
+    const result = await this.taskService.runTask(req.params.taskId)
     if (!result) {
       return res.status(404).json({ error: 'Task not found' })
     }

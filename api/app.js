@@ -22,6 +22,7 @@ export function createApp() {
   })
 
   app.get('/api/tasks', controllers.taskController.listTasks)
+  app.get('/api/tasks/:taskId', controllers.taskController.getTask)
   app.post('/api/tasks', controllers.taskController.createTask)
   app.post('/api/tasks/:taskId/run', controllers.taskController.runTask)
   app.post('/api/tasks/:taskId/human-fallback', controllers.taskController.sendToHuman)

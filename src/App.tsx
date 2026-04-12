@@ -4,10 +4,10 @@ import { DashboardPage } from './pages/DashboardPage'
 import { LandingPage } from './pages/LandingPage'
 import { MarketplacePage } from './pages/MarketplacePage'
 import { OnboardingPage } from './pages/OnboardingPage'
+import { PropertyIntelPage } from './pages/PropertyIntelPage'
 import { TaskDetailPage } from './pages/TaskDetailPage'
-import './index.css'
 
-export default function App() {
+export function App() {
   return (
     <Routes>
       <Route element={<AppLayout />}>
@@ -15,6 +15,7 @@ export default function App() {
         <Route path="/onboarding" element={<OnboardingPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/marketplace" element={<MarketplacePage />} />
+        <Route path="/property-intel" element={<PropertyIntelPage />} />
         <Route path="/task/:taskId" element={<TaskDetailPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>

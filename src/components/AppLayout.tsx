@@ -5,17 +5,18 @@ const navItems = [
   { to: '/onboarding', label: 'Onboarding' },
   { to: '/dashboard', label: 'Dashboard' },
   { to: '/marketplace', label: 'Marketplace' },
+  { to: '/property-intel', label: 'Property intel' },
 ]
 
 export function AppLayout() {
   return (
-    <div className="app-frame">
-      <header className="app-topbar">
-        <Link to="/" className="brand-mark">
-          <span className="brand-mark__badge">GigHub</span>
+    <div className="app-shell">
+      <header className="app-header">
+        <Link className="brand" to="/">
+          <span className="brand__mark">GH</span>
           <div>
-            <strong>AI-first task execution</strong>
-            <small>Human fallback only when needed</small>
+            <strong>GigHub</strong>
+            <span>Greater Sydney home support</span>
           </div>
         </Link>
         <nav className="app-nav">
@@ -23,13 +24,14 @@ export function AppLayout() {
             <NavLink
               key={item.to}
               to={item.to}
-              className={({ isActive }) => `nav-link ${isActive ? 'nav-link--active' : ''}`}
+              className={({ isActive }) => (isActive ? 'app-nav__link app-nav__link--active' : 'app-nav__link')}
             >
               {item.label}
             </NavLink>
           ))}
         </nav>
       </header>
+
       <Outlet />
     </div>
   )

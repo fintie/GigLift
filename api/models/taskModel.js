@@ -14,6 +14,8 @@ export class TaskModel {
   }
 
   create(payload) {
+    const now = new Date().toISOString()
+
     const task = {
       id: `task_${Date.now()}`,
       title: payload.title,
@@ -25,8 +27,8 @@ export class TaskModel {
       mode: payload.mode ?? 'AI',
       ai_confidence_score: payload.ai_confidence_score ?? null,
       requires_human: payload.requires_human ?? false,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
+      created_at: now,
+      updated_at: now,
     }
 
     this.store.tasks.push(task)
@@ -46,6 +48,6 @@ export class TaskModel {
   }
 
   list() {
-    return this.store.tasks
+    return [...this.store.tasks].sort((a, b) => (a.updated_at && b.updated_at ? b.updated_at.localeCompare(a.updated_at) : 0))
   }
 }
