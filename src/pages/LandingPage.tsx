@@ -8,20 +8,17 @@ import type { CreateTaskPayload, ScenarioType } from '../types'
 const showcaseCards = [
   {
     title: 'Repairs',
-    image:
-      'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=1200&q=80',
+    image: '/hero-repairs.svg',
     to: '/onboarding',
   },
   {
     title: 'Rentals',
-    image:
-      'https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=1200&q=80',
+    image: '/hero-rentals.svg',
     to: '/dashboard',
   },
   {
     title: 'Property intel',
-    image:
-      'https://images.unsplash.com/photo-1460317442991-0ec209397118?auto=format&fit=crop&w=1200&q=80',
+    image: '/hero-intel.svg',
     to: '/property-intel',
   },
 ]

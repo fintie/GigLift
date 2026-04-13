@@ -12,7 +12,7 @@ export function DashboardOverview({ metrics, tasks }: DashboardOverviewProps) {
         <div>
           <span className="eyebrow">Home operations dashboard</span>
           <h2>Track the household tasks that AI can progress before humans step in</h2>
-          <p>See what GigHub already structured, what still needs a person on site, and what is ready to send.</p>
+          <p>See what the system already structured, what still needs a person on site, and what is ready to send.</p>
         </div>
       </div>
 

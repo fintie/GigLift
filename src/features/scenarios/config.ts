@@ -5,7 +5,7 @@ export const scenarioDefinitions: ScenarioDefinition[] = [
     id: 'home-repairs',
     title: 'Repairs and renovation help',
     segment: 'Home maintenance',
-    summary: 'Describe the issue, urgency, and budget. GigHub turns it into a tradie-ready scope, message draft, and next-step plan.',
+    summary: 'Describe the issue, urgency, and budget. The system turns it into a tradie-ready scope, message draft, and next-step plan.',
     mode: 'hybrid',
     confidenceThreshold: 0.75,
     fields: [
@@ -143,7 +143,7 @@ export function buildMockStructuredOutput(scenarioId: ScenarioType): StructuredO
   if (scenarioId === 'home-repairs') {
     return {
       headline: 'Repair brief ready for a tradie or landlord',
-      summary: 'GigHub turned the issue into a clear scope, urgency note, and quote request so you do not have to explain the same thing three times.',
+      summary: 'The system turned the issue into a clear scope, urgency note, and quote request so you do not have to explain the same thing three times.',
       deliverables: ['Repair scope', 'Tradie message draft', 'Urgency checklist'],
       nextSteps: ['Send to two providers', 'Compare quotes', 'Book site visit if needed'],
     }
@@ -161,7 +161,7 @@ export function buildMockStructuredOutput(scenarioId: ScenarioType): StructuredO
   if (scenarioId === 'home-care') {
     return {
       headline: 'Care plan update and family summary prepared',
-      summary: 'GigHub organised the support request, daily notes, and follow-up communication into a single handoff.',
+      summary: 'The system organised the support request, daily notes, and follow-up communication into a single handoff.',
       deliverables: ['Support summary', 'Family update message', 'Risk watchlist'],
       nextSteps: ['Confirm care schedule', 'Share with family', 'Escalate to provider if risk grows'],
     }

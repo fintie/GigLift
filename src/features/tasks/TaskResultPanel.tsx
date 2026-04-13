@@ -18,7 +18,7 @@ export function TaskResultPanel({ result }: TaskResultPanelProps) {
       {!result ? (
         <div className="empty-state">
           <strong>No task has been run yet</strong>
-          <p>Pick a home scenario, fill the structured form, and GigHub will prepare the first-pass output here.</p>
+          <p>Pick a property scenario, fill the structured form, and the system will prepare the first-pass output here.</p>
         </div>
       ) : (
         <>

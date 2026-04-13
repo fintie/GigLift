@@ -78,7 +78,7 @@ export function getPropertyIntelJsonLd() {
   return {
     '@context': 'https://schema.org',
     '@type': 'Dataset',
-    name: 'GigHub Greater Sydney Property Intel',
+    name: 'Property Management System Greater Sydney Property Intel',
     description:
       'Greater Sydney property, rental, planning, and interest-rate watch page designed for residents, buyers, renters, owners, and AI agents.',
     url: 'https://pms.nextgenius.com.au/property-intel',
@@ -97,7 +97,7 @@ export function getPropertyIntelJsonLd() {
     },
     creator: {
       '@type': 'Organization',
-      name: 'GigHub',
+      name: 'Property Management System',
       url: 'https://pms.nextgenius.com.au/',
     },
     distribution: [

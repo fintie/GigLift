@@ -8,7 +8,7 @@ interface SeoHeadProps {
   jsonLd?: Record<string, unknown> | Array<Record<string, unknown>>
 }
 
-const SITE_NAME = 'GigHub'
+const SITE_NAME = 'Property Management System'
 const SITE_URL = 'https://pms.nextgenius.com.au'
 const DEFAULT_IMAGE = `${SITE_URL}/favicon.svg`
 
@@ -123,7 +123,7 @@ export function SeoHead({ title, description, path = '/', keywords = [], jsonLd 
       node.href = canonicalUrl
     })
 
-    const structuredDataId = 'gighub-jsonld'
+    const structuredDataId = 'pms-jsonld'
     const existingJsonLd = document.getElementById(structuredDataId)
     if (existingJsonLd) {
       existingJsonLd.remove()

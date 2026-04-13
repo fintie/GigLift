@@ -21,7 +21,7 @@ export function OnboardingWizard({ values, onChange }: OnboardingWizardProps) {
         <div>
           <span className="eyebrow">Resident onboarding</span>
           <h2>Set up your home task workspace</h2>
-          <p>Tell GigHub who lives in the home and what kinds of household issues you need help with most often.</p>
+          <p>Tell the system who lives in the home and what kinds of property issues need attention most often.</p>
         </div>
       </div>
 
